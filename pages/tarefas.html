@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist ACAMP</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .task-card {
+            border-left: 5px solid #3d7517;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-card.completed {
+            border-left: 5px solid #28a745;
+            background-color: #f8fff8;
+        }
+
+        .task-card.urgent {
+            border-left: 5px solid #dc3545;
+        }
+
+        .priority-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .priority-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .priority-low {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-add {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            border: none;
+        }
+
+        .department-badge {
+            background-color: #6c757d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-voltar .material-icons {
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">CHECKLIST ACAMP</h2>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Tarefas do Acampamento</h3>
+            </div>
+            <div class="col-md-6 text-right">
+                <button class="btn btn-add" data-toggle="modal" data-target="#addTaskModal">
+                    <i class="bi bi-plus-circle"></i> Nova Tarefa
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="mb-3">A Fazer</h5>
+                <div class="task-list" id="todoList">
+                    <!-- As tarefas serão adicionadas dinamicamente aqui -->
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <h5 class="mb-3">Em Andamento</h5>
+                <div class="task-list" id="inProgressList">
+                    <!-- As tarefas serão adicionadas dinamicamente aqui -->
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <h5 class="mb-3">Concluído</h5>
+                <div class="task-list" id="completedList">
+                    <!-- As tarefas serão adicionadas dinamicamente aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Tarefa -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTaskModalLabel">Adicionar Nova Tarefa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newTaskForm">
+                        <div class="form-group">
+                            <label for="taskDepartment">Departamento</label>
+                            <select class="form-control" id="taskDepartment" required>
+                                <option value="">Selecione um departamento</option>
+                                <option value="Supervisão">Supervisão: Mozer e Marcielle</option>
+                                <option value="Financeiro">Financeiro: Ana Clara</option>
+                                <option value="Cronograma">Cronograma: Monique</option>
+                                <option value="Midia">Midia: Rebekah</option>
+                                <option value="Midia Fisica">Midia Fisica: Lívia</option>
+                                <option value="Gincana">Gincana: Pedro / Felipe</option>
+                                <option value="Decoração">Decoração: Amanda / Pietra / Lucas / Saymon</option>
+                                <option value="Devocionais">Devocionais: Clóvis</option>
+                                <option value="Louvor">Louvor: Mozer / Andrei / Nicoly E</option>
+                                <option value="Cobertura Espiritual">Cobertura Espiritual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskTitle">Título da Tarefa</label>
+                            <input type="text" class="form-control" id="taskTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDescription">Descrição</label>
+                            <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="taskDueDate">Data de Vencimento</label>
+                                <input type="date" class="form-control" id="taskDueDate" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="taskPriority">Prioridade</label>
+                                <select class="form-control" id="taskPriority">
+                                    <option value="low">Baixa</option>
+                                    <option value="medium">Média</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskResponsible">Responsável</label>
+                            <select class="form-control" id="taskResponsible">
+                                <option value="">Selecione um responsável</option>
+                                <option value="Mozer">Mozer</option>
+                                <option value="Marcielle">Marcielle</option>
+                                <option value="Ana Clara">Ana Clara</option>
+                                <option value="Monique">Monique</option>
+                                <option value="Rebekah">Rebekah</option>
+                                <option value="Lívia">Lívia</option>
+                                <option value="Pedro">Pedro</option>
+                                <option value="Felipe">Felipe</option>
+                                <option value="Amanda">Amanda</option>
+                                <option value="Pietra">Pietra</option>
+                                <option value="Lucas">Lucas</option>
+                                <option value="Saymon">Saymon</option>
+                                <option value="Clóvis">Clóvis</option>
+                                <option value="John">John</option>
+                                <option value="Andrei">Andrei</option>
+                                <option value="Nicoly E">Nicoly E</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Tarefa -->
+    <div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="editTaskModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTaskModalLabel">Editar Tarefa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTaskForm">
+                        <input type="hidden" id="editTaskId">
+                        <div class="form-group">
+                            <label for="editTaskDepartment">Departamento</label>
+                            <select class="form-control" id="editTaskDepartment" required>
+                                <option value="">Selecione um departamento</option>
+                                <option value="Supervisão">Supervisão: Mozer e Marcielle</option>
+                                <option value="Financeiro">Financeiro: Ana Clara</option>
+                                <option value="Cronograma">Cronograma: Monique</option>
+                                <option value="Midia">Midia: Rebekah</option>
+                                <option value="Midia Fisica">Midia Fisica: Lívia</option>
+                                <option value="Gincana">Gincana: Pedro / Felipe</option>
+                                <option value="Decoração">Decoração: Amanda / Pietra / Lucas / Saymon</option>
+                                <option value="Devocionais">Devocionais: Clóvis</option>
+                                <option value="Louvor">Louvor: Mozer / Andrei / Nicoly E</option>
+                                <option value="Cobertura Espiritual">Cobertura Espiritual</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskTitle">Título da Tarefa</label>
+                            <input type="text" class="form-control" id="editTaskTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskDescription">Descrição</label>
+                            <textarea class="form-control" id="editTaskDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="editTaskDueDate">Data de Vencimento</label>
+                                <input type="date" class="form-control" id="editTaskDueDate" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="editTaskPriority">Prioridade</label>
+                                <select class="form-control" id="editTaskPriority">
+                                    <option value="low">Baixa</option>
+                                    <option value="medium">Média</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskResponsible">Responsável</label>
+                            <select class="form-control" id="editTaskResponsible">
+                                <option value="">Selecione um responsável</option>
+                                <option value="Mozer">Mozer</option>
+                                <option value="Marcielle">Marcielle</option>
+                                <option value="Ana Clara">Ana Clara</option>
+                                <option value="Monique">Monique</option>
+                                <option value="Rebekah">Rebekah</option>
+                                <option value="Lívia">Lívia</option>
+                                <option value="Pedro">Pedro</option>
+                                <option value="Felipe">Felipe</option>
+                                <option value="Amanda">Amanda</option>
+                                <option value="Pietra">Pietra</option>
+                                <option value="Lucas">Lucas</option>
+                                <option value="Saymon">Saymon</option>
+                                <option value="Clóvis">Clóvis</option>
+                                <option value="John">John</option>
+                                <option value="Andrei">Andrei</option>
+                                <option value="Nicoly E">Nicoly E</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editTaskStatus">Status</label>
+                            <select class="form-control" id="editTaskStatus">
+                                <option value="todo">A Fazer</option>
+                                <option value="inProgress">Em Andamento</option>
+                                <option value="completed">Concluído</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="updateTaskBtn">Atualizar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC31C1X13eqVAOq_o5K2evI8q3GOfnpOpo",
+            authDomain: "iebi-2e84e.firebaseapp.com",
+            projectId: "iebi-2e84e",
+            storageBucket: "iebi-2e84e.appspot.com",
+            messagingSenderId: "634456198202",
+            appId: "1:634456198202:web:8b4de1b4def23a49303903"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Função para salvar nova tarefa
+        document.getElementById('saveTaskBtn').addEventListener('click', function () {
+            const taskDepartment = document.getElementById('taskDepartment').value;
+            const taskTitle = document.getElementById('taskTitle').value;
+            const taskDescription = document.getElementById('taskDescription').value;
+            const taskDueDate = document.getElementById('taskDueDate').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            const taskResponsible = document.getElementById('taskResponsible').value;
+
+            if (!taskTitle || !taskDueDate || !taskDepartment) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            // Adicionar ao Firestore
+            db.collection("Acampamentos").doc("AcampBT2025").collection("checklist").add({
+                departamento: taskDepartment,
+                titulo: taskTitle,
+                descricao: taskDescription,
+                dataVencimento: taskDueDate,
+                prioridade: taskPriority,
+                responsavel: taskResponsible,
+                status: "todo",
+                dataCriacao: new Date().toISOString(),
+                dataAtualizacao: new Date().toISOString()
+            })
+                .then((docRef) => {
+                    console.log("Tarefa adicionada com ID: ", docRef.id);
+                    $('#addTaskModal').modal('hide');
+                    document.getElementById('newTaskForm').reset();
+                    carregarTarefas();
+                })
+                .catch((error) => {
+                    console.error("Erro ao adicionar tarefa: ", error);
+                    alert("Erro ao adicionar tarefa. Tente novamente.");
+                });
+        });
+
+        // Função para carregar tarefas do Firebase
+        function carregarTarefas() {
+            // Limpar listas atuais
+            document.getElementById('todoList').innerHTML = '';
+            document.getElementById('inProgressList').innerHTML = '';
+            document.getElementById('completedList').innerHTML = '';
+
+            // Buscar do Firestore
+            db.collection("Acampamentos").doc("AcampBT2025").collection("checklist")
+                .orderBy("dataVencimento")
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const task = doc.data();
+                        const taskElement = criarElementoTarefa(doc.id, task);
+
+                        // Adicionar à lista correta baseado no status
+                        if (task.status === "todo") {
+                            document.getElementById('todoList').appendChild(taskElement);
+                        } else if (task.status === "inProgress") {
+                            document.getElementById('inProgressList').appendChild(taskElement);
+                        } else if (task.status === "completed") {
+                            document.getElementById('completedList').appendChild(taskElement);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar tarefas: ", error);
+                });
+        }
+
+        // Função para criar elemento HTML da tarefa
+        function criarElementoTarefa(id, task) {
+            const div = document.createElement('div');
+            div.className = `card task-card ${task.status === 'completed' ? 'completed' : ''} ${task.prioridade === 'high' ? 'urgent' : ''}`;
+            div.setAttribute('data-id', id);
+
+            // Definir classe de prioridade
+            let priorityClass = '';
+            let priorityText = '';
+
+            if (task.prioridade === 'high') {
+                priorityClass = 'priority-high';
+                priorityText = 'Alta';
+            } else if (task.prioridade === 'medium') {
+                priorityClass = 'priority-medium';
+                priorityText = 'Média';
+            } else {
+                priorityClass = 'priority-low';
+                priorityText = 'Baixa';
+            }
+
+            // Formatar data
+            let dateText = '';
+            if (task.status === 'completed') {
+                const completedDate = new Date(task.dataAtualizacao).toLocaleDateString('pt-BR');
+                dateText = `Concluído: ${completedDate}`;
+            } else {
+                const dueDate = new Date(task.dataVencimento).toLocaleDateString('pt-BR');
+                dateText = `Vencimento: ${dueDate}`;
+            }
+
+            // Criar conteúdo HTML do card
+            div.innerHTML = `
+                <div class="card-body">
+                    <div class="department-badge">${task.departamento}</div>
+                    <div class="task-header">
+                        <h5 class="card-title">${task.titulo}</h5>
+                        <span class="${priorityClass}">${priorityText}</span>
+                    </div>
+                    <p class="card-text">${task.descricao}</p>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">${dateText}</span>
+                        <div>
+                            ${task.status !== 'completed' ?
+                    '<button class="btn btn-sm btn-success complete-task-btn"><i class="bi bi-check-circle"></i></button>' :
+                    '<button class="btn btn-sm btn-warning reopen-task-btn"><i class="bi bi-arrow-counterclockwise"></i></button>'}
+                            <button class="btn btn-sm btn-info edit-task-btn"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-danger delete-task-btn"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Adicionar event listeners para os botões
+            // Completar tarefa
+            const completeBtn = div.querySelector('.complete-task-btn');
+            if (completeBtn) {
+                completeBtn.addEventListener('click', function () {
+                    atualizarStatusTarefa(id, 'completed');
+                });
+            }
+
+            // Reabrir tarefa
+            const reopenBtn = div.querySelector('.reopen-task-btn');
+            if (reopenBtn) {
+                reopenBtn.addEventListener('click', function () {
+                    atualizarStatusTarefa(id, 'todo');
+                });
+            }
+
+            // Editar tarefa
+            const editBtn = div.querySelector('.edit-task-btn');
+            if (editBtn) {
+                editBtn.addEventListener('click', function () {
+                    abrirModalEdicao(id, task);
+                });
+            }
+
+            // Excluir tarefa
+            const deleteBtn = div.querySelector('.delete-task-btn');
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', function () {
+                    excluirTarefa(id);
+                });
+            }
+
+            return div;
+        }
+
+        // Função para atualizar status da tarefa
+        function atualizarStatusTarefa(id, novoStatus) {
+            db.collection("Acampamentos").doc("AcampBT2025").collection("checklist").doc(id).update({
+                status: novoStatus,
+                dataAtualizacao: new Date().toISOString()
+            })
+                .then(() => {
+                    console.log("Status da tarefa atualizado com sucesso!");
+                    carregarTarefas();
+                })
+                .catch((error) => {
+                    console.error("Erro ao atualizar status da tarefa: ", error);
+                    alert("Erro ao atualizar status da tarefa. Tente novamente.");
+                });
+        }
+
+        // Função para abrir modal de edição
+        function abrirModalEdicao(id, task) {
+            document.getElementById('editTaskId').value = id;
+            document.getElementById('editTaskDepartment').value = task.departamento;
+            document.getElementById('editTaskTitle').value = task.titulo;
+            document.getElementById('editTaskDescription').value = task.descricao;
+            document.getElementById('editTaskDueDate').value = task.dataVencimento.split('T')[0]; // Formatar a data
+            document.getElementById('editTaskPriority').value = task.prioridade;
+            document.getElementById('editTaskResponsible').value = task.responsavel;
+            document.getElementById('editTaskStatus').value = task.status;
+
+            $('#editTaskModal').modal('show');
+        }
+
+        // Função para atualizar tarefa
+        document.getElementById('updateTaskBtn').addEventListener('click', function () {
+            const taskId = document.getElementById('editTaskId').value;
+            const taskDepartment = document.getElementById('editTaskDepartment').value;
+            const taskTitle = document.getElementById('editTaskTitle').value;
+            const taskDescription = document.getElementById('editTaskDescription').value;
+            const taskDueDate = document.getElementById('editTaskDueDate').value;
+            const taskPriority = document.getElementById('editTaskPriority').value;
+            const taskResponsible = document.getElementById('editTaskResponsible').value;
+            const taskStatus = document.getElementById('editTaskStatus').value;
+
+            if (!taskTitle || !taskDueDate || !taskDepartment) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            db.collection("Acampamentos").doc("AcampBT2025").collection("checklist").doc(taskId).update({
+                departamento: taskDepartment,
+                titulo: taskTitle,
+                descricao: taskDescription,
+                dataVencimento: taskDueDate,
+                prioridade: taskPriority,
+                responsavel: taskResponsible,
+                status: taskStatus,
+                dataAtualizacao: new Date().toISOString()
+            })
+                .then(() => {
+                    console.log("Tarefa atualizada com sucesso!");
+                    $('#editTaskModal').modal('hide');
+                    carregarTarefas();
+                })
+                .catch((error) => {
+                    console.error("Erro ao atualizar tarefa: ", error);
+                    alert("Erro ao atualizar tarefa. Tente novamente.");
+                });
+        });
+
+        // Função para excluir tarefa
+        function excluirTarefa(id) {
+            const confirmar = confirm("Tem certeza que deseja excluir esta tarefa?");
+            if (confirmar) {
+                db.collection("Acampamentos").doc("AcampBT2025").collection("checklist").doc(id).delete()
+                    .then(() => {
+                        console.log("Tarefa excluída com sucesso!");
+                        carregarTarefas();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao excluir tarefa: ", error);
+                        alert("Erro ao excluir tarefa. Tente novamente.");
+                    });
+            }
+        }
+
+        // Filtrar tarefas por departamento
+        function filtrarTarefasPorDepartamento(departamento) {
+            // Implementação futura para filtrar tarefas por departamento específico
+        }
+
+        // Carregar tarefas quando a página abrir
+        document.addEventListener('DOMContentLoaded', carregarTarefas);
+    </script>
+</body>
+
+</html>

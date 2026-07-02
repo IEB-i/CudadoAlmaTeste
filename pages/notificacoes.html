@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações - ACAMP 360º 2025</title>
+    <link rel="shortcut icon" href="3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #000000, #000000);
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 80px;
+        }
+
+        .header-title {
+            color: white;
+        }
+
+        .notification-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+            border-left: 5px solid #ccc;
+        }
+
+        .notification-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .notification-card.unread {
+            background-color: #f8f9fa;
+            border-left-color: #3d7517;
+        }
+
+        .notification-card.read {
+            opacity: 0.8;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .notification-time {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .icon-inscricao {
+            background-color: #e3f2fd;
+            color: #0d6efd;
+        }
+
+        .icon-pagamento {
+            background-color: #e8f5e9;
+            color: #28a745;
+        }
+
+        .icon-tarefa {
+            background-color: #fff3cd;
+            color: #ffc107;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-bar {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2 class="header-title">NOTIFICAÇÕES - ACAMP 360º 2025</h2>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Suas Notificações</h3>
+                    <button id="btnMarcarTodas" class="btn btn-outline-primary">
+                        <i class="material-icons align-middle">done_all</i> Marcar todas como lidas
+                    </button>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select id="filtroTipo" class="form-control">
+                                <option value="todos">Todos os tipos</option>
+                                <option value="inscricao">Inscrições</option>
+                                <option value="pagamento">Pagamentos</option>
+                                <option value="tarefa">Tarefas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="filtroStatus" class="form-control">
+                                <option value="todos">Todos os status</option>
+                                <option value="nao_lida">Não lidas</option>
+                                <option value="lida">Lidas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button id="btnFiltrar" class="btn btn-primary btn-block">Filtrar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="listaNotificacoes">
+                    <!-- Notificações serão carregadas dinamicamente aqui -->
+                </div>
+
+                <div id="nenhumaNotificacao" class="text-center p-5" style="display: none;">
+                    <i class="material-icons" style="font-size: 48px; color: #ccc;">notifications_off</i>
+                    <p class="mt-3">Nenhuma notificação encontrada</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC31C1X13eqVAOq_o5K2evI8q3GOfnpOpo",
+            authDomain: "iebi-2e84e.firebaseapp.com",
+            projectId: "iebi-2e84e",
+            storageBucket: "iebi-2e84e.appspot.com",
+            messagingSenderId: "634456198202",
+            appId: "1:634456198202:web:8b4de1b4def23a49303903"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let usuarioAtual = null;
+        let todasNotificacoes = [];
+
+        // Verificar autenticação
+        auth.onAuthStateChanged(function (user) {
+            if (user) {
+                usuarioAtual = user;
+                carregarNotificacoes();
+            } else {
+                window.location.href = 'login.html'; // Redirecionar para login se não estiver autenticado
+            }
+        });
+
+        // Carregar notificações
+        function carregarNotificacoes() {
+            const listaNotificacoes = document.getElementById('listaNotificacoes');
+            listaNotificacoes.innerHTML = '';
+
+            // Consulta de notificações para o usuário atual ou para todos
+            db.collection("Acampamentos").doc("AcampBT2025").collection("notificacoes")
+                .where("destinatario", "in", [usuarioAtual.uid, "all"])
+                .orderBy("dataHora", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    todasNotificacoes = [];
+
+                    if (querySnapshot.empty) {
+                        document.getElementById('nenhumaNotificacao').style.display = 'block';
+                        return;
+                    }
+
+                    document.getElementById('nenhumaNotificacao').style.display = 'none';
+
+                    querySnapshot.forEach((doc) => {
+                        const notificacao = doc.data();
+                        notificacao.id = doc.id;
+                        todasNotificacoes.push(notificacao);
+
+                        listaNotificacoes.appendChild(criarElementoNotificacao(notificacao));
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar notificações: ", error);
+                    alert("Erro ao carregar notificações. Tente novamente.");
+                });
+        }
+
+        // Criar elemento HTML para uma notificação
+        function criarElementoNotificacao(notificacao) {
+            const div = document.createElement('div');
+            div.className = `notification-card p-3 ${notificacao.status === 'nao_lida' ? 'unread' : 'read'}`;
+            div.setAttribute('data-id', notificacao.id);
+
+            const dataFormatada = formatarDataRelativa(notificacao.dataHora);
+
+            let iconClass = '';
+            let iconName = '';
+
+            switch (notificacao.tipo) {
+                case 'inscricao':
+                    iconClass = 'icon-inscricao';
+                    iconName = 'person_add';
+                    break;
+                case 'pagamento':
+                    iconClass = 'icon-pagamento';
+                    iconName = 'payments';
+                    break;
+                case 'tarefa':
+                    iconClass = 'icon-tarefa';
+                    iconName = 'task_alt';
+                    break;
+                default:
+                    iconClass = 'bg-secondary text-white';
+                    iconName = 'notifications';
+            }
+
+            div.innerHTML = `
+                <div class="d-flex">
+                    <div class="notification-icon ${iconClass}">
+                        <i class="material-icons">${iconName}</i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="mb-1">${notificacao.titulo}</h5>
+                            <span class="notification-time">${dataFormatada}</span>
+                        </div>
+                        <p class="mb-1">${notificacao.mensagem}</p>
+                        <div class="notification-actions mt-2">
+                            ${notificacao.linkReferencia ?
+                    `<a href="${notificacao.linkReferencia}" class="btn btn-sm btn-outline-primary">
+                                    <i class="material-icons align-middle">visibility</i> Ver detalhes
+                                </a>` : ''}
+                            ${notificacao.status === 'nao_lida' ?
+                    `<button class="btn btn-sm btn-outline-secondary btn-marcar-lida" data-id="${notificacao.id}">
+                                    <i class="material-icons align-middle">done</i> Marcar como lida
+                                </button>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Adicionar evento para marcar como lida
+            const btnMarcarLida = div.querySelector('.btn-marcar-lida');
+            if (btnMarcarLida) {
+                btnMarcarLida.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    marcarComoLida(notificacao.id);
+                });
+            }
+
+            return div;
+        }
+
+        // Marcar uma notificação como lida
+        function marcarComoLida(notificacaoId) {
+            db.collection("Acampamentos").doc("AcampBT2025").collection("notificacoes").doc(notificacaoId)
+                .update({
+                    status: 'lida'
+                })
+                .then(() => {
+                    // Atualizar o elemento na interface
+                    const elemento = document.querySelector(`.notification-card[data-id="${notificacaoId}"]`);
+                    if (elemento) {
+                        elemento.classList.remove('unread');
+                        elemento.classList.add('read');
+                        const btnMarcarLida = elemento.querySelector('.btn-marcar-lida');
+                        if (btnMarcarLida) {
+                            btnMarcarLida.remove();
+                        }
+                    }
+
+                    // Atualizar o array de notificações
+                    const index = todasNotificacoes.findIndex(n => n.id === notificacaoId);
+                    if (index !== -1) {
+                        todasNotificacoes[index].status = 'lida';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao marcar notificação como lida: ", error);
+                    alert("Erro ao atualizar notificação. Tente novamente.");
+                });
+        }
+
+        // Marcar todas as notificações como lidas
+        document.getElementById('btnMarcarTodas').addEventListener('click', function () {
+            const notificacoesNaoLidas = todasNotificacoes.filter(n => n.status === 'nao_lida');
+
+            if (notificacoesNaoLidas.length === 0) {
+                alert('Não há notificações não lidas para marcar.');
+                return;
+            }
+
+            // Confirmar a ação
+            if (!confirm('Marcar todas as notificações como lidas?')) {
+                return;
+            }
+
+            // Array para armazenar promessas de atualização
+            const promessas = [];
+
+            notificacoesNaoLidas.forEach(notificacao => {
+                const promessa = db.collection("Acampamentos").doc("AcampBT2025").collection("notificacoes")
+                    .doc(notificacao.id)
+                    .update({ status: 'lida' });
+
+                promessas.push(promessa);
+            });
+
+            // Executar todas as atualizações em paralelo
+            Promise.all(promessas)
+                .then(() => {
+                    alert('Todas as notificações foram marcadas como lidas!');
+                    carregarNotificacoes(); // Recarregar a lista
+                })
+                .catch(error => {
+                    console.error("Erro ao marcar todas como lidas: ", error);
+                    alert("Ocorreu um erro. Tente novamente.");
+                });
+        });
+
+        // Aplicar filtros
+        document.getElementById('btnFiltrar').addEventListener('click', function () {
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const filtroStatus = document.getElementById('filtroStatus').value;
+
+            filtrarNotificacoes(filtroTipo, filtroStatus);
+        });
+
+        function filtrarNotificacoes(tipo, status) {
+            const listaNotificacoes = document.getElementById('listaNotificacoes');
+            listaNotificacoes.innerHTML = '';
+
+            let notificacoesFiltradas = [...todasNotificacoes];
+
+            // Aplicar filtro de tipo
+            if (tipo !== 'todos') {
+                notificacoesFiltradas = notificacoesFiltradas.filter(n => n.tipo === tipo);
+            }
+
+            // Aplicar filtro de status
+            if (status !== 'todos') {
+                notificacoesFiltradas = notificacoesFiltradas.filter(n => n.status === status);
+            }
+
+            // Exibir mensagem quando não houver notificações
+            if (notificacoesFiltradas.length === 0) {
+                document.getElementById('nenhumaNotificacao').style.display = 'block';
+            } else {
+                document.getElementById('nenhumaNotificacao').style.display = 'none';
+
+                // Renderizar notificações filtradas
+                notificacoesFiltradas.forEach(notificacao => {
+                    listaNotificacoes.appendChild(criarElementoNotificacao(notificacao));
+                });
+            }
+        }
+
+        // Formatar data relativa (exemplo: "há 2 horas")
+        function formatarDataRelativa(dataString) {
+            const data = new Date(dataString);
+            const agora = new Date();
+            const diff = Math.floor((agora - data) / 1000); // diferença em segundos
+
+            if (diff < 60) {
+                return "Agora mesmo";
+            } else if (diff < 3600) {
+                const minutos = Math.floor(diff / 60);
+                return `Há ${minutos} ${minutos === 1 ? 'minuto' : 'minutos'}`;
+            } else if (diff < 86400) {
+                const horas = Math.floor(diff / 3600);
+                return `Há ${horas} ${horas === 1 ? 'hora' : 'horas'}`;
+            } else if (diff < 604800) {
+                const dias = Math.floor(diff / 86400);
+                return `Há ${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+            } else {
+                return data.toLocaleDateString('pt-BR');
+            }
+        }
+    </script>
+</body>
+
+</html>

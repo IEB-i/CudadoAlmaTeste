@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Criar Contador - EXECUTAR APENAS UMA VEZ</title>
+</head>
+
+<body>
+    <h1>Criar Contador de Inscrições</h1>
+    <button onclick="criarContador()">Criar Contador</button>
+    <div id="resultado"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="./firebase/firebaseConfig.js"></script>
+
+    <script>
+        function criarContador() {
+            document.getElementById('resultado').innerHTML = 'Criando contador...';
+
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                .where("anoevento", "==", "2026")
+                .get()
+                .then((querySnapshot) => {
+                    const totalAtual = querySnapshot.size;
+                    console.log(`Total atual encontrado: ${totalAtual}`);
+
+                    // ✅ CORREÇÃO: Usar apenas um .doc()
+                    return db.collection("Eventos").doc("ComRoca2026").set({
+                        contador: {
+                            totalInscricoes: totalAtual,
+                            ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                        }
+                    }, { merge: true });
+                })
+                .then(() => {
+                    document.getElementById('resultado').innerHTML =
+                        '✅ Contador criado com sucesso! Pode deletar esta página.';
+                })
+                .catch((error) => {
+                    console.error("Erro completo:", error);
+                    document.getElementById('resultado').innerHTML =
+                        '❌ Erro: ' + error.message;
+                });
+        }
+    </script>
+</body>
+
+</html>

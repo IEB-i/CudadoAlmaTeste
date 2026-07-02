@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECK-IN</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .divider {
+            width: 75%;
+            height: 2px;
+            background-color: #000;
+            margin: 30px auto;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #6108a1, #9900CC);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #200020, #9900CC);
+        }
+
+        .form-control:focus {
+            border-color: #3d7517;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25);
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            background-color: #6108a1;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 120px;
+            }
+
+            .container {
+                max-width: 89%;
+                margin: 10px 5px;
+                padding: 15px;
+                border-radius: 0;
+            }
+
+            .logo-circle.scrolled {
+                left: 3px;
+                transform: translate(0, -30%);
+            }
+
+            .scrolled .logo-circle img {
+                width: 96px;
+                height: auto;
+            }
+
+            .header-title {
+                font-size: 1rem;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+        }
+
+        .signature-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .signature-pad {
+            width: 100%;
+            height: 200px;
+            touch-action: none;
+        }
+
+        .signature-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* MELHORAR - Estilo do campo sala: */
+        #sala {
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            /* border: 2px solid #333; */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="text-center mb-4 font-weight-bold">CHECK-IN</h2>
+        <div class="divider"></div>
+
+        <div class="info-box">
+            <p><strong>Informações importantes:</strong></p>
+            <p>Este formulário deve ser preenchido no momento do check-in do participante.</p>
+            <p>Todas as informações são essenciais para garantir a segurança e bem-estar durante o evento.</p>
+            <p>Em caso de dúvidas, entre em contato com a equipe organizadora.</p>
+        </div>
+
+        <form id="checkinForm">
+            <!-- DADOS PESSOAIS -->
+            <div class="section-title">
+                <h4 class="mb-0">DADOS PESSOAIS</h4>
+            </div>
+
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <select class="form-control" id="nome" required>
+                    <option value="">Selecione o participante</option>
+                    <!-- As opções serão carregadas dinamicamente via JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="sala">Sala</label>
+                    <input type="text" class="form-control" id="sala" readonly>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="dtnasc">Data de Nascimento</label>
+                    <input type="text" class="form-control" id="dtnasc" readonly>
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="idade">Idade</label>
+                    <input type="text" class="form-control" id="idade" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="responsavel">Nome dos Pais ou Responsáveis</label>
+                <input type="text" class="form-control" id="responsavel" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone1">Telefone de Emergência</label>
+                <input type="text" class="form-control" id="telefone1" readonly>
+            </div>
+
+            <!-- AUTORIZAÇÕES E TERMOS -->
+            <div class="section-title">
+                <h4 class="mb-0">AUTORIZAÇÕES E TERMOS</h4>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoParticipacao" required checked>
+                    <label class="form-check-label" for="autorizacaoParticipacao">
+                        Autorizo a participação no evento
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoEmergencia" required checked>
+                    <label class="form-check-label" for="autorizacaoEmergencia">
+                        Autorizo atendimento médico de emergência
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoFotos" required checked>
+                    <label class="form-check-label" for="autorizacaoFotos">
+                        Autorizo o uso de imagens em redes sociais e comunicação do evento
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoMedicamentos" required checked>
+                    <label class="form-check-label" for="autorizacaoMedicamentos">
+                        Autorizo a administração de medicamentos básicos (analgésicos, antitérmicos)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="dataPreenchimento">Data de Preenchimento</label>
+                <input type="text" class="form-control" id="dataPreenchimento" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="assinatura">Assinatura do Responsável</label>
+                <div class="signature-container">
+                    <canvas id="signature-pad" class="signature-pad" width="400" height="200"></canvas>
+                </div>
+                <div class="signature-buttons mt-2">
+                    <button type="button" class="btn btn-secondary btn-sm" id="clear-signature">Limpar
+                        Assinatura</button>
+                </div>
+                <input type="hidden" id="assinaturaData" name="assinaturaData">
+                <small class="form-text text-muted">Por favor, assine usando a caneta do tablet.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Confirmar Check-in</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.1.0/vanilla-masker.min.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+    <script src="../firebase/firebaseConfig2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+    <script>
+
+        // Função para converter texto para maiúsculas
+        function toUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        // Adicionar evento na digitação para campos de texto
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        textInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                toUpperCase(this);
+            });
+        });
+
+        // Máscaras
+        VMasker(document.getElementById("telefone1")).maskPattern("(99) 99999-9999");
+
+        // Função para carregar os acampantes com status "pago" e sem check-in no dropdown
+        function carregarAcampantes() {
+            const selectNome = document.getElementById('nome');
+
+            // Limpar opções existentes, mantendo apenas a primeira
+            while (selectNome.options.length > 1) {
+                selectNome.remove(1);
+            }
+
+            // Buscar acampantes com status "pago" no Firestore e que não fizeram check-in
+            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                .where("statusPagamento", "==", "pago")
+                .where("anoevento", "==", "2025")
+                .orderBy("nome")
+                .get()
+                .then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        let acampantesDisponiveis = 0;
+
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+
+                            // Verificar se o acampante ainda não realizou o check-in
+                            if (!data.statusCheckin || data.statusCheckin !== "realizado") {
+                                const option = document.createElement('option');
+                                option.value = data.nome;
+                                option.textContent = data.nome;
+                                option.setAttribute('data-id', doc.id);
+                                selectNome.appendChild(option);
+                                acampantesDisponiveis++;
+                            }
+                        });
+
+                        console.log(`${acampantesDisponiveis} acampantes disponíveis para check-in carregados no dropdown.`);
+
+                        if (acampantesDisponiveis === 0) {
+                            const option = document.createElement('option');
+                            option.value = "";
+                            option.textContent = "Todos os acampantes já realizaram check-in";
+                            selectNome.appendChild(option);
+                        }
+                    } else {
+                        console.log("Nenhum acampante com status 'pago' e tipoInsc 'criancas' encontrado.");
+                        const option = document.createElement('option');
+                        option.value = "";
+                        option.textContent = "Nenhum acampante disponível para check-in";
+                        selectNome.appendChild(option);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar acampantes:", error);
+                    alert('Erro ao carregar lista de acampantes. Por favor, recarregue a página.');
+                });
+        }
+
+        // Carregar acampantes quando a página for carregada
+        document.addEventListener('DOMContentLoaded', carregarAcampantes);
+
+        // Dados dos Acampantes
+        document.getElementById('nome').addEventListener('change', function () {
+            const nomeAcampante = this.value;
+            if (nomeAcampante) {
+                // Buscar dados do acampante selecionado
+                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                    .where("nome", "==", nomeAcampante)
+                    .where("anoevento", "==", "2025")
+                    .get()
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach((doc) => {
+                                const data = doc.data();
+                                const dtnasc = data.dtnascCrianca; // A data armazenada no formato "YYYY-MM-DD"
+
+                                // Converter a data de nascimento para o formato "DD/MM/YYYY"
+                                const formattedDate = new Date(dtnasc).toLocaleDateString('pt-BR');
+                                document.getElementById('dtnasc').value = formattedDate || '';  // Exibe a Data de Nascimento
+
+                                document.getElementById('idade').value = data.idade || '';    // Exibe a Idade
+
+                                // Atualiza a sala com base na idade calculada
+                                atualizarSala();
+
+                                // Preencher outros campos se existirem no banco de dados
+                                if (data.foneResponsavel) document.getElementById('telefone1').value = data.foneResponsavel;
+                                if (data.responsavel1) document.getElementById('responsavel').value = data.responsavel1;
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados do acampante:", error);
+                    });
+            } else {
+                // Limpar campos se nenhum acampante for selecionado
+                document.getElementById('dtnasc').value = '';
+                document.getElementById('idade').value = '';
+                document.getElementById('telefone1').value = '';
+                document.getElementById('responsavel').value = '';
+            }
+        });
+
+        // Função para determinar a sala baseada na idade
+        function atualizarSala() {
+            const idade = document.getElementById('idade').value;
+            const sala = document.getElementById('sala');
+            const idadeNum = parseInt(idade);
+
+            if (!isNaN(idadeNum)) {
+                // Determina a sala com base na faixa etária
+                if (idadeNum >= 10 && idadeNum <= 12) {
+                    sala.value = 'Vermelha';
+                    sala.style.backgroundColor = '#FF4C4C'; // Vermelha
+                } else if (idadeNum >= 8 && idadeNum <= 9) {
+                    sala.value = 'Laranja';
+                    sala.style.backgroundColor = '#FF9C33'; // Laranja
+                } else if (idadeNum >= 6 && idadeNum <= 7) {
+                    sala.value = 'Amarela';
+                    sala.style.backgroundColor = '#FFEB3B'; // Amarela
+                } else if (idadeNum >= 4 && idadeNum <= 5) {
+                    sala.value = 'Verde';
+                    sala.style.backgroundColor = '#4CAF50'; // Verde
+                } else {
+                    sala.value = 'Idade fora das faixas';
+                    sala.style.backgroundColor = '#E0E0E0'; // Cinza
+                }
+            }
+        }
+        // Definir a data de preenchimento
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('dataPreenchimento').value = dataAtual;
+
+        // Enviar formulário
+        document.getElementById('checkinForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            // Adicionar loading state
+            const submitBtn = document.getElementById('cadastrarBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processando...';
+            
+            // MELHORAR - Validação do formulário:
+            function validarFormulario() {
+                const nome = document.getElementById('nome').value;
+                const assinatura = signaturePad.isEmpty();
+                
+                if (!nome) {
+                    alert('Por favor, selecione um participante.');
+                    document.getElementById('nome').focus();
+                    return false;
+                }
+                
+                if (assinatura) {
+                    alert('Por favor, forneça a assinatura do responsável.');
+                    return false;
+                }
+                
+                return true;
+            }
+
+            // Usar na função de submit:
+            if (!validarFormulario()) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
+            }
+
+            // Capturar a assinatura como uma imagem base64
+            const assinaturaData = signaturePad.toDataURL('image/png');
+            document.getElementById('assinaturaData').value = assinaturaData;
+
+            // Coletar dados do formulário - VERSÃO CORRIGIDA
+            const formData = {
+                nome: document.getElementById('nome').value.trim().toUpperCase(),
+                dtnasc: document.getElementById('dtnasc').value,
+                idade: document.getElementById('idade').value,
+                responsavel: document.getElementById('responsavel').value,
+                telefone1: document.getElementById('telefone1').value,
+                sala: document.getElementById('sala').value,
+                
+                // Autorizações (apenas os campos que existem no HTML)
+                autorizacaoParticipacao: document.getElementById('autorizacaoParticipacao').checked,
+                autorizacaoEmergencia: document.getElementById('autorizacaoEmergencia').checked,
+                autorizacaoFotos: document.getElementById('autorizacaoFotos').checked,
+                autorizacaoMedicamentos: document.getElementById('autorizacaoMedicamentos').checked,
+                
+                // Dados do check-in
+                dataPreenchimento: document.getElementById('dataPreenchimento').value,
+                assinatura: document.getElementById('assinaturaData').value,
+                statusCheckin: 'realizado',
+                dtCheckin: new Date().toLocaleDateString('pt-BR')
+            };
+
+            // Salvar no Firestore
+            db.collection("Eventos").doc("ComRoca2025").collection("checkin").add(formData)
+                .then((docRef) => {
+                    console.log("Check-in realizado com ID: ", docRef.id);
+
+                    // Atualizar status na coleção de inscrições
+                    db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                        .where("nome", "==", formData.nome)
+                        .where("anoevento", "==", "2025")
+                        .where("tipoInsc", "==", "criancas")
+                        .get()
+                        .then((querySnapshot) => {
+                            if (!querySnapshot.empty) {
+                                const promises = [];
+                                querySnapshot.forEach((doc) => {
+                                    console.log("Atualizando documento:", doc.id);
+                                    const updatePromise = doc.ref.update({
+                                        statusCheckin: 'realizado',
+                                        dtCheckin: new Date().toLocaleDateString('pt-BR'),
+                                        sala: formData.sala
+                                    });
+                                    promises.push(updatePromise);
+                                });
+                                
+                                // Aguardar todas as atualizações
+                                return Promise.all(promises);
+                            } else {
+                                console.error("Nenhum documento encontrado para atualizar o status de check-in");
+                                throw new Error("Documento não encontrado para atualização");
+                            }
+                        })
+                        .then(() => {
+                            console.log("Status de check-in atualizado com sucesso!");
+                            alert('Check-in realizado com sucesso!');
+                            window.location.href = 'checkin_sucesso.html';
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao atualizar status de check-in: ", error);
+                            alert('Check-in salvo, mas houve erro ao atualizar o status. Contate o administrador.');
+                        });
+                })
+                .catch((error) => {
+                    console.error("Erro ao realizar check-in: ", error);
+                    let mensagem = 'Erro ao realizar check-in. ';
+    
+                    if (error.code === 'permission-denied') {
+                        mensagem += 'Sem permissão para salvar dados.';
+                    } else if (error.code === 'unavailable') {
+                        mensagem += 'Serviço temporariamente indisponível.';
+                    } else {
+                        mensagem += 'Por favor, tente novamente.';
+                    }
+    
+                    alert(mensagem);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                });
+        });
+
+        // Inicializar o pad de assinatura - MOVER PARA FORA DO EVENTO DE SCROLL
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        // Ajustar o tamanho do canvas quando a janela for redimensionada
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear(); // Limpa a assinatura
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Botão para limpar a assinatura
+        document.getElementById('clear-signature').addEventListener('click', function () {
+            signaturePad.clear();
+        });
+    </script>
+</body>
+
+</html>

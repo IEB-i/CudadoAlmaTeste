@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSCRIÇÕES</title>
+    <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            background-color: #f4ebda;
+            padding-top: 0px;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+            /*min-height: 100vh;*/
+        }
+
+        .position-relative {
+            position: relative;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(to right, #663800, #FF8C00);
+            /* Laranja para amarelo */
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            text-transform: uppercase;
+            border: none;
+            box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 52%;
+            /* Posição fixa na parte superior */
+            left: 48%;
+            transform: translateX(-50%);
+            text-decoration: none;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        /* Seta esquerda */
+        .btn-gradient::before {
+            content: "→";
+            position: absolute;
+            left: -100px;
+            top: 30%;
+            transform: translateY(-50%);
+            font-size: 80px;
+            color: #FF8C00;
+            animation: bounce-left 1s infinite;
+        }
+
+        /* Seta direita */
+        .btn-gradient::after {
+            content: "→";
+            position: absolute;
+            right: -100px;
+            top: 70%;
+            transform: translateY(-50%) rotate(180deg);
+            font-size: 80px;
+            color: #FF8C00;
+            animation: bounce-right 1s infinite;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #FF8C00, #663800);
+            transform: translateX(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(58, 16, 86, 0.6);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-gradient:hover::before,
+        .btn-gradient:hover::after {
+            color: #FF8C00;
+        }
+
+        /* Animações para as setas */
+        @keyframes bounce-right {
+
+            0%,
+            100% {
+                right: -100px;
+            }
+
+            50% {
+                right: -90px;
+            }
+        }
+
+        @keyframes bounce-left {
+
+            0%,
+            100% {
+                left: -100px;
+            }
+
+            50% {
+                left: -90px;
+            }
+        }
+
+        .desktop-image {
+            margin-top: 0px;
+            width: 100%;
+            /* 100% da largura disponível */
+            height: auto;
+            /* max-height: 120vh; */
+            /* Limita a altura a 90% da altura da viewport */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            /* Garante que a imagem inteira seja exibida */
+        }
+
+
+        .mobile-image {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .mobile-image {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                z-index: 1;
+                margin: 0;
+                padding: 0;
+            }
+
+            .desktop-image {
+                display: none;
+            }
+
+            .btn-gradient {
+                padding: 12px 30px;
+                font-size: 16px;
+                min-width: 250px;
+                top: 54%;
+                left: 50%;
+                z-index: 10;
+                position: fixed;
+            }
+
+            .btn-gradient::before,
+            .btn-gradient::after {
+                color: #FF8C00;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
+    <img src="./assets/Texto Celular.png" alt="Texto" class="img-fluid mb-4 mobile-image">
+
+    <!-- Novo botão Bootstrap com gradiente -->
+    <a href="frminscricao.html" class="btn-gradient">
+        Inscreva-se Agora
+    </a>
+
+</body>
+
+</html>

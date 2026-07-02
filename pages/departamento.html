@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Departamento - ACAMP 360º 2025</title>
+    <link rel="shortcut icon" href="3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #000000, #000000);
+            padding: 20px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            height: 80px;
+        }
+        
+        .header-title {
+            color: white;
+        }
+        
+        .task-card {
+            border-left: 5px solid #3d7517;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .task-card.completed {
+            border-left: 5px solid #28a745;
+            background-color: #f8fff8;
+        }
+        
+        .task-card.urgent {
+            border-left: 5px solid #dc3545;
+        }
+        
+        .priority-high {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .priority-low {
+            color: #17a2b8;
+            font-weight: bold;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-add {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            border: none;
+        }
+
+        .btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%) scale(1.05);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-voltar .material-icons {
+    font-size: 24px;
+}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">DEPARTAMENTO DE ALIMENTAÇÃO - ACAMP 360º 2025</h2>
+    </div>
+    
+    <div class="container mt-5">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h3>Tarefas do Departamento</h3>
+            </div>
+            <div class="col-md-6 text-right">
+                <button class="btn btn-add" data-toggle="modal" data-target="#addTaskModal">
+                    <i class="bi bi-plus-circle"></i> Nova Tarefa
+                </button>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <h5 class="mb-3">A Fazer</h5>
+                <div class="task-list" id="todoList">
+                    <div class="card task-card urgent">
+                        <div class="card-body">
+                            <div class="task-header">
+                                <h5 class="card-title">Comprar mantimentos</h5>
+                                <span class="priority-high">Alta</span>
+                            </div>
+                            <p class="card-text">Comprar todos os alimentos para café da manhã e almoço</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Vencimento: 15/07/2025</span>
+                                <div>
+                                    <button class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card task-card">
+                        <div class="card-body">
+                            <div class="task-header">
+                                <h5 class="card-title">Definir cardápio jantar</h5>
+                                <span class="priority-medium">Média</span>
+                            </div>
+                            <p class="card-text">Finalizar o cardápio para o jantar de sábado</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Vencimento: 20/07/2025</span>
+                                <div>
+                                    <button class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                                        </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <h5 class="mb-3">Em Andamento</h5>
+                <div class="task-list" id="inProgressList">
+                    <div class="card task-card">
+                        <div class="card-body">
+                            <div class="task-header">
+                                <h5 class="card-title">Contratar equipe de cozinha</h5>
+                                <span class="priority-medium">Média</span>
+                            </div>
+                            <p class="card-text">Finalizar contratação da equipe de cozinha para o acampamento</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Vencimento: 10/07/2025</span>
+                                <div>
+                                    <button class="btn btn-sm btn-success"><i class="bi bi-check-circle"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <h5 class="mb-3">Concluído</h5>
+                <div class="task-list" id="completedList">
+                    <div class="card task-card completed">
+                        <div class="card-body">
+                            <div class="task-header">
+                                <h5 class="card-title">Orçamento de alimentos</h5>
+                                <span class="priority-low">Baixa</span>
+                            </div>
+                            <p class="card-text">Preparar orçamento detalhado dos alimentos</p>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Concluído: 01/06/2025</span>
+                                <div>
+                                    <button class="btn btn-sm btn-warning"><i class="bi bi-arrow-counterclockwise"></i></button>
+                                    <button class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Adicionar Tarefa -->
+    <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addTaskModalLabel">Adicionar Nova Tarefa</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="newTaskForm">
+                        <div class="form-group">
+                            <label for="taskTitle">Título da Tarefa</label>
+                            <input type="text" class="form-control" id="taskTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDescription">Descrição</label>
+                            <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="taskDueDate">Data de Vencimento</label>
+                                <input type="date" class="form-control" id="taskDueDate" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="taskPriority">Prioridade</label>
+                                <select class="form-control" id="taskPriority">
+                                    <option value="low">Baixa</option>
+                                    <option value="medium">Média</option>
+                                    <option value="high">Alta</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskResponsible">Responsável</label>
+                            <select class="form-control" id="taskResponsible">
+                                <option value="">Selecione um responsável</option>
+                                <option value="user1">João Silva</option>
+                                <option value="user2">Maria Santos</option>
+                                <option value="user3">Pedro Oliveira</option>
+                                <option value="user4">Ana Costa</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveTaskBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC31C1X13eqVAOq_o5K2evI8q3GOfnpOpo",
+            authDomain: "iebi-2e84e.firebaseapp.com",
+            projectId: "iebi-2e84e",
+            storageBucket: "iebi-2e84e.appspot.com",
+            messagingSenderId: "634456198202",
+            appId: "1:634456198202:web:8b4de1b4def23a49303903"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Função para salvar nova tarefa
+        document.getElementById('saveTaskBtn').addEventListener('click', function() {
+            const taskTitle = document.getElementById('taskTitle').value;
+            const taskDescription = document.getElementById('taskDescription').value;
+            const taskDueDate = document.getElementById('taskDueDate').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            const taskResponsible = document.getElementById('taskResponsible').value;
+            
+            if (!taskTitle || !taskDueDate) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            // Adicionar ao Firestore
+            db.collection("AcampBT2025").doc("Departamentos").collection("Alimentação").add({
+                titulo: taskTitle,
+                descricao: taskDescription,
+                dataVencimento: taskDueDate,
+                prioridade: taskPriority,
+                responsavel: taskResponsible,
+                status: "todo",
+                dataCriacao: new Date().toISOString(),
+                dataAtualizacao: new Date().toISOString()
+            })
+            .then((docRef) => {
+                console.log("Tarefa adicionada com ID: ", docRef.id);
+                $('#addTaskModal').modal('hide');
+                document.getElementById('newTaskForm').reset();
+                // Aqui você pode adicionar código para atualizar a UI com a nova tarefa
+            })
+            .catch((error) => {
+                console.error("Erro ao adicionar tarefa: ", error);
+                alert("Erro ao adicionar tarefa. Tente novamente.");
+            });
+        });
+        
+        // Funções para carregar tarefas do Firebase quando a página carregar
+        function carregarTarefas() {
+            // Limpar listas atuais
+            document.getElementById('todoList').innerHTML = '';
+            document.getElementById('inProgressList').innerHTML = '';
+            document.getElementById('completedList').innerHTML = '';
+            
+            // Buscar do Firestore
+            db.collection("AcampBT2025").doc("Departamentos").collection("Alimentação")
+                .orderBy("dataVencimento")
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const task = doc.data();
+                        const taskElement = criarElementoTarefa(doc.id, task);
+                        
+                        // Adicionar à lista correta baseado no status
+                        if (task.status === "todo") {
+                            document.getElementById('todoList').appendChild(taskElement);
+                        } else if (task.status === "inProgress") {
+                            document.getElementById('inProgressList').appendChild(taskElement);
+                        } else if (task.status === "completed") {
+                            document.getElementById('completedList').appendChild(taskElement);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar tarefas: ", error);
+                });
+        }
+        
+        function criarElementoTarefa(id, task) {
+            // Implementar criação do elemento HTML para a tarefa
+            // Este é apenas um esqueleto da função
+            const div = document.createElement('div');
+            div.className = `card task-card ${task.status === 'completed' ? 'completed' : ''} ${task.prioridade === 'high' ? 'urgent' : ''}`;
+            div.setAttribute('data-id', id);
+            
+            // Aqui iria o código para preencher o conteúdo do card
+            
+            return div;
+        }
+        
+        // Carregar tarefas quando a página abrir
+        document.addEventListener('DOMContentLoaded', carregarTarefas);
+    </script>
+</body>
+</html>

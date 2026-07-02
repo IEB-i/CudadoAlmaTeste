@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Pós-Evento - ComRoca 2026</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        .stats-label {
+            font-size: 0.95rem;
+            color: #6c757d;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .progress-custom {
+            height: 25px;
+            border-radius: 15px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+
+        .progress-bar-custom {
+            background: linear-gradient(90deg, #3d7517, #4a8c20);
+            height: 100%;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transition: width 0.6s ease;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-presente {
+            background-color: #28a745;
+        }
+
+        .badge-ausente {
+            background-color: #dc3545;
+        }
+
+        .badge-pago {
+            background-color: #28a745;
+        }
+
+        .badge-pendente {
+            background-color: #ffc107;
+        }
+
+        .section-title {
+            color: #3d7517;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #3d7517;
+            padding-bottom: 10px;
+        }
+
+        .export-btn {
+            background: linear-gradient(45deg, #3d7517, #4a8c20);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(45deg, #2b5210, #3d7517);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #3d7517;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">RELATÓRIO PÓS-EVENTO - COMROCA 2026</h2>
+    </div>
+
+    <div class="container mt-5">
+        <!-- Botões de Exportação -->
+        <div class="row mb-4">
+            <div class="col-12 text-right">
+                <button class="btn export-btn" onclick="exportarPDF()">
+                    <i class="bi bi-file-pdf"></i> Exportar PDF
+                </button>
+                <button class="btn export-btn" onclick="exportarExcel()">
+                    <i class="bi bi-file-excel"></i> Exportar Excel
+                </button>
+            </div>
+        </div>
+
+        <!-- 1. RELATÓRIO DE INSCRIÇÕES -->
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-people-fill mr-2"></i> Relatório de Inscrições
+            </h4>
+        </div>
+
+        <!-- Cards de Estatísticas Gerais -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Total de Inscritos</div>
+                                <div class="stats-value" id="totalInscritos">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                <i class="bi bi-person-check-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Confirmados</div>
+                                <div class="stats-value" id="totalPresentes">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(111, 66, 193, 0.1); color: #6f42c1;">
+                                <i class="bi bi-pie-chart-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Comparecimento</div>
+                                <div class="stats-value" id="taxaComparecimento">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                <i class="bi bi-person-x-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Não Compareceram</div>
+                                <div class="stats-value" id="totalAusentes">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos de Categorias -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-church"></i> Distribuição por Igreja</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoIgrejas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-people"></i> Distribuição por Supervisor</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoSupervisores"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-diagram-3"></i> Distribuição por Célula</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoCelulas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-calendar"></i> Distribuição por Faixa Etária</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoIdades"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. RELATÓRIO DE PAGAMENTOS -->
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-currency-dollar mr-2"></i> Relatório Financeiro
+            </h4>
+        </div>
+
+        <!-- Cards Financeiros -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Total de Receitas</div>
+                                <div class="stats-value">R$ <span id="totalReceita">0,00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                <i class="bi bi-graph-down-arrow"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Total de Custos</div>
+                                <div class="stats-value">R$ <span id="totalCustos">0,00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(23, 162, 184, 0.1); color: #17a2b8;">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Saldo Final</div>
+                                <div class="stats-value">R$ <span id="saldoFinal">0,00</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos Financeiros -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-pie-chart"></i> Receitas vs Custos</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoReceitasCustos"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-bar-chart"></i> Distribuição por Categoria</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoCategoriasFinanceiras"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo Executivo -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-clipboard-data"></i> Resumo Executivo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="resumoExecutivo">
+                            <!-- Conteúdo gerado dinamicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <!-- Bibliotecas para exportação -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // Variáveis globais
+        let todosParticipantes = [];
+        let graficos = {};
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            // Registra o plugin de datalabels e configura o estilo moderno global
+            if (typeof ChartDataLabels !== 'undefined') {
+                Chart.register(ChartDataLabels);
+                Chart.defaults.plugins.datalabels = {
+                    color: '#343a40',
+                    font: { weight: 'bold', size: 12 },
+                    formatter: function (value) { return value > 0 ? value : ''; },
+                    anchor: 'end',
+                    align: 'top'
+                };
+            }
+
+            // Design moderno global para Chart.js
+            Chart.defaults.font.family = "'Montserrat', sans-serif";
+            Chart.defaults.color = "#6c757d";
+            Chart.defaults.scale.grid.color = "rgba(0,0,0,0.04)";
+            Chart.defaults.elements.bar.borderRadius = 8;
+            Chart.defaults.elements.bar.borderSkipped = false;
+            Chart.defaults.elements.arc.borderWidth = 0;
+            Chart.defaults.elements.arc.hoverOffset = 4;
+            Chart.defaults.layout = {
+                padding: {
+                    top: 30,
+                    right: 40,
+                    bottom: 10,
+                    left: 10
+                }
+            };
+
+            carregarDadosCompletos();
+        });
+
+        // Função principal para carregar todos os dados
+        function carregarDadosCompletos() {
+            console.log("Iniciando carregamento dos dados do pós-evento...");
+
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                .where("anoevento", "==", "2026")
+                .get()
+                .then((querySnapshot) => {
+                    todosParticipantes = [];
+
+                    querySnapshot.forEach((doc) => {
+                        const participante = doc.data();
+                        participante.id = doc.id;
+                        todosParticipantes.push(participante);
+                    });
+
+                    console.log(`Carregados ${todosParticipantes.length} participantes`);
+
+                    // Processar todos os dados
+                    processarEstatisticasGerais();
+                    processarEstatisticasFinanceiras();
+                    criarGraficos();
+                    gerarResumoExecutivo();
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar dados:", error);
+                    alert("Erro ao carregar dados do evento. Verifique a conexão.");
+                });
+        }
+
+        // Processar estatísticas gerais de inscrições
+        function processarEstatisticasGerais() {
+            const totalInscritos = todosParticipantes.length;
+            const totalPresentes = todosParticipantes.filter(p => p.statusPresenca === 'presente').length;
+            const totalAusentes = totalInscritos - totalPresentes;
+            const taxaComparecimento = totalInscritos > 0 ? Math.round((totalPresentes / totalInscritos) * 100) : 0;
+
+            // Atualizar cards
+            document.getElementById('totalInscritos').textContent = totalInscritos;
+            document.getElementById('totalPresentes').textContent = totalPresentes;
+            document.getElementById('totalAusentes').textContent = totalAusentes;
+            document.getElementById('taxaComparecimento').textContent = taxaComparecimento + '%';
+
+            console.log(`Estatísticas gerais processadas: ${totalInscritos} inscritos, ${totalPresentes} presentes (${taxaComparecimento}%)`);
+        }
+
+        // Função para formatar valores monetários
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        // Processar estatísticas financeiras do caixa
+        function processarEstatisticasFinanceiras() {
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                .get()
+                .then((querySnapshot) => {
+                    let totalReceitas = 0;
+                    let totalCustos = 0;
+
+                    querySnapshot.forEach((doc) => {
+                        const transacao = doc.data();
+                        const valor = parseFloat(transacao.valor) || 0;
+
+                        if (transacao.tipo === 'entrada') {
+                            totalReceitas += valor;
+                        } else if (transacao.tipo === 'saida') {
+                            totalCustos += valor;
+                        }
+                    });
+
+                    const saldoFinal = totalReceitas - totalCustos;
+
+                    // Atualizar cards financeiros
+                    document.getElementById('totalReceita').textContent = formatarMoeda(totalReceitas);
+                    document.getElementById('totalCustos').textContent = formatarMoeda(totalCustos);
+                    document.getElementById('saldoFinal').textContent = formatarMoeda(saldoFinal);
+
+                    console.log(`Estatísticas financeiras processadas: R$ ${totalReceitas.toFixed(2)} receitas, R$ ${totalCustos.toFixed(2)} custos, Saldo: R$ ${saldoFinal.toFixed(2)}`);
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar dados financeiros: ", error);
+                });
+        }
+
+
+        // Criar todos os gráficos
+        function criarGraficos() {
+            criarGraficoIgrejas();
+            criarGraficoSupervisores();
+            criarGraficoCelulas();
+            criarGraficoIdades();
+            criarGraficoReceitasCustos();
+            criarGraficoCategoriasFinanceiras();
+        }
+
+        // Gráfico de distribuição por igreja
+        function criarGraficoIgrejas() {
+            const igrejas = {};
+            todosParticipantes.forEach(p => {
+                const igreja = p.igreja || 'Não informado';
+                igrejas[igreja] = (igrejas[igreja] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('graficoIgrejas').getContext('2d');
+            graficos.igrejas = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(igrejas),
+                    datasets: [{
+                        data: Object.values(igrejas),
+                        backgroundColor: [
+                            '#3d7517', '#4a8c20', '#28a745', '#5cb85c',
+                            '#17a2b8', '#138496', '#ffc107', '#e6a800',
+                            '#dc3545', '#c82333', '#6f42c1', '#5a32a3'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 10
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            anchor: 'center',
+                            align: 'center'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de distribuição por supervisor
+        function criarGraficoSupervisores() {
+            const supervisores = {};
+            todosParticipantes.forEach(p => {
+                const supervisor = p.supervisor || 'Não informado';
+                supervisores[supervisor] = (supervisores[supervisor] || 0) + 1;
+            });
+
+            const ctx = document.getElementById('graficoSupervisores').getContext('2d');
+            graficos.supervisores = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(supervisores),
+                    datasets: [{
+                        label: 'Participantes',
+                        data: Object.values(supervisores),
+                        backgroundColor: 'rgba(61, 117, 23, 0.8)',
+                        borderColor: 'rgba(61, 117, 23, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    onHover: (event, activeElements) => {
+                        event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+                    }
+                }
+            });
+        }
+
+        // Gráfico de distribuição por célula
+        function criarGraficoCelulas() {
+            const celulas = {};
+            todosParticipantes.forEach(p => {
+                const celula = p.celula || 'Não informado';
+                celulas[celula] = (celulas[celula] || 0) + 1;
+            });
+
+            // Pegar apenas as 10 células com mais participantes
+            const celulasOrdenadas = Object.entries(celulas)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 10);
+
+            const ctx = document.getElementById('graficoCelulas').getContext('2d');
+            graficos.celulas = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: celulasOrdenadas.map(([nome]) => nome),
+                    datasets: [{
+                        label: 'Participantes',
+                        data: celulasOrdenadas.map(([, qtd]) => qtd),
+                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        datalabels: {
+                            align: 'right',
+                            anchor: 'end'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de distribuição por faixa etária
+        function criarGraficoIdades() {
+            const faixasEtarias = {
+                '12-17 anos': 0,
+                '18-25 anos': 0,
+                '26-35 anos': 0,
+                '36-45 anos': 0,
+                '46-55 anos': 0,
+                '56+ anos': 0
+            };
+
+            todosParticipantes.forEach(p => {
+                if (p.dtnasc) {
+                    const idade = calcularIdade(p.dtnasc);
+                    if (idade >= 12 && idade <= 17) faixasEtarias['12-17 anos']++;
+                    else if (idade >= 18 && idade <= 25) faixasEtarias['18-25 anos']++;
+                    else if (idade >= 26 && idade <= 35) faixasEtarias['26-35 anos']++;
+                    else if (idade >= 36 && idade <= 45) faixasEtarias['36-45 anos']++;
+                    else if (idade >= 46 && idade <= 55) faixasEtarias['46-55 anos']++;
+                    else if (idade >= 56) faixasEtarias['56+ anos']++;
+                }
+            });
+
+            const ctx = document.getElementById('graficoIdades').getContext('2d');
+            graficos.idades = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(faixasEtarias),
+                    datasets: [{
+                        label: 'Participantes',
+                        data: Object.values(faixasEtarias),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56',
+                            '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                        borderColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56',
+                            '#4BC0C0', '#9966FF', '#FF9F40'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de status de pagamentos
+        function criarGraficoStatusPagamentos() {
+            const statusPagamentos = {
+                'Pago': todosParticipantes.filter(p => p.statusPagamento === 'pago').length,
+                'Pendente': todosParticipantes.filter(p => p.statusPagamento !== 'pago').length
+            };
+
+            const ctx = document.getElementById('graficoStatusPagamentos').getContext('2d');
+            graficos.statusPagamentos = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusPagamentos),
+                    datasets: [{
+                        data: Object.values(statusPagamentos),
+                        backgroundColor: ['#28a745', '#ffc107'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            anchor: 'center',
+                            align: 'center'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de formas de pagamento
+        function criarGraficoFormasPagamento() {
+            const formasPagamento = {
+                'PIX': 0,
+                'Cartão': 0,
+                'Dinheiro': 0,
+                'Não informado': 0
+            };
+
+            todosParticipantes.forEach(p => {
+                if (p.statusPagamento === 'pago') {
+                    const forma = p.formaPagamento;
+                    if (forma === 'pix') formasPagamento['PIX']++;
+                    else if (forma === 'cartao') formasPagamento['Cartão']++;
+                    else if (forma === 'dinheiro') formasPagamento['Dinheiro']++;
+                    else formasPagamento['Não informado']++;
+                }
+            });
+
+            const ctx = document.getElementById('graficoFormasPagamento').getContext('2d');
+            graficos.formasPagamento = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(formasPagamento),
+                    datasets: [{
+                        label: 'Quantidade',
+                        data: Object.values(formasPagamento),
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 159, 64, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de receitas vs custos
+        function criarGraficoReceitasCustos() {
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                .get()
+                .then((querySnapshot) => {
+                    let totalReceitas = 0;
+                    let totalCustos = 0;
+
+                    querySnapshot.forEach((doc) => {
+                        const transacao = doc.data();
+                        const valor = parseFloat(transacao.valor) || 0;
+
+                        if (transacao.tipo === 'entrada') {
+                            totalReceitas += valor;
+                        } else if (transacao.tipo === 'saida') {
+                            totalCustos += valor;
+                        }
+                    });
+
+                    const ctx = document.getElementById('graficoReceitasCustos').getContext('2d');
+                    graficos.receitasCustos = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Receitas', 'Custos'],
+                            datasets: [{
+                                data: [totalReceitas, totalCustos],
+                                backgroundColor: ['#28a745', '#dc3545'],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                },
+                                datalabels: {
+                                    color: '#fff',
+                                    anchor: 'center',
+                                    align: 'center'
+                                }
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Gráfico de categorias financeiras
+        function criarGraficoCategoriasFinanceiras() {
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                .get()
+                .then((querySnapshot) => {
+                    const categorias = {
+                        inscricao: 0,
+                        alimentacao: 0,
+                        transporte: 0,
+                        material: 0,
+                        outros: 0
+                    };
+
+                    querySnapshot.forEach((doc) => {
+                        const transacao = doc.data();
+                        const valor = parseFloat(transacao.valor) || 0;
+
+                        if (transacao.categoria && categorias.hasOwnProperty(transacao.categoria)) {
+                            if (transacao.tipo === 'entrada') {
+                                categorias[transacao.categoria] += valor;
+                            } else {
+                                categorias[transacao.categoria] -= valor; // Custos como valores negativos
+                            }
+                        }
+                    });
+
+                    const ctx = document.getElementById('graficoCategoriasFinanceiras').getContext('2d');
+                    graficos.categoriasFinanceiras = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Inscrição', 'Alimentação', 'Transporte', 'Material', 'Outros'],
+                            datasets: [{
+                                label: 'Valor (R$)',
+                                data: [
+                                    categorias.inscricao,
+                                    categorias.alimentacao,
+                                    categorias.transporte,
+                                    categorias.material,
+                                    categorias.outros
+                                ],
+                                backgroundColor: [
+                                    'rgba(40, 167, 69, 0.7)',
+                                    'rgba(220, 53, 69, 0.7)',
+                                    'rgba(255, 193, 7, 0.7)',
+                                    'rgba(23, 162, 184, 0.7)',
+                                    'rgba(108, 117, 125, 0.7)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Gerar resumo executivo
+        function gerarResumoExecutivo() {
+            const totalInscritos = todosParticipantes.length;
+            const totalPresentes = todosParticipantes.filter(p => p.statusPresenca === 'presente').length;
+            const taxaComparecimento = totalInscritos > 0 ? Math.round((totalPresentes / totalInscritos) * 100) : 0;
+
+            const totalPagos = todosParticipantes.filter(p => p.statusPagamento === 'pago').length;
+            const taxaPagamento = totalInscritos > 0 ? Math.round((totalPagos / totalInscritos) * 100) : 0;
+
+            const valorRecebido = todosParticipantes
+                .filter(p => p.statusPagamento === 'pago')
+                .reduce((total, p) => total + (parseFloat(p.valorPago) || 30), 0);
+
+            // Igreja com mais participantes
+            const igrejas = {};
+            todosParticipantes.forEach(p => {
+                const igreja = p.igreja || 'Não informado';
+                igrejas[igreja] = (igrejas[igreja] || 0) + 1;
+            });
+            const igrejaMaisParticipantes = Object.entries(igrejas)
+                .sort(([, a], [, b]) => b - a)[0];
+
+            const saldoFinalTexto = document.getElementById('saldoFinal').textContent;
+            const totalReceitaTexto = document.getElementById('totalReceita').textContent;
+            const totalCustosTexto = document.getElementById('totalCustos').textContent;
+
+            const resumoHTML = `
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h6 class="text-uppercase text-muted font-weight-bold mb-3"><i class="bi bi-bar-chart-fill mr-2"></i>Indicadores Principais</h6>
+                        <ul class="list-group list-group-flush shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-people text-primary mr-2"></i>Total de Inscrições</div>
+                                <span class="badge badge-primary badge-pill" style="font-size: 0.9rem;">${totalInscritos}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-check2-circle text-success mr-2"></i>Comparecimento</div>
+                                <span class="badge badge-success badge-pill" style="font-size: 0.9rem;">${taxaComparecimento}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-cash-coin text-warning mr-2"></i>Taxa de Pagamento</div>
+                                <span class="badge badge-warning badge-pill text-dark" style="font-size: 0.9rem;">${taxaPagamento}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-currency-dollar text-info mr-2"></i>Arrecadação de Insc.</div>
+                                <span class="badge badge-info badge-pill" style="font-size: 0.9rem;">R$ ${formatarMoeda(valorRecebido)}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <h6 class="text-uppercase text-muted font-weight-bold mb-3"><i class="bi bi-star-fill mr-2 text-warning"></i>Destaques</h6>
+                        <ul class="list-group list-group-flush shadow-sm" style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-building text-secondary mr-2"></i>Igreja Principal</div>
+                                <span class="font-weight-bold text-dark text-right" style="font-size: 0.9rem;">${igrejaMaisParticipantes ? igrejaMaisParticipantes[0] : 'N/A'}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-credit-card text-secondary mr-2"></i>Pagamento</div>
+                                <span class="font-weight-bold text-dark text-right" style="font-size: 0.9rem;">${obterFormaPagamentoMaisUsada()}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-person-badge text-secondary mr-2"></i>Faixa Etária</div>
+                                <span class="font-weight-bold text-dark text-right" style="font-size: 0.9rem;">${obterFaixaEtariaPredominante()}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center py-3">
+                                <div><i class="bi bi-activity text-secondary mr-2"></i>Status Evento</div>
+                                <span class="badge ${taxaComparecimento >= 80 ? 'badge-success' : taxaComparecimento >= 60 ? 'badge-warning text-dark' : 'badge-danger'} badge-pill" style="font-size: 0.9rem;">
+                                    ${taxaComparecimento >= 80 ? 'Excelente' : taxaComparecimento >= 60 ? 'Boa' : 'Regular'}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-12">
+                        <div class="alert alert-info shadow-sm d-flex align-items-center" style="border-radius: 12px; border: none; border-left: 5px solid #17a2b8; background-color: #f8f9fa;">
+                            <i class="bi bi-info-circle-fill mr-3" style="font-size: 2rem; color: #17a2b8;"></i>
+                            <div>
+                                <h6 class="alert-heading font-weight-bold mb-1 text-dark">Observações do Sistema</h6>
+                                <p class="mb-0 text-muted" style="font-size: 0.95rem;">
+                                    ${gerarObservacoes(taxaComparecimento, taxaPagamento)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resumoExecutivo').innerHTML = resumoHTML;
+        }
+
+        // Funções auxiliares
+        function calcularIdade(dataNascimento) {
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento);
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mes = hoje.getMonth() - nascimento.getMonth();
+
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+
+            return idade;
+        }
+
+        function formatarData(dataString) {
+            if (!dataString) return '-';
+            try {
+                const data = new Date(dataString);
+                return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        function formatarFormaPagamento(forma) {
+            switch (forma) {
+                case 'pix': return 'PIX';
+                case 'cartao': return 'Cartão';
+                case 'dinheiro': return 'Dinheiro';
+                default: return forma;
+            }
+        }
+
+        function obterFormaPagamentoMaisUsada() {
+            const formas = {};
+            todosParticipantes.forEach(p => {
+                if (p.statusPagamento === 'pago' && p.formaPagamento) {
+                    formas[p.formaPagamento] = (formas[p.formaPagamento] || 0) + 1;
+                }
+            });
+
+            const formaMaisUsada = Object.entries(formas)
+                .sort(([, a], [, b]) => b - a)[0];
+
+            return formaMaisUsada ? formatarFormaPagamento(formaMaisUsada[0]) + ' (' + formaMaisUsada[1] + ' usos)' : 'N/A';
+        }
+
+        function obterFaixaEtariaPredominante() {
+            const faixas = {
+                '12-17': 0, '18-25': 0, '26-35': 0, '36-45': 0, '46-55': 0, '56+': 0
+            };
+
+            todosParticipantes.forEach(p => {
+                if (p.dtnasc) {
+                    const idade = calcularIdade(p.dtnasc);
+                    if (idade >= 12 && idade <= 17) faixas['12-17']++;
+                    else if (idade >= 18 && idade <= 25) faixas['18-25']++;
+                    else if (idade >= 26 && idade <= 35) faixas['26-35']++;
+                    else if (idade >= 36 && idade <= 45) faixas['36-45']++;
+                    else if (idade >= 46 && idade <= 55) faixas['46-55']++;
+                    else if (idade >= 56) faixas['56+']++;
+                }
+            });
+
+            const faixaPredominante = Object.entries(faixas)
+                .sort(([, a], [, b]) => b - a)[0];
+
+            return faixaPredominante ? faixaPredominante[0] + ' anos (' + faixaPredominante[1] + ' participantes)' : 'N/A';
+        }
+
+        function gerarObservacoes(taxaComparecimento, taxaPagamento) {
+            let observacoes = [];
+
+            if (taxaComparecimento >= 90) {
+                observacoes.push("Excelente taxa de comparecimento, demonstrando alto engajamento dos participantes.");
+            } else if (taxaComparecimento >= 70) {
+                observacoes.push("Boa taxa de comparecimento, dentro do esperado para eventos deste tipo.");
+            } else if (taxaComparecimento < 60) {
+                observacoes.push("Taxa de comparecimento abaixo do ideal. Considerar estratégias para melhorar a presença em eventos futuros.");
+            }
+
+            if (taxaPagamento >= 95) {
+                observacoes.push("Excelente controle financeiro com quase todos os pagamentos confirmados.");
+            } else if (taxaPagamento < 80) {
+                observacoes.push("Há pendências financeiras que precisam ser acompanhadas.");
+            }
+
+            const totalAusentes = todosParticipantes.length - todosParticipantes.filter(p => p.statusPresenca === 'presente').length;
+            if (totalAusentes > 0) {
+                observacoes.push(`${totalAusentes} participantes não compareceram ao evento.`);
+            }
+
+            return observacoes.join(' ') || 'Evento realizado com sucesso!';
+        }
+
+        // Funções de exportação
+        function exportarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Configurações
+            doc.setFontSize(16);
+            doc.text('Relatório Pós-Evento - ComRoca 2026', 20, 20);
+
+            doc.setFontSize(12);
+            let yPosition = 40;
+
+            // Estatísticas gerais
+            doc.text('ESTATÍSTICAS GERAIS:', 20, yPosition);
+            yPosition += 10;
+            doc.text(`Total de Inscritos: ${document.getElementById('totalInscritos').textContent}`, 30, yPosition);
+            yPosition += 7;
+            doc.text(`Participantes Confirmados: ${document.getElementById('totalPresentes').textContent}`, 30, yPosition);
+            yPosition += 7;
+            doc.text(`Taxa de Comparecimento: ${document.getElementById('taxaComparecimento').textContent}`, 30, yPosition);
+            yPosition += 7;
+            doc.text(`Não Compareceram: ${document.getElementById('totalAusentes').textContent}`, 30, yPosition);
+
+            yPosition += 20;
+
+            // Estatísticas financeiras
+            doc.text('ESTATÍSTICAS FINANCEIRAS:', 20, yPosition);
+            yPosition += 10;
+            doc.text(`Total Arrecadado: R$ ${document.getElementById('totalArrecadado').textContent}`, 30, yPosition);
+            yPosition += 7;
+            doc.text(`Valor Recebido: R$ ${document.getElementById('valorRecebido').textContent}`, 30, yPosition);
+            yPosition += 7;
+            doc.text(`Valor Pendente: R$ ${document.getElementById('valorPendente').textContent}`, 30, yPosition);
+
+            // Salvar PDF
+            doc.save('relatorio-pos-evento-comroca-2026.pdf');
+        }
+
+        function exportarExcel() {
+            // Preparar dados para exportação
+            const dadosExportacao = todosParticipantes.map(p => ({
+                'Nome': p.nome || '',
+                'Igreja': p.igreja || '',
+                'Supervisor': p.supervisor || '',
+                'Célula': p.celula || '',
+                'Idade': p.idade || '',
+                'Data Nascimento': p.dtnasc || '',
+                'Celular': p.celular || '',
+                'Status Pagamento': p.statusPagamento || '',
+                'Forma Pagamento': p.formaPagamento || '',
+                'Valor Pago': p.valorPago || '',
+                'Data Pagamento': p.dataPagamento || '',
+                'Status Presença': p.statusPresenca || '',
+                'Data Check-in': p.dataCheckin || '',
+                'Data Preenchimento': p.dataPreenchimento || '',
+                'Observações Presença': p.observacoesPresenca || ''
+            }));
+
+            // Criar workbook
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(dadosExportacao);
+
+            // Adicionar worksheet ao workbook
+            XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+
+            // Criar sheet de resumo
+            const resumo = [
+                ['RELATÓRIO PÓS-EVENTO - COMROCA 2026'],
+                [''],
+                ['ESTATÍSTICAS GERAIS'],
+                ['Total de Inscritos', document.getElementById('totalInscritos').textContent],
+                ['Participantes Confirmados', document.getElementById('totalPresentes').textContent],
+                ['Taxa de Comparecimento', document.getElementById('taxaComparecimento').textContent],
+                ['Não Compareceram', document.getElementById('totalAusentes').textContent],
+                [''],
+                ['ESTATÍSTICAS FINANCEIRAS'],
+                ['Total Arrecadado', 'R$ ' + formatarMoeda(totalArrecadado)],
+                ['Valor Recebido', 'R$ ' + formatarMoeda(valorRecebido)],
+                ['Valor Pendente', 'R$ ' + formatarMoeda(valorPendente)]
+            ];
+
+            const wsResumo = XLSX.utils.aoa_to_sheet(resumo);
+            XLSX.utils.book_append_sheet(wb, wsResumo, "Resumo");
+
+            // Salvar arquivo
+            XLSX.writeFile(wb, 'relatorio-completo-comroca-2026.xlsx');
+        }
+
+        // Atualizar dados a cada 5 minutos (opcional, para dados em tempo real)
+        setInterval(function () {
+            carregarDadosCompletos();
+        }, 300000); // 5 minutos
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check-in - ComRoça 2026</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+            background-color: #f4f7f6;
+        }
+
+        /* Viewfinder Scanner Estilizado */
+        .scanner-card {
+            border-radius: 24px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .viewfinder-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            background-color: #000;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        #reader {
+            width: 100%;
+            border: none !important;
+        }
+
+        /* Linha de Scanner Animada Laser */
+        .laser-line {
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #28a745, transparent);
+            box-shadow: 0 0 12px #28a745, 0 0 20px #28a745;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            animation: scanAnimation 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scanAnimation {
+            0% {
+                top: 0%;
+            }
+
+            50% {
+                top: 100%;
+            }
+
+            100% {
+                top: 0%;
+            }
+        }
+
+        /* Painel de Resultados */
+        .result-panel {
+            border-radius: 24px;
+            min-height: 400px;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* Estados do Painel */
+        .state-waiting {
+            background: #ffffff;
+            border: 2px dashed rgba(40, 167, 69, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .state-success {
+            background: #eafaf1;
+            border: 2px solid #28a745;
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.15);
+            animation: pulseSuccess 2s infinite alternate;
+        }
+
+        .state-pending {
+            background: #fffdf0;
+            border: 2px solid #ffc107;
+            box-shadow: 0 15px 35px rgba(255, 193, 7, 0.15);
+            animation: pulsePending 2s infinite alternate;
+        }
+
+        .state-error {
+            background: #fdf2f2;
+            border: 2px solid #dc3545;
+            box-shadow: 0 15px 35px rgba(220, 53, 69, 0.15);
+        }
+
+        @keyframes pulseSuccess {
+            0% {
+                box-shadow: 0 15px 35px rgba(40, 167, 69, 0.1);
+            }
+
+            100% {
+                box-shadow: 0 15px 45px rgba(40, 167, 69, 0.25);
+            }
+        }
+
+        @keyframes pulsePending {
+            0% {
+                box-shadow: 0 15px 35px rgba(255, 193, 7, 0.1);
+            }
+
+            100% {
+                box-shadow: 0 15px 45px rgba(255, 193, 7, 0.25);
+            }
+        }
+
+        /* Ícones dos Estados */
+        .state-icon {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .icon-waiting {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .icon-success {
+            background: #28a745;
+            color: #ffffff;
+        }
+
+        .icon-pending {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .icon-error {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+        /* Feed de Logs Recentes */
+        .log-feed-card {
+            border-radius: 20px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+        }
+
+        .log-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            transition: background-color 0.2s ease;
+        }
+
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .log-time {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #888;
+            margin-right: 12px;
+            min-width: 45px;
+        }
+
+        .log-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #eafaf1;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            margin-right: 12px;
+        }
+
+        .log-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .log-badge {
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 3px 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">Check-in</h2>
+    </div>
+
+    <div class="container mt-5">
+        <div class="row pt-2">
+            <!-- Coluna 1: Leitor e Entrada -->
+            <div class="col-lg-6 mb-4">
+                <div class="card scanner-card p-4 h-100" style="overflow: visible !important;">
+                    <h5 class="font-weight-bold mb-3 text-dark d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-camera-video-fill text-success mr-2"></i> Leitor da Portaria</span>
+                        <span class="badge badge-secondary px-3 py-1 font-weight-bold" id="cameraStatusBadge"
+                            style="border-radius: 12px; font-size: 11px; transition: all 0.3s ease;"><i
+                                class="bi bi-circle-fill mr-1 text-white"
+                                style="font-size: 6px; vertical-align: middle;"></i> Leitor Inativo</span>
+                    </h5>
+
+                    <!-- Viewfinder -->
+                    <div class="viewfinder-wrapper">
+                        <div class="laser-line" style="display: none;"></div>
+                        <div id="reader"
+                            style="width: 100%; min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #1a1a1a;">
+                            <div id="cameraPlaceholder" class="text-center p-4">
+                                <i class="bi bi-camera-fill text-muted mb-2"
+                                    style="font-size: 3rem; color: #6c757d !important; display: block;"></i>
+                                <h6 class="text-white font-weight-bold mb-1">Leitor Desativado</h6>
+                                <p class="text-muted small px-3 mb-3">Ative a câmera para escanear ingressos via QR Code
+                                    na portaria.</p>
+                                <button type="button" class="btn btn-success font-weight-bold px-4 shadow-sm"
+                                    id="btnAtivarCamera"
+                                    style="border-radius: 12px; background: linear-gradient(135deg, #198754, #28a745); border: none; height: 45px;">
+                                    <i class="bi bi-play-fill mr-1"></i> Iniciar Câmera
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2 mb-0" style="position: relative;">
+                        <label for="manualQrInput" class="text-muted font-weight-bold mb-1">
+                            <i class="bi bi-keyboard mr-1"></i> Digitar ID ou Nome Completo (Manual)
+                        </label>
+                        <div class="input-group shadow-sm"
+                            style="border-radius: 12px; overflow: hidden; border: 1px solid #ced4da;">
+                            <input type="text" class="form-control border-0" id="manualQrInput"
+                                placeholder="Insira o ID ou Nome para Check-in expresso..."
+                                style="height: 46px; font-weight: 600;" autocomplete="off">
+                            <div class="input-group-append">
+                                <button class="btn btn-success px-4" type="button" id="btnConfirmarManualQr"
+                                    style="background: linear-gradient(135deg, #198754, #28a745); border: none; font-weight: bold;">Validar</button>
+                            </div>
+                        </div>
+                        <!-- Autocomplete Suggestions List -->
+                        <div id="autocompleteResults" class="list-group shadow"
+                            style="position: absolute; width: 100%; z-index: 1050; max-height: 250px; overflow-y: auto; display: none; margin-top: 5px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.15); background-color: #ffffff;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coluna 2: Histórico de Entradas -->
+            <div class="col-lg-6 mb-4">
+                <div class="d-flex flex-column h-100">
+                    <!-- Logs Recentes -->
+                    <div class="card log-feed-card p-4 flex-grow-1">
+                        <h6 class="font-weight-bold text-dark mb-3"><i
+                                class="bi bi-clock-history mr-2 text-success"></i> Entradas Recentes na Sessão</h6>
+                        <div id="recentLogsList" style="min-height: 350px;">
+                            <div class="text-center py-5 text-muted" id="noLogsPlaceholder" style="font-size: 0.9rem;">
+                                Nenhuma entrada validada nesta sessão ainda.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Feedback de Validação (Sucesso, Pendente, Erro) -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0"
+                style="border-radius: 24px; overflow: hidden; position: relative;">
+                <!-- Botão de Fechar Absoluto -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"
+                    style="position: absolute; right: 20px; top: 15px; z-index: 1100; font-size: 2rem; color: #333; opacity: 0.5; outline: none; border: none; background: none;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body p-0">
+                    <div id="resultPanel" class="result-panel state-waiting"
+                        style="min-height: 380px; border: none; border-radius: 0;">
+                        <div class="d-flex flex-column align-items-center" id="panelContent">
+                            <div class="state-icon icon-waiting">
+                                <i class="bi bi-qr-code-scan"></i>
+                            </div>
+                            <h4 class="font-weight-bold text-dark mb-2">Aguardando Ingresso...</h4>
+                            <p class="text-muted mb-0" style="max-width: 320px;">Aponte o QR Code do ingresso do
+                                participante para a câmera ou utilize a busca manual rápida acima.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Pagamento Rápido e Presença -->
+    <div class="modal fade" id="pagamentoRapidoModal" tabindex="-1" role="dialog"
+        aria-labelledby="pagamentoRapidoModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header bg-warning text-dark p-4 border-0"
+                    style="background: linear-gradient(135deg, #ffc107, #ffca2c) !important;">
+                    <h5 class="modal-title font-weight-bold" id="pagamentoRapidoModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill mr-2 text-danger"></i> Pagamento Pendente!
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"
+                        id="btnFecharPagamentoRapido">
+                        <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="alert alert-warning border-0 p-3 mb-4 shadow-sm"
+                        style="border-radius: 12px; background-color: #fff3cd; color: #664d03;">
+                        <i class="bi bi-info-circle-fill mr-2"></i>
+                        Este participante está com o pagamento pendente. Confirme o pagamento para liberar o check-in e
+                        a presença no evento.
+                    </div>
+
+                    <form id="pagamentoRapidoForm">
+                        <input type="hidden" id="pagRapidoParticipanteId">
+
+                        <div class="form-group mb-3">
+                            <label class="text-muted font-weight-bold mb-1">Participante</label>
+                            <input type="text" class="form-control border-0 shadow-sm font-weight-bold"
+                                id="pagRapidoNome" readonly
+                                style="border-radius: 10px; height: 45px; background-color: #e9ecef;">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="pagRapidoValor" class="text-muted font-weight-bold mb-1">Valor da Inscrição
+                                    (R$)</label>
+                                <input type="text" class="form-control border-0 shadow-sm" id="pagRapidoValor"
+                                    value="30,00" style="border-radius: 10px; height: 45px;">
+                            </div>
+
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="pagRapidoMetodo" class="text-muted font-weight-bold mb-1">Método de
+                                    Pagamento</label>
+                                <select class="form-control border-0 shadow-sm" id="pagRapidoMetodo" required
+                                    style="border-radius: 10px; height: 45px;">
+                                    <option value="pix" selected>PIX</option>
+                                    <option value="cartao">Cartão</option>
+                                    <option value="dinheiro">Dinheiro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal"
+                        style="border-radius: 12px; font-weight: 600;">Cancelar</button>
+                    <button type="button" class="btn btn-success px-4 shadow-sm" id="btnSalvarPagamentoRapido"
+                        style="border-radius: 12px; font-weight: bold; background: linear-gradient(135deg, #198754, #28a745); border: none;">
+                        <i class="bi bi-check-circle-fill mr-1"></i> Confirmar Pago & Entrada
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts Básicos -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Biblioteca HTML5-QRCode -->
+    <script src="html5-qrcode.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+        // Variáveis globais
+        let todosParticipantes = [];
+        let html5QrCode = null;
+        let scannerIniciado = false;
+        let logsSessao = []; // Logs na sessão do navegador
+
+        // Contexto de Áudio para o bip
+        let audioCtx = null;
+
+        $(document).ready(function () {
+            // Inicializar contexto de áudio
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch (e) {
+                console.error("AudioContext não suportado.");
+            }
+
+            // Carregar dados de participantes inscritos
+            carregarParticipantes();
+
+            // Iniciar escuta dos últimos 10 checkins realizados
+            iniciarEscutaEntradasRecentes();
+
+            // Ativar a câmera ao clicar no botão de ativação
+            $(document).on('click', '#btnAtivarCamera', function () {
+                // Tentar reativar o contexto de áudio sob gesto do usuário
+                if (audioCtx && audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                iniciarScanner();
+            });
+
+            // Ouvir tecla Enter no input manual
+            $('#manualQrInput').on('keypress', function (e) {
+                if (e.which === 13) {
+                    $('#btnConfirmarManualQr').click();
+                }
+            });
+
+            // Clique no validar manual
+            $('#btnConfirmarManualQr').on('click', function () {
+                const manualVal = $('#manualQrInput').val().trim();
+                if (manualVal) {
+                    processarQRCodeScanned(manualVal);
+                    $('#manualQrInput').val('');
+                } else {
+                    mostrarFeedbackError("Por favor, digite um nome ou ID válido.");
+                }
+            });
+
+            // Evento do botão de pagamento expresso
+            $('#btnSalvarPagamentoRapido').on('click', salvarPagamentoRapido);
+
+            // Garantir que reative a leitura após fechar o modal
+            $('#feedbackModal, #pagamentoRapidoModal, #btnFecharPagamentoRapido').on('hidden.bs.modal', function () {
+                restaurarPainelEspera();
+                processandoCheckin = false;
+            });
+
+            // Formatar valor do pagamento expresso como moeda em tempo real
+            $('#pagRapidoValor').on('input', function (e) {
+                let valor = e.target.value;
+                valor = valor.replace(/\D/g, "");
+
+                if (valor === "") {
+                    e.target.value = "";
+                    return;
+                }
+
+                valor = parseInt(valor, 10).toString();
+
+                if (valor === "NaN") {
+                    e.target.value = "";
+                    return;
+                }
+
+                while (valor.length < 3) {
+                    valor = "0" + valor;
+                }
+
+                valor = valor.replace(/(\d+)(\d{2})$/, "$1,$2");
+                valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                e.target.value = valor;
+            });
+
+            // Autocomplete para busca manual a partir de 3 letras
+            $('#manualQrInput').on('input', function () {
+                const termo = $(this).val().trim().toLowerCase();
+                const autocompleteBox = $('#autocompleteResults');
+
+                if (termo.length >= 3) {
+                    // Filtrar participantes locally (protegendo contra nomes vazios ou nulos)
+                    const matches = todosParticipantes.filter(p => p && p.nome && typeof p.nome === 'string' && p.nome.toLowerCase().includes(termo));
+                    autocompleteBox.empty();
+
+                    if (matches.length > 0) {
+                        matches.forEach(p => {
+                            const tel = formatarTelefone(p.telefone || p.celular || '');
+                            let badgeHtml = '';
+                            if (p.statusPresenca === 'presente') {
+                                badgeHtml = '<span class="badge badge-success px-2 py-1" style="border-radius: 8px;">Presente</span>';
+                            } else if (p.statusPagamento === 'pago') {
+                                badgeHtml = '<span class="badge badge-info px-2 py-1" style="border-radius: 8px; background-color: #17a2b8; color: white;">Liberado</span>';
+                            } else {
+                                badgeHtml = '<span class="badge badge-warning px-2 py-1 text-dark" style="border-radius: 8px; background-color: #ffc107;">Pendente</span>';
+                            }
+
+                            const item = $(`
+                                <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" style="font-weight: 600; padding: 12px 15px; font-size: 0.9rem; border: none; border-bottom: 1px solid rgba(0,0,0,0.05); background-color: #ffffff;">
+                                    <div>
+                                        <span class="text-dark d-block">${p.nome}</span>
+                                        <span class="text-muted small" style="font-size: 0.8rem;">${tel ? tel : 'Sem telefone'} ${p.idade ? '• ' + p.idade + ' anos' : ''}</span>
+                                    </div>
+                                    <div>
+                                        ${badgeHtml}
+                                    </div>
+                                </a>
+                            `);
+
+                            item.on('click', function (e) {
+                                e.preventDefault();
+                                $('#manualQrInput').val('');
+                                autocompleteBox.hide();
+                                processandoCheckin = true; // Bloquear scanner durante visualização
+                                processarCheckIn(p);
+                            });
+
+                            autocompleteBox.append(item);
+                        });
+                        autocompleteBox.show();
+                    } else {
+                        autocompleteBox.html('<div class="list-group-item text-muted text-center py-3 small" style="border: none; background-color: #ffffff;">Nenhum participante encontrado</div>');
+                        autocompleteBox.show();
+                    }
+                } else {
+                    autocompleteBox.hide();
+                }
+            });
+
+            // Ocultar autocomplete ao clicar fora
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#manualQrInput, #autocompleteResults').length) {
+                    $('#autocompleteResults').hide();
+                }
+            });
+
+            // Fechar com ESC
+            $(document).on('keydown', function (e) {
+                if (e.key === "Escape") {
+                    $('#autocompleteResults').hide();
+                }
+            });
+        });
+
+        // Salvar e atualizar o cache local no localStorage
+        function atualizarCacheLocalStorage() {
+            try {
+                localStorage.setItem('comroca_participantes_data', JSON.stringify(todosParticipantes));
+                // Mantém o timestamp original ou usa o atual se for nova sincronização
+            } catch (e) {
+                console.error("Erro ao salvar cache no localStorage:", e);
+            }
+        }
+
+        // Buscar todos os participantes com cache no localStorage de 30 segundos
+        function carregarParticipantes() {
+            const CACHE_KEY = 'comroca_participantes_data';
+            const TIMESTAMP_KEY = 'comroca_participantes_timestamp';
+            const CACHE_DURATION_MS = 30000; // 30 segundos
+
+            const cachedData = localStorage.getItem(CACHE_KEY);
+            const cachedTimestamp = localStorage.getItem(TIMESTAMP_KEY);
+            const agora = Date.now();
+
+            // Tentar ler cache local primeiro
+            if (cachedData) {
+                try {
+                    todosParticipantes = JSON.parse(cachedData);
+                    console.log(`Carregados ${todosParticipantes.length} participantes do cache do localStorage.`);
+                    atualizarEntradasRecentesLocalmente();
+                } catch (e) {
+                    console.error("Erro ao analisar cache do localStorage:", e);
+                }
+            }
+
+            // Se o cache ainda estiver válido e tivermos dados carregados, podemos pular a busca no Firebase temporariamente
+            if (todosParticipantes.length > 0 && cachedTimestamp && (agora - parseInt(cachedTimestamp, 10) < CACHE_DURATION_MS)) {
+                return;
+            }
+
+            // Verificar se o Firebase Firestore está disponível
+            if (typeof db === 'undefined') {
+                console.warn("Firebase Firestore (db) não está disponível. Usando apenas dados locais do cache.");
+                return;
+            }
+
+            try {
+                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                    .where("anoevento", "==", "2026")
+                    .get()
+                    .then((querySnapshot) => {
+                        todosParticipantes = [];
+                        querySnapshot.forEach((doc) => {
+                            const participante = doc.data();
+                            participante.id = doc.id;
+                            todosParticipantes.push(participante);
+                        });
+                        console.log(`${todosParticipantes.length} participantes carregados do Firestore.`);
+
+                        // Salvar no localStorage com o timestamp atual
+                        localStorage.setItem(CACHE_KEY, JSON.stringify(todosParticipantes));
+                        localStorage.setItem(TIMESTAMP_KEY, agora.toString());
+
+                        atualizarEntradasRecentesLocalmente();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar participantes do Firestore:", error);
+                    });
+            } catch (error) {
+                console.error("Exceção ao carregar participantes do Firestore:", error);
+            }
+        }
+
+        // Sistema de Câmera Scanner com ativação robusta e direta
+        function iniciarScanner() {
+            if (scannerIniciado) return;
+
+            if (typeof Html5Qrcode === 'undefined') {
+                tratarErroCamera("Biblioteca QR Code (Html5Qrcode) não foi carregada. Verifique sua conexão com a internet.");
+                return;
+            }
+
+            // Limpar placeholder do leitor antes de inicializar o vídeo
+            $('#reader').html('');
+            $('.laser-line').show(); // Exibir linha laser de varredura
+
+            try {
+                html5QrCode = new Html5Qrcode("reader");
+                
+                // Mudar o badge para Carregando/Ativa
+                $('#cameraStatusBadge')
+                    .removeClass('badge-secondary badge-danger')
+                    .addClass('badge-success')
+                    .html('<i class="bi bi-circle-fill mr-1 text-white" style="font-size: 6px; vertical-align: middle;"></i> Iniciando Câmera...');
+
+                // Iniciar diretamente usando a câmera traseira (facingMode: environment)
+                html5QrCode.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 12,
+                        qrbox: function (width, height) {
+                            const min = Math.min(width, height);
+                            const boxSize = Math.floor(min * 0.7);
+                            return { width: boxSize, height: boxSize };
+                        }
+                    },
+                    (decodedText, decodedResult) => {
+                        // QR Code Detectado!
+                        processarQRCodeScanned(decodedText);
+                    },
+                    (errorMessage) => {
+                        // Frame error normal
+                    }
+                ).then(() => {
+                    scannerIniciado = true;
+                    
+                    $('#cameraStatusBadge')
+                        .removeClass('badge-secondary badge-danger')
+                        .addClass('badge-success')
+                        .html('<i class="bi bi-circle-fill mr-1 text-white" style="font-size: 6px; vertical-align: middle;"></i> Câmera Ativa');
+                }).catch(err => {
+                    console.error("Erro ao iniciar câmera html5-qrcode diretamente:", err);
+                    
+                    // Caso falhe com facingMode environment (por exemplo, em computadores que só têm webcam frontal),
+                    // tentamos de forma automática usar qualquer câmera padrão disponível
+                    console.log("Tentando iniciar qualquer câmera padrão como fallback...");
+                    html5QrCode.start(
+                        { facingMode: "user" },
+                        {
+                            fps: 12,
+                            qrbox: function (width, height) {
+                                const min = Math.min(width, height);
+                                const boxSize = Math.floor(min * 0.7);
+                                return { width: boxSize, height: boxSize };
+                            }
+                        },
+                        (decodedText, decodedResult) => {
+                            processarQRCodeScanned(decodedText);
+                        },
+                        (errorMessage) => {}
+                    ).then(() => {
+                        scannerIniciado = true;
+                        $('#cameraStatusBadge')
+                            .removeClass('badge-secondary badge-danger')
+                            .addClass('badge-success')
+                            .html('<i class="bi bi-circle-fill mr-1 text-white" style="font-size: 6px; vertical-align: middle;"></i> Câmera Ativa');
+                    }).catch(fallbackErr => {
+                        console.error("Erro no fallback da câmera:", fallbackErr);
+                        tratarErroCamera("Permissão negada ou restrição do navegador para este site.");
+                    });
+                });
+            } catch (err) {
+                console.error("Erro síncrono ao acessar câmeras:", err);
+                tratarErroCamera("O navegador ou dispositivo não suporta acesso à câmera.");
+            }
+        }
+
+        function tratarErroCamera(detalhe) {
+            $('#cameraStatusBadge')
+                .removeClass('badge-secondary badge-success')
+                .addClass('badge-danger')
+                .html('<i class="bi bi-x-circle-fill mr-1" style="vertical-align: middle;"></i> Erro Câmera');
+
+            $('.laser-line').hide();
+
+            let mensagemAjuda = "Verifique se a permissão foi negada no seu navegador. Clique no ícone de cadeado ou câmera na barra de endereço (lado esquerdo da URL) e mude a permissão de câmera para 'Permitir'.";
+            
+            // Verificar protocolo/contexto seguro
+            if (location.protocol === 'file:') {
+                mensagemAjuda = "Você abriu o arquivo HTML diretamente (protocolo <strong>file://</strong>). Os navegadores bloqueiam o acesso à câmera por segurança em arquivos locais. <strong>Para testar a câmera, você precisa rodar a página através de um servidor local (ex: usar a extensão 'Live Server' no VS Code ou subir um servidor local) e acessar via http://localhost</strong>.";
+            } else if (window.isSecureContext === false) {
+                mensagemAjuda = "O navegador bloqueou o acesso à câmera porque a conexão não é segura (HTTP). <strong>A câmera só funciona em conexões seguras HTTPS ou através do endereço 'http://localhost'</strong>.";
+            }
+
+            $('#reader').html(`
+                <div id="cameraPlaceholder" class="text-center p-4">
+                    <i class="bi bi-exclamation-triangle-fill text-danger mb-2" style="font-size: 3rem;"></i>
+                    <h6 class="text-white font-weight-bold mb-1">Acesso Bloqueado ou Não Suportado</h6>
+                    <p class="text-white small px-3 mb-2" style="font-size: 0.9rem; font-weight: 500;">Detalhe do erro: ${detalhe}</p>
+                    <p class="text-muted small px-3 mb-3" style="font-size: 0.85rem; line-height: 1.4;">${mensagemAjuda}</p>
+                    <button type="button" class="btn btn-outline-danger font-weight-bold px-4" id="btnAtivarCamera" style="border-radius: 12px; height: 45px;">
+                        <i class="bi bi-arrow-clockwise mr-1"></i> Tentar Novamente
+                    </button>
+                </div>
+            `);
+        }
+
+        // Processamento de QR
+        let processandoCheckin = false;
+
+        function processarQRCodeScanned(scannedText) {
+            // Se já estiver processando ou se algum modal estiver aberto, ignorar frames subsequentes
+            if (processandoCheckin || $('.modal.show').length > 0) {
+                return;
+            }
+
+            console.log("Portaria escaneou:", scannedText);
+
+            if (!scannedText) return;
+
+            processandoCheckin = true;
+
+            try {
+                // Feedback tátil e sonoro imediatamente
+                emitirFeedbackNotificacao();
+
+                // 1. Antigo formato: "Nome - Celular"
+                if (scannedText.includes(' - ')) {
+                    const partes = scannedText.split(' - ');
+                    const nome = partes[0].trim();
+
+                    // Buscar local primeiro (protegendo contra nomes vazios ou nulos)
+                    let pLocal = todosParticipantes.find(p => p && p.nome && typeof p.nome === 'string' && p.nome.toLowerCase() === nome.toLowerCase());
+                    if (pLocal) {
+                        processarCheckIn(pLocal);
+                    } else {
+                        // Firestore
+                        db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                            .where("anoevento", "==", "2026")
+                            .where("nome", "==", nome)
+                            .get()
+                            .then(snapshot => {
+                                if (!snapshot.empty) {
+                                    const doc = snapshot.docs[0];
+                                    const part = doc.data();
+                                    part.id = doc.id;
+                                    processarCheckIn(part);
+                                } else {
+                                    mostrarFeedbackError(`Participante "${nome}" não cadastrado.`);
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                mostrarFeedbackError("Erro ao buscar no banco de dados.");
+                            });
+                    }
+                } else {
+                    // 2. Novo formato: ID único do Firestore
+                    const id = scannedText.trim();
+
+                    let pLocal = todosParticipantes.find(p => p.id === id);
+                    if (pLocal) {
+                        processarCheckIn(pLocal);
+                    } else {
+                        // Firestore por ID
+                        db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(id).get()
+                            .then(doc => {
+                                if (doc.exists) {
+                                    const part = doc.data();
+                                    part.id = doc.id;
+                                    processarCheckIn(part);
+                                } else {
+                                    // Tentar busca parcial por nome na lista local
+                                    buscarPorNomeParcialLocal(id);
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                // Fallback busca parcial local
+                                buscarPorNomeParcialLocal(id);
+                            });
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao processar scan do QR code:", err);
+                mostrarFeedbackError("Erro interno no processamento do scan.");
+                processandoCheckin = false;
+            }
+        }
+
+        function buscarPorNomeParcialLocal(termo) {
+            const termoLC = termo.toLowerCase();
+            const pLocal = todosParticipantes.find(p => p && p.nome && typeof p.nome === 'string' && p.nome.toLowerCase().includes(termoLC));
+            if (pLocal) {
+                processarCheckIn(pLocal);
+            } else {
+                mostrarFeedbackError(`Ingresso ou ID "${termo}" não localizado.`);
+            }
+        }
+
+        // Processar Regras de Entrada
+        function processarCheckIn(participante) {
+            // Garantir local na memória
+            if (!todosParticipantes.some(p => p.id === participante.id)) {
+                todosParticipantes.push(participante);
+            }
+
+            // 1. Verificar se o check-in já foi realizado
+            if (participante.statusPresenca === 'presente') {
+                mostrarFeedbackJaRealizado(participante);
+                return;
+            }
+
+            // 2. Verificar Pagamento
+            if (participante.statusPagamento !== 'pago') {
+                mostrarFeedbackPending(participante);
+            } else {
+                // 3. Confirmar presença se pago
+                salvarPresencaPortaria(participante.id);
+            }
+        }
+
+        // Salvar Check-in no Firestore
+        function salvarPresencaPortaria(participanteId) {
+            const agora = new Date().toISOString();
+
+            // Suporte para check-in offline caso o Firebase não esteja disponível
+            if (typeof db === 'undefined') {
+                console.warn("Firebase Firestore indisponível. Salvando check-in localmente (modo Offline).");
+                const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                if (index !== -1) {
+                    todosParticipantes[index].statusPresenca = 'presente';
+                    todosParticipantes[index].dataCheckin = agora;
+                }
+
+                // Atualizar o cache local com a nova presença
+                atualizarCacheLocalStorage();
+
+                const participante = todosParticipantes[index] || { nome: 'Participante', id: participanteId, telefone: '' };
+                mostrarFeedbackSuccess(participante);
+
+                // Registrar log da sessão como offline
+                adicionarLogSessao(participante, 'Check-in (Offline)');
+                return;
+            }
+
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .update({
+                    statusPresenca: 'presente',
+                    dataCheckin: agora,
+                    dataUltimaAtualizacao: agora
+                })
+                .then(() => {
+                    // Atualizar na lista local
+                    const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                    if (index !== -1) {
+                        todosParticipantes[index].statusPresenca = 'presente';
+                        todosParticipantes[index].dataCheckin = agora;
+                    }
+
+                    // Atualizar o cache local com a nova presença
+                    atualizarCacheLocalStorage();
+
+                    const participante = todosParticipantes[index] || { nome: 'Participante', telefone: '' };
+                    mostrarFeedbackSuccess(participante);
+
+                    // Registrar log da sessão
+                    adicionarLogSessao(participante, 'Check-in');
+                })
+                .catch(err => {
+                    console.error("Erro no check-in:", err);
+                    mostrarFeedbackError("Erro ao gravar presença no sistema.");
+                });
+        }
+
+        // Feedbacks Visuais dos Painéis
+        function restaurarPainelEspera() {
+            // Oculta o modal se estiver aberto
+            $('#feedbackModal').modal('hide');
+
+            $('#resultPanel')
+                .removeClass('state-success state-pending state-error')
+                .addClass('state-waiting');
+
+            $('#panelContent').html(`
+                <div class="state-icon icon-waiting">
+                    <i class="bi bi-qr-code-scan"></i>
+                </div>
+                <h4 class="font-weight-bold text-dark mb-2">Aguardando Ingresso...</h4>
+                <p class="text-muted mb-0" style="max-width: 320px;">Aponte o QR Code do ingresso do participante para a câmera ou utilize a busca manual rápida acima.</p>
+            `);
+        }
+
+        function mostrarFeedbackSuccess(p) {
+            $('#resultPanel')
+                .removeClass('state-waiting state-pending state-error')
+                .addClass('state-success');
+
+            const tel = formatarTelefone(p.telefone || p.celular || '');
+            const idade = p.idade ? `${p.idade} anos` : '';
+
+            $('#panelContent').html(`
+                <div class="state-icon icon-success shadow-lg">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                <h3 class="font-weight-bold text-success mb-1">CHECK-IN CONFIRMADO!</h3>
+                <h5 class="font-weight-bold text-dark mb-2" style="font-size: 1.3rem;">${p.nome}</h5>
+                <div class="text-muted font-weight-bold mb-3" style="font-size: 0.9rem;">
+                    ${idade} ${idade && tel ? '•' : ''} ${tel}
+                </div>
+                <span class="badge badge-success px-4 py-2 font-weight-bold" style="border-radius: 20px; font-size: 13px;">
+                    <i class="bi bi-person-check-fill mr-1"></i> Entrada Permitida
+                </span>
+            `);
+
+            // Abre o modal de feedback
+            $('#feedbackModal').modal('show');
+
+            // Auto-ocultar após 4.5 segundos
+            setTimeout(() => {
+                if ($('#resultPanel').hasClass('state-success')) {
+                    $('#feedbackModal').modal('hide');
+                }
+            }, 4500);
+        }
+
+        function mostrarFeedbackPending(p) {
+            $('#resultPanel')
+                .removeClass('state-waiting state-success state-error')
+                .addClass('state-pending');
+
+            const tel = formatarTelefone(p.telefone || p.celular || '');
+            const idade = p.idade ? `${p.idade} anos` : '';
+
+            $('#panelContent').html(`
+                <div class="state-icon icon-pending shadow-lg">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+                <h3 class="font-weight-bold text-warning mb-1" style="color: #d39e00 !important;">PAGAMENTO PENDENTE!</h3>
+                <h5 class="font-weight-bold text-dark mb-2" style="font-size: 1.3rem;">${p.nome}</h5>
+                <div class="text-muted font-weight-bold mb-3" style="font-size: 0.9rem;">
+                    ${idade} ${idade && tel ? '•' : ''} ${tel}
+                </div>
+                <div class="mb-3">
+                    <span class="badge badge-warning px-3 py-2 font-weight-bold text-dark" style="border-radius: 20px; font-size: 11px;">
+                        <i class="bi bi-x-circle-fill mr-1 text-danger"></i> Entrada Bloqueada provisoriamente
+                    </span>
+                </div>
+                <button class="btn btn-success px-4 py-2 font-weight-bold shadow-sm" onclick="abrirPagamentoRapidoModal('${p.id}')" style="border-radius: 12px; font-size: 0.9rem; background: linear-gradient(135deg, #198754, #28a745); border: none;">
+                    <i class="bi bi-cash-coin mr-1"></i> Confirmar Pagamento Expresso
+                </button>
+            `);
+
+            // Abre o modal de feedback
+            $('#feedbackModal').modal('show');
+        }
+
+        function mostrarFeedbackError(mensagem) {
+            $('#resultPanel')
+                .removeClass('state-waiting state-success state-pending')
+                .addClass('state-error');
+
+            $('#panelContent').html(`
+                <div class="state-icon icon-error shadow-lg">
+                    <i class="bi bi-x-lg"></i>
+                </div>
+                <h3 class="font-weight-bold text-danger mb-2">ERRO NO CHECK-IN</h3>
+                <p class="text-muted font-weight-bold mb-3" style="max-width: 280px; font-size: 0.95rem;">${mensagem}</p>
+                <button class="btn btn-secondary btn-sm px-4" data-dismiss="modal" style="border-radius: 10px;">
+                    Fechar
+                </button>
+            `);
+
+            // Abre o modal de feedback
+            $('#feedbackModal').modal('show');
+
+            // Auto-ocultar após 4 segundos
+            setTimeout(() => {
+                if ($('#resultPanel').hasClass('state-error')) {
+                    $('#feedbackModal').modal('hide');
+                }
+            }, 4000);
+        }
+
+        // Bip e Vibrador
+        function emitirFeedbackNotificacao() {
+            // Vibrar
+            if (navigator.vibrate) {
+                navigator.vibrate(180);
+            }
+
+            // Som
+            if (audioCtx) {
+                try {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.type = "sine";
+                    osc.frequency.value = 920;
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.12);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+
+        function mostrarFeedbackJaRealizado(p) {
+            $('#resultPanel')
+                .removeClass('state-waiting state-success state-error')
+                .addClass('state-pending');
+
+            const tel = formatarTelefone(p.telefone || p.celular || '');
+            const idade = p.idade ? `${p.idade} anos` : '';
+            
+            let detalheCheckin = "Entrada já registrada anteriormente.";
+            if (p.dataCheckin) {
+                try {
+                    const dataObj = new Date(p.dataCheckin);
+                    const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                    detalheCheckin = `Check-in já realizado hoje às ${horaFormatada}.`;
+                } catch (e) {
+                    console.error("Erro ao formatar data de check-in:", e);
+                }
+            }
+
+            $('#panelContent').html(`
+                <div class="state-icon icon-pending shadow-lg" style="background-color: #ff9800; color: white;">
+                    <i class="bi bi-person-x-fill"></i>
+                </div>
+                <h3 class="font-weight-bold mb-1" style="color: #ff9800 !important;">JÁ REALIZADO!</h3>
+                <h5 class="font-weight-bold text-dark mb-2" style="font-size: 1.3rem;">${p.nome}</h5>
+                <div class="text-muted font-weight-bold mb-3" style="font-size: 0.9rem;">
+                    ${idade} ${idade && tel ? '•' : ''} ${tel}
+                </div>
+                <div class="alert alert-warning py-2 px-3 border-0 small font-weight-bold mb-3" style="border-radius: 12px; background-color: #fff3cd; color: #664d03; max-width: 320px; margin: 0 auto 15px auto;">
+                    <i class="bi bi-info-circle-fill mr-1"></i> ${detalheCheckin}
+                </div>
+                <span class="badge badge-warning px-4 py-2 font-weight-bold text-dark" style="border-radius: 20px; font-size: 13px; background-color: #ffc107;">
+                    <i class="bi bi-shield-exclamation mr-1"></i> Entrada Já Registrada
+                </span>
+            `);
+
+            // Abre o modal de feedback
+            $('#feedbackModal').modal('show');
+
+            // Auto-ocultar após 4 segundos
+            setTimeout(() => {
+                if ($('#resultPanel').find('h3').text().includes('JÁ REALIZADO')) {
+                    $('#feedbackModal').modal('hide');
+                }
+            }, 4000);
+        }
+
+        // Carregar os últimos 10 check-ins em tempo real do Firestore
+        function iniciarEscutaEntradasRecentes() {
+            if (typeof db === 'undefined') {
+                console.warn("Firestore indisponível. Usando logs locais de sessão.");
+                return;
+            }
+
+            try {
+                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                    .orderBy("dataCheckin", "desc")
+                    .limit(10)
+                    .onSnapshot((querySnapshot) => {
+                        const lista = [];
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            data.id = doc.id;
+                            if (data.statusPresenca === 'presente' && data.dataCheckin) {
+                                lista.push(data);
+                            }
+                        });
+
+                        renderizarEntradasRecentes(lista);
+                    }, (error) => {
+                        console.error("Erro na escuta em tempo real dos check-ins:", error);
+                        atualizarEntradasRecentesLocalmente();
+                    });
+            } catch (e) {
+                console.error("Exceção ao iniciar escuta de check-ins:", e);
+                atualizarEntradasRecentesLocalmente();
+            }
+        }
+
+        function atualizarEntradasRecentesLocalmente() {
+            const lista = todosParticipantes
+                .filter(p => p && p.statusPresenca === 'presente' && p.dataCheckin)
+                .sort((a, b) => new Date(b.dataCheckin) - new Date(a.dataCheckin))
+                .slice(0, 10);
+            renderizarEntradasRecentes(lista);
+        }
+
+        function renderizarEntradasRecentes(lista) {
+            const list = $('#recentLogsList');
+            
+            if (lista.length === 0) {
+                list.html(`
+                    <div class="text-center py-5 text-muted" id="noLogsPlaceholder" style="font-size: 0.9rem;">
+                        Nenhuma entrada validada nesta sessão ainda.
+                    </div>
+                `);
+                return;
+            }
+
+            $('#noLogsPlaceholder').remove();
+            list.html('');
+
+            lista.forEach(p => {
+                const iniciais = (p.nome || 'P').substring(0, 2).toUpperCase();
+                
+                let hora = '...';
+                if (p.dataCheckin) {
+                    try {
+                        const dataObj = new Date(p.dataCheckin);
+                        hora = dataObj.toLocaleTimeString('pt-BR', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                const item = `
+                    <div class="log-item">
+                        <div class="log-time">${hora}</div>
+                        <div class="log-avatar">${iniciais}</div>
+                        <div class="log-name">${p.nome}</div>
+                        <span class="badge badge-success log-badge bg-success text-white">
+                            Check-in ok
+                        </span>
+                    </div>
+                `;
+                list.append(item);
+            });
+        }
+
+        // Histórico de Logs da Sessão (Tela)
+        function adicionarLogSessao(participante, acao) {
+            atualizarEntradasRecentesLocalmente();
+        }
+
+        // Modal de Pagamento Rápido
+        function abrirPagamentoRapidoModal(participanteId) {
+            $('#feedbackModal').modal('hide');
+            const participante = todosParticipantes.find(p => p.id === participanteId);
+            if (!participante) {
+                mostrarFeedbackError("Erro: Participante não localizado na sessão.");
+                return;
+            }
+
+            $('#pagRapidoParticipanteId').val(participanteId);
+            $('#pagRapidoNome').val(participante.nome);
+
+            const valorInscricao = participante.valorInscricao || 30.00;
+            $('#pagRapidoValor').val(valorInscricao.toFixed(2).replace('.', ','));
+
+            $('#pagamentoRapidoModal').modal('show');
+        }
+
+        function salvarPagamentoRapido() {
+            const participanteId = $('#pagRapidoParticipanteId').val();
+            const nomeParticipante = $('#pagRapidoNome').val();
+            const formaPagamento = $('#pagRapidoMetodo').val();
+            const valorPagamento = parseFloat($('#pagRapidoValor').val().replace(/\./g, '').replace(',', '.'));
+
+            if (!participanteId) {
+                alert("Erro: Participante não identificado.");
+                return;
+            }
+
+            if (!valorPagamento || isNaN(valorPagamento) || valorPagamento <= 0) {
+                alert("Por favor, insira um valor de pagamento válido.");
+                return;
+            }
+
+            if (typeof db === 'undefined') {
+                alert("Erro: Firebase Firestore indisponível. Não é possível registrar pagamentos no modo Offline.");
+                return;
+            }
+
+            // Desabilitar botão
+            const btnSalvar = $('#btnSalvarPagamentoRapido');
+            btnSalvar.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Registrando...');
+
+            // 1. Atualizar Firestore `inscricoes`
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .update({
+                    statusPagamento: 'pago',
+                    formaPagamento: formaPagamento,
+                    dataPagamento: new Date().toISOString(),
+                    valorPago: valorPagamento
+                })
+                .then(() => {
+                    // 2. Coleção `pagamentos`
+                    return db.collection("Eventos").doc("ComRoca2026").collection("pagamentos").add({
+                        participanteId: participanteId,
+                        participanteNome: nomeParticipante,
+                        valor: valorPagamento,
+                        formaPagamento: formaPagamento,
+                        dataPagamento: new Date().toISOString(),
+                        status: 'confirmado'
+                    });
+                })
+                .then((docRef) => {
+                    // 3. Registrar no caixa do evento `caixa`
+                    return db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+                        descricao: `Inscrição - ${nomeParticipante}`,
+                        data: new Date().toISOString().substring(0, 10),
+                        valor: valorPagamento,
+                        tipo: 'entrada',
+                        categoria: 'inscricao',
+                        metodo: formaPagamento,
+                        observacao: `Pagamento expresso na Portaria - Ref: ${docRef.id}`,
+                        referenciaOrigem: 'pagamento',
+                        pagamentoId: docRef.id,
+                        participanteId: participanteId,
+                        dataCriacao: new Date().toISOString()
+                    });
+                })
+                .then(() => {
+                    // Fechar o modal
+                    $('#pagamentoRapidoModal').modal('hide');
+
+                    // Atualizar local
+                    const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                    if (index !== -1) {
+                        todosParticipantes[index].statusPagamento = 'pago';
+                        todosParticipantes[index].formaPagamento = formaPagamento;
+                        todosParticipantes[index].valorPago = valorPagamento;
+                    }
+
+                    // Atualizar o cache local com a confirmação de pagamento
+                    atualizarCacheLocalStorage();
+
+                    // Tocar som de sucesso do pagamento
+                    if (audioCtx) {
+                        try {
+                            const osc = audioCtx.createOscillator();
+                            const gain = audioCtx.createGain();
+                            osc.connect(gain);
+                            gain.connect(audioCtx.destination);
+                            osc.type = "sine";
+                            osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Ré
+                            osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // Lá
+                            gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                            osc.start();
+                            osc.stop(audioCtx.currentTime + 0.3);
+                        } catch (e) { }
+                    }
+
+                    // Logar
+                    const participante = todosParticipantes[index] || { nome: nomeParticipante, id: participanteId };
+                    adicionarLogSessao(participante, 'Pago & Ingressou');
+
+                    // 4. Confirmar presença automática no check-in
+                    salvarPresencaPortaria(participanteId);
+                })
+                .catch((error) => {
+                    console.error("Erro ao registrar pagamento rápido portaria:", error);
+                    alert("Erro ao registrar pagamento rápido. Tente novamente.");
+                })
+                .finally(() => {
+                    btnSalvar.prop('disabled', false).html('<i class="bi bi-check-circle-fill mr-1"></i> Confirmar Pago & Entrada');
+                });
+        }
+
+        // Auxiliar: Formatação do telefone
+        function formatarTelefone(telefone) {
+            if (!telefone) return '';
+            const numeros = telefone.replace(/\D/g, '');
+            if (numeros.length === 11) {
+                return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 7)}-${numeros.substring(7)}`;
+            } else if (numeros.length === 10) {
+                return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 6)}-${numeros.substring(6)}`;
+            }
+            return telefone;
+        }
+    </script>
+</body>
+
+</html>

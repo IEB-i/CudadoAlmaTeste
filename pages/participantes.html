@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Participantes</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .filter-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn-export {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            border: none;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .badge-pago {
+            background-color: #28a745;
+        }
+
+        .badge-pendente {
+            background-color: #ffc107;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-voltar .material-icons {
+            font-size: 24px;
+        }
+
+        /* Fixar o cabeçalho da tabela */
+        .dataTables_wrapper .dataTables_scroll div.dataTables_scrollHead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #fff;
+        }
+
+        /* Ajustar a área de rolagem para mostrar apenas o corpo da tabela */
+        .dataTables_wrapper .dataTables_scroll {
+            max-height: 400px;
+            /* Ajuste conforme necessário */
+        }
+
+        .dataTables_wrapper .dataTables_scrollBody {
+            max-height: 350px;
+            /* Altura máxima para o corpo da tabela */
+            overflow-y: auto;
+        }
+
+        /* Garantir que os controles de pesquisa fiquem fora da área de rolagem */
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            position: relative;
+            z-index: 20;
+            background-color: #fff;
+            padding: 5px 0;
+        }
+
+        /* Ajustar o espaçamento entre os controles e a tabela */
+        .dataTables_wrapper .dataTables_filter {
+            margin-bottom: 10px;
+        }
+
+        /* Garantir que o título da tabela fique fixo */
+        .container h3 {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 30;
+            padding: 10px 0;
+            margin-bottom: 15px;
+        }
+
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            /* Espaço adicional na parte inferior */
+        }
+
+        /* Garante que o cabeçalho e o corpo da tabela tenham a mesma largura */
+        #participantesTable thead th,
+        #participantesTable tbody td {
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        /* Melhora a aparência da tabela com rolagem */
+        #participantesTable {
+            width: 100% !important;
+            margin-bottom: 0;
+        }
+
+        .table-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            /* Importante para manter os cantos arredondados */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">PARTICIPANTES INSCRITOS</h2>
+    </div>
+
+    <div class="container mt-5">
+        <div class="section-title-wrapper mt-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title">Lista de Participantes Inscritos</h4>
+            <div class="ml-auto">
+                <button class="btn btn-export">
+                    <i class="material-icons align-middle">file_download</i> Exportar Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="filter-card">
+            <form id="filterForm" class="row">
+                <div class="form-group col-md-3">
+                    <label for="filterIgreja">Igreja</label>
+                    <select class="form-control" id="filterIgreja">
+                        <option value="">Todas</option>
+                        <option value="IEB Intermares">IEB Intermares</option>
+                        <option value="IEB Cidade Verde">IEB Cidade Verde</option>
+                        <option value="IEB Vila Feliz">IEB Vila Feliz</option>
+                        <option value="Outra">Outra Igreja</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="filterIdade">Faixa Etária</label>
+                    <select class="form-control" id="filterIdade">
+                        <option value="">Todas</option>
+                        <option value="10-12">10-12 anos</option>
+                        <option value="13-15">13-15 anos</option>
+                        <option value="16-17">16-17 anos</option>
+                        <option value="18+">18+</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="filterPagamento">Status Pagamento</label>
+                    <select class="form-control" id="filterPagamento">
+                        <option value="">Todos</option>
+                        <option value="pago">Pago</option>
+                        <option value="pendente">Pendente</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="material-icons align-middle">search</i> Filtrar
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary ml-2" id="limparFiltro">
+                        Limpar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table table-striped" id="participantesTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nome</th>
+                            <th>Idade</th>
+                            <th>Celular</th>
+                            <!-- <th>Responsável</th> -->
+                            <!-- <th>Cel. Responsável</th> -->
+                            <th>Célula</th>
+                            <th>Igreja</th>
+                            <th>Pagamento</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantesList">
+                        <!-- Os dados serão carregados dinamicamente do Firebase -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Adicionar este elemento após a tabela -->
+        <div class="row mt-3 mb-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body py-2">
+                        <strong>Total de participantes:</strong> <span id="contador-participantes">0</span>
+                        <span id="texto-filtro" class="ml-2 text-muted font-italic" style="display: none;">(filtrados de
+                            <span id="total-participantes">0</span>)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes do Participante -->
+        <div class="modal fade" id="participanteModal" tabindex="-1" role="dialog"
+            aria-labelledby="participanteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="participanteModalLabel">Detalhes do Participante</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Informações Pessoais</h6>
+                                <hr>
+                                <p><strong>Nome:</strong> <span id="modalNome"></span></p>
+                                <p><strong>Data de Nascimento:</strong> <span id="modalDtNasc"></span></p>
+                                <p><strong>Idade:</strong> <span id="modalIdade"></span></p>
+                                <p><strong>Celular:</strong> <span id="modalCelular"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Informações do Responsável</h6>
+                                <hr>
+                                <p><strong>Nome do Responsável:</strong> <span id="modalResponsavel"></span></p>
+                                <p><strong>CPF do Responsável:</strong> <span id="modalCpfResponsavel"></span></p>
+                                <p><strong>Celular do Responsável:</strong> <span id="modalCelularResp"></span></p>
+                                <div id="assinaturaContainer" style="display: none;">
+                                    <p><strong>Assinatura do Responsável:</strong></p>
+                                    <img id="modalAssinatura" src="" alt="Assinatura do Responsável"
+                                        style="max-width: 100%; border: 1px solid #ddd; margin-top: 5px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <h6>Informações Igreja</h6>
+                                <hr>
+                                <p><strong>Igreja:</strong> <span id="modalIgreja"></span></p>
+                                <p><strong>Célula:</strong> <span id="modalCelula"></span></p>
+                                <p><strong>Supervisor:</strong> <span id="modalSupervisor"></span></p>
+                                <p><strong>Rede:</strong> <span id="modalRede"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Informações Pagamento</h6>
+                                <hr>
+                                <p><strong>Status:</strong> <span id="modalStatusPagamento"></span></p>
+                                <p><strong>Data de Preenchimento:</strong> <span id="modalDataPreenchimento"></span></p>
+                                <p><strong>Data de Registro:</strong> <span id="modalDtRegistro"></span></p>
+                                <p><strong>Ano do Evento:</strong> <span id="modalAnoEvento"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger mr-auto" id="btnExcluirParticipante">
+                            <i class="material-icons align-middle">delete</i> Excluir Participante
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+
+        // Inicialização do DataTable
+        let dataTable;
+        let totalParticipantes = 0;
+
+        //Modal e gestão do doc
+        $(document).ready(function () {
+            // Carregar participantes do Firebase
+            carregarParticipantes();
+
+            // Inicializar DataTable
+            dataTable = $('#participantesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                },
+                responsive: true,
+                dom: 'Bfrti', // Removido 'p' (paginação)
+                paging: false, // Desativa a paginação
+                scrollY: '350px', // Altura fixa para a área de rolagem
+                scrollCollapse: true, // Mantém o colapso da altura
+                fixedHeader: true, // Mantém o cabeçalho fixo durante a rolagem
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: 'Exportar Excel',
+                        className: 'btn btn-export d-none',
+                        exportOptions: {
+                            columns: [0, 1, 2, 3, 4, 5]
+                        }
+                    },
+                ]
+            });
+
+            // Associar botões personalizados aos botões do DataTable
+            $('.btn-export').eq(0).on('click', function () {
+                const btn = $(this);
+                const originalText = btn.html();
+
+                btn.html('<i class="material-icons align-middle">hourglass_empty</i> Exportando...');
+                btn.prop('disabled', true);
+
+                dataTable.button(0).trigger();
+
+                setTimeout(() => {
+                    btn.html(originalText);
+                    btn.prop('disabled', false);
+                }, 2000);
+            });
+
+            $('.btn-export').eq(1).on('click', function () {
+                dataTable.button(1).trigger();
+            });
+
+            // Filtrar participantes
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                aplicarFiltros();
+            });
+
+            // Limpar filtros
+            $('#limparFiltro').on('click', function () {
+                $('#filterForm')[0].reset();
+                aplicarFiltros();
+            });
+
+            // Controlar a visibilidade do campo de forma de pagamento
+            $('#updatePagamento').on('change', function () {
+                if ($(this).val() === 'pago') {
+                    $('#divFormaPagamento').show();
+                    $('#updateFormaPagamento').prop('required', true);
+                } else {
+                    $('#divFormaPagamento').hide();
+                    $('#updateFormaPagamento').prop('required', false);
+                }
+            });
+
+            // Atualizar status de pagamento
+            $('#btnSalvarPagamento').on('click', function () {
+                const participanteId = $(this).data('id');
+                const novoStatus = $('#updatePagamento').val();
+
+                // Verificar se a forma de pagamento foi preenchida quando o status é pago
+                if (novoStatus === 'pago' && !$('#updateFormaPagamento').val()) {
+                    $('#updateFormaPagamento').addClass('is-invalid');
+                    return; // Interrompe a execução se o campo estiver vazio
+                }
+
+                const dadosAtualizacao = {
+                    statusPagamento: novoStatus,
+                    dataPagamento: novoStatus === 'pago' ? new Date().toISOString() : null
+                };
+
+                // Adiciona a forma de pagamento apenas se status for pago
+                if (novoStatus === 'pago') {
+                    dadosAtualizacao.formaPagamento = $('#updateFormaPagamento').val();
+                } else {
+                    dadosAtualizacao.formaPagamento = ''; // Limpa a forma de pagamento se status for pendente
+                }
+
+                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                    .update(dadosAtualizacao)
+                    .then(() => {
+                        alert('Status de pagamento atualizado com sucesso!');
+                        $('#participanteModal').modal('hide');
+                        carregarParticipantes();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao atualizar pagamento: ", error);
+                        alert("Erro ao atualizar pagamento. Tente novamente.");
+                    });
+            });
+
+            // Adicione este código ao seu script existente
+            $('#participanteModal').on('hide.bs.modal', function (e) {
+                // Remover o foco de todos os elementos focáveis dentro do modal
+                $(this).find('button, input, select, textarea, a[href]').blur();
+            });
+
+            // Configurar o botão de exclusão
+            $('#btnExcluirParticipante').on('click', function () {
+                const participanteId = $(this).data('id');
+
+                if (!participanteId) {
+                    // Tentar recuperar do outro botão como fallback
+                    const fallbackId = $('#btnSalvarPagamento').data('id');
+
+                    if (fallbackId) {
+                        excluirParticipante(fallbackId);
+                    } else {
+                        alert("Erro: Não foi possível identificar o participante para exclusão.");
+                    }
+                } else {
+                    excluirParticipante(participanteId);
+                }
+            });
+        });
+
+        // Função para Carregar participante
+        function carregarParticipantes() {
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                .where("anoevento", "==", "2026")
+                .get()
+                .then((querySnapshot) => {
+
+                    // Limpar DataTable
+                    dataTable.clear();
+
+                    // Armazenar o total de participantes
+                    totalParticipantes = querySnapshot.size;
+
+                    querySnapshot.forEach((doc) => {
+                        const participante = doc.data();
+
+                        // Adicionar linha ao DataTable
+                        dataTable.row.add([
+                            participante.nome,
+                            participante.idade,
+                            participante.celular,
+                            // participante.contato,
+                            // participante.fonecontato,
+                            participante.celula,
+                            participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja,
+                            `<span class="badge ${participante.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${participante.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`,
+                            `<button class="btn btn-info btn-sm" onclick="verDetalhes('${doc.id}')">Ver</button>`
+                        ]);
+                    });
+
+                    // Renderizar DataTable
+                    dataTable.draw();
+
+                    // Atualizar contador
+                    atualizarContador();
+
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar participantes: ", error);
+                    alert("Erro ao carregar lista de participantes. Tente novamente.");
+                });
+        }
+
+        // Adicione esta função para atualizar o contador
+        function atualizarContador() {
+            const participantesFiltrados = dataTable.rows({ search: 'applied' }).count();
+
+            $('#contador-participantes').text(participantesFiltrados);
+            $('#total-participantes').text(totalParticipantes);
+
+            // Mostrar ou esconder o texto de filtro
+            if (participantesFiltrados < totalParticipantes) {
+                $('#texto-filtro').show();
+            } else {
+                $('#texto-filtro').hide();
+            }
+        }
+
+        function verDetalhes(participanteId) {
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const p = doc.data();
+
+                        // Informações Pessoais
+                        $('#modalNome').text(p.nome || 'N/A');
+                        $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
+                        $('#modalIdade').text(p.idade || 'N/A');
+                        $('#modalCelular').text(p.celular || 'N/A');
+
+                        // Informações do Responsável
+                        $('#modalResponsavel').text(p.contato || 'N/A');
+                        $('#modalCpfResponsavel').text(p.cpfResponsavel || 'N/A');
+                        $('#modalCelularResp').text(p.fonecontato || 'N/A');
+
+                        // Exibir assinatura se existir
+                        if (p.assinaturaResponsavel) {
+                            $('#assinaturaContainer').show();
+                            $('#modalAssinatura').attr('src', p.assinaturaResponsavel);
+                        } else {
+                            $('#assinaturaContainer').hide();
+                        }
+
+                        // Informações da Igreja
+                        if (p.igreja === 'Outra') {
+                            $('#modalIgreja').text(p.outraIgreja || 'Outra (não especificada)');
+                        } else {
+                            $('#modalIgreja').text(p.igreja || 'N/A');
+                        }
+                        $('#modalCelula').text(p.celula || 'N/A');
+                        $('#modalSupervisor').text(p.supervisor || 'N/A');
+                        $('#modalRede').text(p.rede || 'N/A');
+
+                        // Informações de Pagamento e Registro
+                        $('#modalStatusPagamento').html(`<span class="badge ${p.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${p.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`);
+                        $('#modalDataPreenchimento').text(p.dataPreenchimento || 'N/A');
+                        $('#modalDtRegistro').text(formatarDataHora(p.dtRegistro) || 'N/A');
+                        $('#modalAnoEvento').text(p.anoevento || 'N/A');
+
+                        // Armazenar ID do participante no botão de exclusão
+                        $('#btnExcluirParticipante').data('id', doc.id);
+
+                        // Abrir modal
+                        $('#participanteModal').modal('show');
+                    } else {
+                        console.error("Documento não encontrado para ID:", participanteId);
+                        alert("Participante não encontrado!");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao buscar detalhes: ", error);
+                    alert("Erro ao buscar detalhes do participante.");
+                });
+        }
+
+        // Função para formatar data e hora
+        function formatarDataHora(dataString) {
+            if (!dataString) return '';
+
+            try {
+                const data = new Date(dataString);
+                return data.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        function aplicarFiltros() {
+            const filtroIgreja = $('#filterIgreja').val();
+            const filtroIdade = $('#filterIdade').val();
+            const filtroPagamento = $('#filterPagamento').val();
+
+            dataTable.search('').columns().search('').draw();
+
+            if (filtroIgreja) {
+                dataTable.column(4).search(
+                    filtroIgreja === 'Outra' ? '(Outra)' : filtroIgreja, true, false
+                ).draw();
+            }
+
+            if (filtroIdade) {
+                // Filtro personalizado para idade
+                $.fn.dataTable.ext.search.push(
+                    function (settings, data, dataIndex) {
+                        const idade = parseInt(data[1].replace(' anos', ''));
+
+                        if (filtroIdade === '18+') {
+                            // Para "Acima de 17", verificar se idade > 17
+                            return idade > 17;
+                        } else {
+                            // Para as outras faixas etárias, manter o comportamento atual
+                            const [min, max] = filtroIdade.split('-');
+                            const minIdade = parseInt(min);
+                            const maxIdade = parseInt(max);
+
+                            if ((isNaN(minIdade) && isNaN(maxIdade)) ||
+                                (isNaN(minIdade) && idade <= maxIdade) ||
+                                (minIdade <= idade && isNaN(maxIdade)) ||
+                                (minIdade <= idade && idade <= maxIdade)) {
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                );
+
+                dataTable.draw();
+            }
+
+            if (filtroPagamento) {
+                dataTable.column(5).search(
+                    filtroPagamento === 'pago' ? 'Pago' : 'Pendente', true, false
+                ).draw();
+            }
+        }
+
+        function formatarData(dataString) {
+            if (!dataString) return '';
+
+            try {
+                const data = new Date(dataString);
+                return data.toLocaleDateString('pt-BR');
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        function excluirParticipante(participanteId) {
+            if (!participanteId) {
+                alert("Erro: Não foi possível identificar o participante para exclusão.");
+                return;
+            }
+
+            if (confirm("Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.")) {
+                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                    .delete()
+                    .then(() => {
+                        alert("Participante excluído com sucesso!");
+                        $('#participanteModal').modal('hide');
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 500);
+                    })
+                    .catch((error) => {
+                        alert("Erro ao excluir participante: " + error.message);
+                    });
+            }
+
+            carregarParticipantes(); // Recarrega a lista após exclusão
+
+        }
+
+    </script>
+</body>
+
+</html>

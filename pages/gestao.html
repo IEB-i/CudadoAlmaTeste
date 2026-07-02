@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GESTÃO</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-card {
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(97, 55, 4, 0.15);
+            border-color: rgba(97, 55, 4, 0.1);
+        }
+
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #613704, #FF8C00);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .dashboard-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: rgba(97, 55, 4, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: #613704;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover .card-icon-wrapper {
+            background: #613704;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .card-icon {
+            font-size: 1.8rem;
+        }
+
+        .dashboard-card .card-title {
+            color: #333;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-card .card-text {
+            color: #6c757d;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+
+        .card-action {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            color: #FF8C00;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-action i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover .card-action {
+            color: #613704;
+        }
+
+        .dashboard-card:hover .card-action i {
+            transform: translateX(5px);
+        }
+
+        .summary-card {
+            border-radius: 20px;
+            margin-bottom: 30px;
+            background: #ffffff;
+            border: 1px solid rgba(97, 55, 4, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+            padding: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,140,0,0.15) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+
+        .stats-value {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0;
+            color: #613704;
+            line-height: 1;
+        }
+
+        .stats-label {
+            color: #888;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            font-weight: 700;
+        }
+
+        .progress {
+            height: 8px;
+            border-radius: 10px;
+            margin-top: 15px;
+            background-color: #f0f0f0;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #FF8C00, #ffb347);
+            border-radius: 10px;
+        }
+
+        .section-title-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .section-title-indicator {
+            width: 6px;
+            height: 24px;
+            background: #FF8C00;
+            border-radius: 6px;
+            margin-right: 12px;
+        }
+
+        .section-title {
+            margin-bottom: 0;
+            font-weight: 800;
+            color: #613704;
+            font-size: 1.4rem;
+        }
+
+        .task-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge-high {
+            background-color: #dc3545;
+        }
+
+        .badge-medium {
+            background-color: #ffc107;
+        }
+
+        .badge-low {
+            background-color: #17a2b8;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #495057;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2 class="header-title">GESTÃO DO EVENTO</h2>
+    </div>
+
+    <div class="container mt-5">
+        <!-- Estatísticas Principais -->
+        <div class="section-title-wrapper mt-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title">Visão Geral</h4>
+        </div>
+        <div class="row mb-4">
+
+            <!-- Card 1: Participantes -->
+            <div class="col-md-4 mb-3">
+                <div class="card summary-card h-100 mb-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 p-3" style="background: rgba(255, 140, 0, 0.1); border-radius: 16px;">
+                                <i class="bi bi-people-fill" style="font-size: 2.5rem; color: #FF8C00;"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3 ml-4">
+                                <h3 class="stats-value" id="totalInscritos">0</h3>
+                                <p class="stats-label">Inscritos</p>
+                                <div class="progress">
+                                    <div class="progress-bar" id="progressoInscricoes" role="progressbar"
+                                        style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Pagamentos Efetuados -->
+            <div class="col-md-4 mb-3">
+                <div class="card summary-card h-100 mb-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 p-3" style="background: rgba(40, 167, 69, 0.1); border-radius: 16px;">
+                                <i class="bi bi-check-circle-fill" style="font-size: 2.5rem; color: #28a745;"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3 ml-4">
+                                <h3 class="stats-value" id="totalPagos">0</h3>
+                                <p class="stats-label">Pagos</p>
+                                <div class="progress">
+                                    <div class="progress-bar" id="progressoPagos" role="progressbar"
+                                        style="width: 0%; background: linear-gradient(90deg, #28a745, #34ce57) !important;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Faltam Pagar -->
+            <div class="col-md-4 mb-3">
+                <div class="card summary-card h-100 mb-0">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 p-3" style="background: rgba(220, 53, 69, 0.1); border-radius: 16px;">
+                                <i class="bi bi-exclamation-circle-fill" style="font-size: 2.5rem; color: #dc3545;"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3 ml-4">
+                                <h3 class="stats-value" id="totalPendentes">0</h3>
+                                <p class="stats-label">Pendentes</p>
+                                <div class="progress">
+                                    <div class="progress-bar" id="progressoPendentes" role="progressbar"
+                                        style="width: 0%; background: linear-gradient(90deg, #dc3545, #e4606d) !important;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Cards -->
+        <div class="section-title-wrapper mt-5">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title">Módulos de Gestão</h4>
+        </div>
+        <div class="row mb-5">
+            <!-- Card Participantes -->
+            <div class="col-md-4 mb-4">
+                <a href="participantes.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-people-fill card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Participantes</h5>
+                        <p class="card-text">Gerencie as inscrições, visualize os dados completos e edite as informações de todos os participantes do evento.</p>
+                        <div class="card-action mt-auto">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card Pagamentos -->
+            <div class="col-md-4 mb-4">
+                <a href="pagamentos.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-cash-coin card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Pagamentos</h5>
+                        <p class="card-text">Acompanhe confirmações de pagamento, gerencie pendências e analise o balanço financeiro das inscrições.</p>
+                        <div class="card-action mt-auto">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card Movimentação do Caixa -->
+            <div class="col-md-4 mb-4">
+                <a href="caixa.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-piggy-bank-fill card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Movimentação do Caixa</h5>
+                        <p class="card-text">Registre e monitore todas as entradas e saídas do evento, garantindo o controle total do fluxo de caixa.</p>
+                        <div class="card-action mt-auto">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card Check-in -->
+            <div class="col-md-4 mb-4">
+                <a href="checkin.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper" style="background: rgba(40, 167, 69, 0.05); color: #28a745;">
+                            <i class="bi bi-qr-code-scan card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Check-in Expresso</h5>
+                        <p class="card-text">Valide ingressos por QR Code ou busca manual rápida com suporte a caixa expresso na portaria.</p>
+                        <div class="card-action mt-auto" style="color: #28a745;">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card Controle de Presença -->
+            <div class="col-md-4 mb-4">
+                <a href="presenca.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-clipboard2-check-fill card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Controle de Presença</h5>
+                        <p class="card-text">Gerencie a lista de presentes/ausentes, acompanhe estatísticas de entrada e exporte relatórios.</p>
+                        <div class="card-action mt-auto">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Card Relatório Pós-Evento -->
+            <div class="col-md-4 mb-4">
+                <a href="pos-evento.html" class="card dashboard-card">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-bar-chart-fill card-icon"></i>
+                        </div>
+                        <h5 class="card-title">Relatório Pós-Evento</h5>
+                        <p class="card-text">Visualize gráficos, métricas e um relatório completo com todas as estatísticas consolidadas do evento.</p>
+                        <div class="card-action mt-auto">
+                            Acessar Módulo <i class="bi bi-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Resumo das Tarefas e Atividades Recentes -->
+        <div class="row">
+            <!-- Card Tarefas -->
+            <!-- <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Tarefas Prioritárias</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush" id="tarefasPrioritarias">-->
+            <!-- As tarefas serão carregadas dinamicamente aqui -->
+            <!--</ul>
+                        <div class="p-3 text-center">
+                            <a href="tarefas.html" class="btn btn-sm btn-acamp">Ver todas as tarefas</a>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Card Pagamentos -->
+            <!--<div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Últimos Pagamentos</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush" id="ultimosPagamentos">
+                        --> <!-- Os pagamentos serão carregados dinamicamente aqui -->
+            <!--</ul>
+                        <div class="p-3 text-center">
+                            <a href="pagamentos.html" class="btn btn-sm btn-acamp">Ver todos os pagamentos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+
+        <!-- Departamentos e Progresso -->
+        <!--<div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Progresso por Departamento</h5>
+            </div>
+            <div class="card-body">
+                <div class="row" id="progressoDepartamentos">
+                --> <!-- O progresso dos departamentos será carregado dinamicamente aqui -->
+        <!--   </div>
+            </div>
+        </div>-->
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+
+
+        // Carregar dados quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            carregarEstatisticas();
+            carregarTarefasPrioritarias();
+            carregarUltimosPagamentos();
+            carregarProgressoDepartamentos();
+        });
+
+        // Função para carregar estatísticas gerais
+        function carregarEstatisticas() {
+            // Carregar dados de pagamentos
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                .where("anoevento", "==", "2026")
+                .get()
+                .then((querySnapshot) => {
+                    let totalInscritos = querySnapshot.size;
+                    let totalPagos = 0;
+                    let totalPendentes = 0;
+                    const valorInscricao = 20.00; // Ou o valor da inscrição do ano
+
+                    querySnapshot.forEach((doc) => {
+                        const participante = doc.data();
+                        if (participante.statusPagamento === 'pago') {
+                            totalPagos++;
+                        } else {
+                            totalPendentes++;
+                        }
+                    });
+
+                    // Atualizar contadores
+                    if (document.getElementById('totalInscritos')) {
+                        document.getElementById('totalInscritos').textContent = totalInscritos;
+                    }
+                    if (document.getElementById('totalPagos')) {
+                        document.getElementById('totalPagos').textContent = totalPagos;
+                    }
+                    if (document.getElementById('totalPendentes')) {
+                        document.getElementById('totalPendentes').textContent = totalPendentes;
+                    }
+
+                    // Atualizar valores financeiros se houver na tela
+                    if (document.getElementById('valorPago')) {
+                        const valorPago = (totalPagos * valorInscricao).toFixed(2).replace('.', ',');
+                        document.getElementById('valorPago').textContent = 'R$ ' + valorPago;
+                    }
+
+                    // Calcular porcentagem
+                    const porcentagemPagos = totalInscritos > 0 ? Math.round((totalPagos / totalInscritos) * 100) : 0;
+                    const porcentagemPendentes = totalInscritos > 0 ? Math.round((totalPendentes / totalInscritos) * 100) : 0;
+                    
+                    if (document.getElementById('progressoPagos')) {
+                        document.getElementById('progressoPagos').style.width = porcentagemPagos + '%';
+                    }
+                    if (document.getElementById('progressoPendentes')) {
+                        document.getElementById('progressoPendentes').style.width = porcentagemPendentes + '%';
+                    }
+
+                    // Atualizar progresso de inscrições (meta do ComRoca é 70 participantes)
+                    const meta = 70;
+                    const porcentagemInscritos = Math.min(Math.round((totalInscritos / meta) * 100), 100);
+                    if (document.getElementById('progressoInscricoes')) {
+                        document.getElementById('progressoInscricoes').style.width = porcentagemInscritos + '%';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar estatísticas de pagamentos: ", error);
+                });
+
+            // Carregar dados de tarefas
+            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                .get()
+                .then((querySnapshot) => {
+                    let totalTarefas = querySnapshot.size;
+                    let tarefasConcluidas = 0;
+
+                    querySnapshot.forEach((doc) => {
+                        const tarefa = doc.data();
+                        if (tarefa.status === "completed") {
+                            tarefasConcluidas++;
+                        }
+                    });
+
+                    // Calcular progresso geral das tarefas
+                    const porcentagemConcluida = totalTarefas > 0 ? Math.round((tarefasConcluidas / totalTarefas) * 100) : 0;
+                    document.getElementById('progressoGeral').textContent = porcentagemConcluida + '%';
+                    document.getElementById('progressoTarefasBar').style.width = porcentagemConcluida + '%';
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar estatísticas de tarefas: ", error);
+                });
+        }
+
+        // Função para carregar tarefas prioritárias
+        function carregarTarefasPrioritarias() {
+            const listaTarefas = document.getElementById('tarefasPrioritarias');
+            listaTarefas.innerHTML = '';
+
+            // Buscar tarefas de alta prioridade que não estão concluídas
+            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                .where("prioridade", "==", "high")
+                .where("status", "!=", "completed")
+                .orderBy("status")
+                .orderBy("dataVencimento")
+                .limit(5)
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        // Se não houver tarefas de alta prioridade, buscar as de média prioridade
+                        return db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                            .where("prioridade", "==", "medium")
+                            .where("status", "!=", "completed")
+                            .orderBy("status")
+                            .orderBy("dataVencimento")
+                            .limit(5)
+                            .get();
+                    }
+                    return querySnapshot;
+                })
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item text-center';
+                        li.textContent = "Não há tarefas prioritárias pendentes";
+                        listaTarefas.appendChild(li);
+                        return;
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const tarefa = doc.data();
+                        const dataVencimento = new Date(tarefa.dataVencimento);
+
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item task-item';
+
+                        let priorityBadge = '';
+                        if (tarefa.prioridade === 'high') {
+                            priorityBadge = '<span class="badge badge-high">Alta</span>';
+                        } else if (tarefa.prioridade === 'medium') {
+                            priorityBadge = '<span class="badge badge-medium">Média</span>';
+                        } else {
+                            priorityBadge = '<span class="badge badge-low">Baixa</span>';
+                        }
+
+                        let statusBadge = '';
+                        if (tarefa.status === 'todo') {
+                            statusBadge = '<span class="badge badge-secondary">A Fazer</span>';
+                        } else if (tarefa.status === 'inProgress') {
+                            statusBadge = '<span class="badge badge-primary">Em Andamento</span>';
+                        }
+
+                        li.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="mb-1">
+                                        <strong>${tarefa.titulo}</strong> 
+                                        ${priorityBadge} ${statusBadge}
+                                    </div>
+                                    <small class="text-muted">
+                                        ${tarefa.departamento} • 
+                                        Vencimento: ${dataVencimento.toLocaleDateString('pt-BR')}
+                                    </small>
+                                </div>
+                                <a href="tarefas.html" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
+                        `;
+
+                        listaTarefas.appendChild(li);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar tarefas prioritárias: ", error);
+                });
+        }
+
+        // Função para carregar últimos pagamentos
+        function carregarUltimosPagamentos() {
+            const listaPagamentos = document.getElementById('ultimosPagamentos');
+            listaPagamentos.innerHTML = '';
+
+            db.collection("Eventos").doc("ComRoca2025").collection("pagamentos")
+                .where("status", "==", "pago")
+                .orderBy("dataPagamento", "desc")
+                .limit(5)
+                .get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item text-center';
+                        li.textContent = "Nenhum pagamento registrado";
+                        listaPagamentos.appendChild(li);
+                        return;
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const pagamento = doc.data();
+                        const dataPagamento = new Date(pagamento.dataPagamento);
+
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item task-item';
+
+                        // Obter iniciais do nome para o avatar
+                        let iniciais = "";
+                        if (pagamento.participanteNome) {
+                            const nomes = pagamento.participanteNome.split(' ');
+                            if (nomes.length >= 2) {
+                                iniciais = nomes[0].charAt(0) + nomes[nomes.length - 1].charAt(0);
+                            } else {
+                                iniciais = nomes[0].charAt(0);
+                            }
+                        }
+
+                        let formaPagamento = "";
+                        switch (pagamento.formaPagamento) {
+                            case 'pix': formaPagamento = "PIX"; break;
+                            case 'cartao': formaPagamento = "Cartão"; break;
+                            case 'dinheiro': formaPagamento = "Dinheiro"; break;
+                            default: formaPagamento = pagamento.formaPagamento;
+                        }
+
+                        li.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar">
+                                        ${iniciais}
+                                    </div>
+                                    <div>
+                                        <div><strong>${pagamento.participanteNome || "Participante"}</strong></div>
+                                        <small class="text-muted">
+                                            R$ ${(pagamento.valor || 20).toFixed(2).replace('.', ',')} • 
+                                            ${formaPagamento} • 
+                                            ${dataPagamento.toLocaleDateString('pt-BR')}
+                                        </small>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">Confirmado</span>
+                            </div>
+                        `;
+
+                        listaPagamentos.appendChild(li);
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar últimos pagamentos: ", error);
+                });
+        }
+
+        // Função para carregar progresso por departamento
+        function carregarProgressoDepartamentos() {
+            const progressoContainer = document.getElementById('progressoDepartamentos');
+            progressoContainer.innerHTML = '';
+
+            // Lista de departamentos
+            const departamentos = [
+                "Supervisão", "Financeiro", "Cronograma", "Midia", "MidiaFisica",
+                "Gincana", "Decoração", "Devocionais", "Louvor", "CoberturaEspiritual"
+            ];
+
+            // Buscar todas as tarefas
+            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                .get()
+                .then((querySnapshot) => {
+                    // Objeto para armazenar estatísticas por departamento
+                    const estatisticas = {};
+
+                    // Inicializar estatísticas para cada departamento
+                    departamentos.forEach(dept => {
+                        estatisticas[dept] = {
+                            total: 0,
+                            concluidas: 0
+                        };
+                    });
+
+                    // Contabilizar tarefas
+                    querySnapshot.forEach((doc) => {
+                        const tarefa = doc.data();
+                        const dept = tarefa.departamento;
+
+                        if (estatisticas[dept]) {
+                            estatisticas[dept].total++;
+                            if (tarefa.status === "completed") {
+                                estatisticas[dept].concluidas++;
+                            }
+                        }
+                    });
+
+                    // Criar elementos para cada departamento
+                    departamentos.forEach(dept => {
+                        if (estatisticas[dept].total > 0) {
+                            const porcentagem = Math.round((estatisticas[dept].concluidas / estatisticas[dept].total) * 100);
+
+                            // Formatar nome do departamento para exibição
+                            let nomeDepartamento = dept;
+                            if (dept === "MidiaFisica") nomeDepartamento = "Mídia Física";
+                            if (dept === "CoberturaEspiritual") nomeDepartamento = "Cobertura Espiritual";
+
+                            const colDiv = document.createElement('div');
+                            colDiv.className = 'col-md-3 mb-3';
+                            colDiv.innerHTML = `
+                                <h6>${nomeDepartamento}</h6>
+                                                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: ${porcentagem}%;" 
+                                         aria-valuenow="${porcentagem}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                         ${porcentagem}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">${estatisticas[dept].concluidas} de ${estatisticas[dept].total} tarefas</small>
+                            `;
+
+                            progressoContainer.appendChild(colDiv);
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar progresso dos departamentos: ", error);
+                });
+        }
+
+        // Função para atualizar todos os dados a cada 5 minutos
+        setInterval(function () {
+            carregarEstatisticas();
+            carregarTarefasPrioritarias();
+            carregarUltimosPagamentos();
+            carregarProgressoDepartamentos();
+        }, 300000); // 5 minutos em milissegundos
+    </script>
+</body>
+
+</html>
