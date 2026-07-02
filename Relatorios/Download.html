@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download de Dados EBF 2024</title>
+    <link rel="shortcut icon" href="3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <style>
+        body {
+            background-image: url('/EBF.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 100px;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: linear-gradient(45deg, #800080, #FFA500);
+            padding: 10px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header img {
+            max-width: 150px;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #800080, #FFA500);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #9400D3, #FF8C00);
+        }
+        .form-control:focus {
+            border-color: #800080;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25);
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="header">
+        <img src="LogoBranco.png" alt="Logo da EBF 2024">
+    </div>
+    <div class="container">
+        <h2 class="text-center mb-4 font-weight-bold">Download de Dados EBF 2024</h2>
+        <div class="form-group">
+            <label for="colecaoSelect">Selecione a coleção:</label>
+            <select id="colecaoSelect" class="form-control">
+                <option value="">Selecione uma coleção</option>
+                <option value="ACAMP360">ACAMP360</option>
+                <option value="EBF-TRABALHADORES">EBF-TRABALHADORES</option>
+            </select>
+        </div>
+        <button onclick="downloadDados()" class="btn btn-primary btn-block">Download</button>
+        <!-- Adicionar após o botão de download existente -->
+        <button onclick="excluirDados()" class="btn btn-danger btn-block mt-2">Excluir Dados da Coleção</button>
+
+        <div class="form-group mt-3">
+            <label for="uploadExcel">Upload Excel</label>
+            <input type="file" class="form-control-file" id="uploadExcel" accept=".xlsx">
+        </div>
+        <button onclick="uploadDados()" class="btn btn-success btn-block">Upload para Coleção</button>
+    </div>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyC31C1X13eqVAOq_o5K2evI8q3GOfnpOpo",
+            authDomain: "iebi-2e84e.firebaseapp.com",
+            projectId: "iebi-2e84e",
+            storageBucket: "iebi-2e84e.appspot.com",
+            messagingSenderId: "634456198202",
+            appId: "1:634456198202:web:8b4de1b4def23a49303903"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function downloadDados() {
+            const colecao = document.getElementById('colecaoSelect').value;
+            if (!colecao) {
+                alert('Por favor, selecione uma coleção');
+                return;
+            }
+
+            db.collection(colecao).get().then((querySnapshot) => {
+                const dados = [];
+                querySnapshot.forEach((doc) => {
+                    dados.push(doc.data());
+                });
+
+                if (dados.length === 0) {
+                    alert('Não há dados para download');
+                    return;
+                }
+
+                const ws = XLSX.utils.json_to_sheet(dados);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Dados");
+                XLSX.writeFile(wb, `${colecao}.xlsx`);
+            }).catch((error) => {
+                console.error("Erro ao buscar dados: ", error);
+                alert('Erro ao buscar dados. Por favor, tente novamente.');
+            });
+        }
+
+        function excluirDados() {
+            const colecao = document.getElementById('colecaoSelect').value;
+            if (!colecao) {
+                alert('Por favor, selecione uma coleção');
+                return;
+            }
+
+            if (confirm(`Tem certeza que deseja excluir todos os dados da coleção ${colecao}?`)) {
+                db.collection(colecao).get().then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        doc.ref.delete();
+                    });
+                    alert('Dados excluídos com sucesso!');
+                }).catch((error) => {
+                    console.error("Erro ao excluir dados: ", error);
+                    alert('Erro ao excluir dados. Por favor, tente novamente.');
+                });
+            }
+        }
+
+        function uploadDados() {
+            const colecao = document.getElementById('colecaoSelect').value;
+            const file = document.getElementById('uploadExcel').files[0];
+            
+            if (!colecao || !file) {
+                alert('Por favor, selecione uma coleção e um arquivo Excel');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+                const batch = db.batch();
+                
+                jsonData.forEach((item) => {
+                    const docRef = db.collection(colecao).doc();
+                    batch.set(docRef, item);
+                });
+
+                batch.commit().then(() => {
+                    alert('Dados importados com sucesso!');
+                    document.getElementById('uploadExcel').value = '';
+                }).catch((error) => {
+                    console.error("Erro ao importar dados: ", error);
+                    alert('Erro ao importar dados. Por favor, tente novamente.');
+                });
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>

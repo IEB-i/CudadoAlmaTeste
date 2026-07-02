@@ -1,0 +1,143 @@
+/* Estilos comuns para todas as páginas do ACAMP IEBI */
+
+.header {
+    background: linear-gradient(135deg, #613704, #925306);
+    padding: 0 20px; /* Removido padding vertical para controlar altura apenas com height */
+    /*text-align: center;*/
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 80px;
+
+        /* Adicionando flexbox para centralizar o conteúdo verticalmente */
+        display: flex;
+        align-items: center; /* Centraliza verticalmente */
+        justify-content: center; /* Centraliza horizontalmente */
+}
+
+.header-title {
+    color: white;
+    margin: 0; /* Remove margens padrão do h2 */
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+    .header-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Modern Section Titles */
+.section-title-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    margin-top: 2rem;
+}
+
+.section-title-indicator {
+    width: 6px;
+    height: 24px;
+    background: #FF8C00;
+    border-radius: 6px;
+    margin-right: 12px;
+}
+
+.section-title {
+    margin-bottom: 0;
+    font-weight: 800;
+    color: #613704;
+    font-size: 1.4rem;
+}
+
+/* Modern Filter Card */
+.filter-card {
+    background: #ffffff !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(97, 55, 4, 0.08) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03) !important;
+    padding: 20px !important;
+    margin-bottom: 30px !important;
+}
+
+.table-responsive {
+    border-radius: 16px !important;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03) !important;
+    background: #ffffff;
+}
+
+.btn-export, .btn-primary {
+    background: linear-gradient(90deg, #613704, #925306) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 10px rgba(97, 55, 4, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-export:hover, .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(97, 55, 4, 0.3) !important;
+}
+
+/* Modern Dashboard Card */
+.dashboard-card {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03) !important;
+    background: #ffffff !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    margin-bottom: 24px !important;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08) !important;
+}
+
+.dashboard-card .card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding: 1.5rem 1.5rem 1rem !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    border-radius: 16px 16px 0 0 !important;
+}
+
+.dashboard-card .card-body {
+    padding: 1.5rem !important;
+}
+
+/* Botão Voltar (Global) */
+.btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%) scale(1.05);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-voltar .material-icons {
+    font-size: 24px;
+}

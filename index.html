@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSCRIÇÕES</title>
+    <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="./firebase/firebaseConfig.js"></script>
+    <style>
+        body {
+            background-color: #f4ebda;
+            padding-top: 0px;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        .position-relative {
+            position: relative;
+        }
+
+        .btn-hidden {
+            display: none !important;
+        }
+
+        .btn-gradient {
+            background: linear-gradient(to right, #663800, #FF8C00);
+            color: white;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            text-transform: uppercase;
+            border: none;
+            box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
+            transition: all 0.3s ease;
+            position: absolute;
+            top: 52%;
+            left: 48%;
+            transform: translateX(-50%);
+            text-decoration: none;
+            min-width: 200px;
+            text-align: center;
+            animation: subtle-glow 3s ease-in-out infinite;
+        }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #FF8C00, #663800);
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 8px 25px rgba(58, 16, 86, 0.6);
+            color: white;
+            text-decoration: none;
+            animation: none;
+        }
+
+        .btn-esgotado {
+            background: #6c757d !important;
+            color: white !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            animation: none !important;
+        }
+
+        .btn-esgotado:hover {
+            background: #6c757d !important;
+            transform: translateX(-50%) !important;
+            box-shadow: none !important;
+            color: white !important;
+            text-decoration: none !important;
+        }
+
+        .alerta-esgotado {
+            position: absolute;
+            top: 49%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            max-width: 400px;
+            z-index: 15;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Efeito glow profissional */
+        @keyframes subtle-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
+            }
+
+            50% {
+                box-shadow: 0 4px 20px rgba(255, 140, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.3);
+            }
+        }
+
+        .desktop-image {
+            margin-top: 0px;
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+        }
+
+        .mobile-image {
+            display: none;
+        }
+
+        .admin-login-btn {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            color: #ffffff;
+            font-size: 28px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            opacity: 0.6;
+        }
+
+        .admin-login-btn:hover {
+            color: #FF8C00;
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+
+        .loading-spinner {
+            position: absolute;
+            top: 55%;
+            left: 53%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF8C00;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+            display: block;
+            margin-left: -35%;
+            margin-right: auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .mobile-image {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                object-fit: cover;
+                z-index: 1;
+                margin: 0;
+                padding: 0;
+            }
+
+            .desktop-image {
+                display: none;
+            }
+
+            .btn-gradient {
+                padding: 12px 30px;
+                font-size: 16px;
+                min-width: 250px;
+                top: 58%;
+                left: 50%;
+                z-index: 10;
+                position: fixed;
+            }
+
+            .alerta-esgotado {
+                position: fixed;
+                top: 53%;
+                left: 53%;
+                max-width: 90%;
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+
+            .loading-spinner {
+                position: fixed;
+                top: 59%;
+                left: 65%;
+                z-index: 10;
+            }
+
+            .loading-text {
+                margin-top: 5px;
+                margin-left: -33%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="login.html" class="admin-login-btn" title="Acesso Administrativo">
+        <i class="bi bi-gear-fill"></i>
+    </a>
+    <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
+    <img src="./assets/Texto Celular.png" alt="Texto" class="img-fluid mb-4 mobile-image">
+
+    <a href="frminscricao.html" class="btn-gradient btn-hidden" id="btnInscricao">
+        Inscreva-se Agora
+    </a>
+
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <div class="loading-text">Verificando vagas disponíveis...</div>
+    </div>
+
+    <div class="alerta-esgotado" id="alertaEsgotado" style="display: none;">
+        <div>🚫 <strong>Inscrições Encerradas!</strong></div>
+        <div style="font-size: 14px; margin-top: 5px;">Limite de vagas atingido</div>
+    </div>
+
+    <script>
+        // ✅ SOLUÇÃO: Ler apenas 1 documento contador
+        function verificarLimiteInscricoes() {
+            if (typeof db === 'undefined') {
+                console.error('Firebase não foi inicializado corretamente');
+                return;
+            }
+
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'block';
+
+            // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
+            db.collection("Eventos").doc("ComRoca2026")  // Acesse diretamente o documento ComRoca2026
+                .get()  // Aqui você já faz a leitura do documento
+                .then((doc) => {
+                    if (doc.exists) {
+                        const totalInscricoes = doc.data().contador.totalInscricoes || 0;  // Acesse o campo dentro do documento
+                        console.log(`Total de inscrições ComRoca: ${totalInscricoes}`);
+
+                        const btnInscricao = document.getElementById('btnInscricao');
+                        const alertaEsgotado = document.getElementById('alertaEsgotado');
+
+                        loadingSpinner.style.display = 'none';
+                        btnInscricao.classList.remove('btn-hidden');
+
+                        if (totalInscricoes >= 150) {
+                            // Desabilitar o botão
+                            btnInscricao.classList.add('btn-esgotado');
+                            btnInscricao.classList.remove('btn-gradient');
+                            btnInscricao.textContent = 'Inscrições Encerradas';
+                            btnInscricao.href = '#';
+                            btnInscricao.onclick = function (e) {
+                                e.preventDefault();
+                                alert('Desculpe, as inscrições foram encerradas. Limite de vagas atingido.');
+                                return false;
+                            };
+                            alertaEsgotado.style.display = 'block';
+                        } else {
+                            // Manter o botão habilitado
+                            btnInscricao.classList.remove('btn-esgotado');
+                            btnInscricao.classList.add('btn-gradient');
+                            btnInscricao.textContent = 'Inscreva-se Agora';
+                            btnInscricao.href = 'frminscricao.html';
+                            btnInscricao.onclick = null;
+                            alertaEsgotado.style.display = 'none';
+                        }
+                    } else {
+                        console.log("Documento ComRoca2026 não existe");
+                        // Fallback: assumir 0 inscrições
+                        handleButtonState(0);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao verificar contador:", error);
+                    // Em caso de erro, mostrar o botão funcionando
+                    handleErrorState();
+                });
+
+
+        }
+
+        // Verificar limite quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            // Aguardar um pouco para garantir que o Firebase foi inicializado
+            setTimeout(verificarLimiteInscricoes, 1000);
+        });
+
+        // Verificar limite periodicamente (a cada 30 segundos)
+        setInterval(verificarLimiteInscricoes, 30000);
+    </script>
+</body>
+
+</html>

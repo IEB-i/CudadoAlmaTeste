@@ -1,0 +1,3552 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<!-- Checkin -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destão de Tarefas ACAMP</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            font-weight: bold;
+        }
+
+        .progress {
+            height: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 15px;
+        }
+
+        .task-complete {
+            text-decoration: line-through;
+            color: #28a745;
+        }
+
+        .btn-acamp {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            border: none;
+        }
+
+        .filter-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .badge-pago {
+            background-color: #28a745;
+        }
+
+        .badge-pendente {
+            background-color: #ffc107;
+        }
+
+        .badge-high {
+            background-color: #dc3545;
+        }
+
+        .badge-medium {
+            background-color: #ffc107;
+        }
+
+        .badge-low {
+            background-color: #17a2b8;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-voltar .material-icons {
+            font-size: 24px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        #insights .card-header {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+            color: white;
+            font-weight: bold;
+        }
+
+        #insights h3 {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #3d7517;
+        }
+
+        #insights p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        #recomendacoesList .list-group-item {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        #recomendacoesList .list-group-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        #recomendacoesList .text-warning {
+            border-left-color: #ffc107;
+        }
+
+        #recomendacoesList .text-info {
+            border-left-color: #17a2b8;
+        }
+
+        #recomendacoesList .text-primary {
+            border-left-color: #007bff;
+        }
+
+        #recomendacoesList .text-success {
+            border-left-color: #28a745;
+        }
+
+        #recomendacoesList .text-danger {
+            border-left-color: #dc3545;
+        }
+
+        .filter-status {
+            margin-right: 8px;
+        }
+
+        .form-check {
+            margin-bottom: 8px;
+        }
+
+        .form-check:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-check-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-check-input {
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">GESTÃO DE TAREFAS - ACAMP</h2>
+    </div>
+
+    <!-- Content -->
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Barra Lateral -->
+            <div class="col-md-3">
+                <!-- Itens da Barra Lateral -->
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active" data-section="dashboard">Progresso
+                        Geral</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="checklist">Checklist</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="insights">Relatórios</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="financeiro">Fluxo de
+                        Caixa</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-section="checkin">Check-in</a>
+                    <!--<a href="#" class="list-group-item list-group-item-action">Participantes</a>
+                    <a href="#" class="list-group-item list-group-item-action">Configurações</a>-->
+                </div>
+            </div>
+
+            <!-- Conteúdo Principal -->
+            <!-- Lado Direito-->
+            <div class="col-md-9">
+
+                <!-- Seção do Progrecsso Geral -->
+                <div id="dashboard" class="content-section active">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            Progresso Geral
+                        </div>
+                        <div class="card-body">
+                            <div class="progress">
+                                <div class="progress-bar bg-success" id="progressoGeral" role="progressbar"
+                                    style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%
+                                    Concluído</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Departamentos
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group" id="listaDepartamentos">
+                                        <!-- Os departamentos serão adicionados dinamicamente aqui -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    Tarefas Pendentes
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group" id="listaTarefasPendentes">
+                                        <!-- As tarefas pendentes serão adicionadas dinamicamente aqui -->
+                                    </ul>
+                                    <div class="mt-3 text-center">
+                                        <a href="#" class="btn btn-acamp" data-section="checklist"
+                                            id="verTodasTarefas">Ver todas as tarefas</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            Estatísticas
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <h3 id="totalTarefas">0</h3>
+                                    <p>Total de Tarefas</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <h3 id="tarefasConcluidas">0</h3>
+                                    <p>Tarefas Concluídas</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <h3 id="tarefasAtrasadas">0</h3>
+                                    <p>Tarefas Atrasadas</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção do Checklist -->
+                <div id="checklist" class="content-section">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h3>Lista de Tarefas do Acampamento</h3>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <button class="btn btn-acamp" data-toggle="modal" data-target="#addTaskModal">
+                                <i class="bi bi-plus-circle"></i> Nova Tarefa
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="filter-card">
+                        <form id="filterForm" class="row">
+                            <div class="form-group col-md-3">
+                                <label for="filterDepartamento">Departamento</label>
+                                <select class="form-control" id="filterDepartamento">
+                                    <option value="">Todos</option>
+                                    <option value="Supervisão">Supervisão</option>
+                                    <option value="Financeiro">Financeiro</option>
+                                    <option value="Cronograma">Cronograma</option>
+                                    <option value="Midia">Midia</option>
+                                    <option value="MidiaFisica">Midia Fisica</option>
+                                    <option value="Gincana">Gincana</option>
+                                    <option value="Decoração">Decoração</option>
+                                    <option value="Devocionais">Devocionais</option>
+                                    <option value="Louvor">Louvor</option>
+                                    <option value="CoberturaEspiritual">Cobertura Espiritual</option>
+                                </select>
+                            </div>
+                            <!-- Drop Status -->
+                            <div class="form-group col-md-3">
+                                <label>Status</label>
+                                <div class="border p-2 rounded bg-light">
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-status" type="checkbox" value="todo"
+                                            id="statusTodo">
+                                        <label class="form-check-label" for="statusTodo">
+                                            <span class="badge badge-secondary">A Fazer</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-status" type="checkbox" value="inProgress"
+                                            id="statusInProgress">
+                                        <label class="form-check-label" for="statusInProgress">
+                                            <span class="badge badge-primary">Em Andamento</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input filter-status" type="checkbox" value="completed"
+                                            id="statusCompleted">
+                                        <label class="form-check-label" for="statusCompleted">
+                                            <span class="badge badge-success">Concluído</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="filterPrioridade">Prioridade</label>
+                                <select class="form-control" id="filterPrioridade">
+                                    <option value="">Todas</option>
+                                    <option value="high">Alta</option>
+                                    <option value="medium">Média</option>
+                                    <option value="low">Baixa</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="material-icons align-middle">search</i> Filtrar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ml-2" id="limparFiltro">
+                                    Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="tarefasTable">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Título</th>
+                                    <th>Departamento</th>
+                                    <th>Responsável</th>
+                                    <th>Vencimento</th>
+                                    <th>Prioridade</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tarefasList">
+                                <!-- Os dados serão carregados dinamicamente do Firebase -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Seção dos Relatórios -->
+                <div id="insights" class="content-section">
+                    <!-- Seção Geral de Inscritos -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            Visão Geral dos Participantes
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <h3 id="totalParticipantesInsight">0</h3>
+                                    <p>Total de Inscritos</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <h3 id="totalPagosInsight">0</h3>
+                                    <p>Pagamentos Confirmados</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <h3 id="totalPendentesInsight">0</h3>
+                                    <p>Pagamentos Pendentes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICOS ######### -->
+                    <!-- >Conteiner Geral -->
+                    <div class="row">
+                        <!-- Linha 1 -->
+                        <div class="row mt-4">
+                            <!-- Por Célula -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Inscritos por Célula</h4>
+                                    <div class="chart-container">
+                                        <canvas id="celulaInsightChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Faixa Etária -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Inscritos por Faixa Etária</h4>
+                                    <div class="chart-container">
+                                        <canvas id="faixaEtariaInsightChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- >inha 2 -->
+                        <div class="row mt-4">
+                            <!-- Status de Pagamento -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Status de Pagamento</h4>
+                                    <div class="chart-container">
+                                        <canvas id="pagamentoInsightChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Igreja -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Inscritos por Igreja</h4>
+                                    <div class="chart-container">
+                                        <canvas id="igrejaInsightChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- >inha 3 -->
+                        <div class="row mt-4">
+                            <!-- Progresso de Inscrições -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Progresso de Inscrições</h4>
+                                    <div class="chart-container">
+                                        <canvas id="progressoInscricoesChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Controle de Rifas -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Controle de Rifas</h4>
+                                    <div class="row mt-3">
+                                        <div class="col-md-6 text-center">
+                                            <h3 id="rifasEntreguesCount">0</h3>
+                                            <p>Rifas Entregues</p>
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <h3 id="valorPrevistoRifas">R$ 0,00</h3>
+                                            <p>Valor Previsto</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End GRÁFICOS ######### -->
+
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                Recomendações para Gestão
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group" id="recomendacoesList">
+                                    <!-- Recomendações serão adicionadas dinamicamente aqui -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Seção do Fluxo de Caixa -->
+                <div id="financeiro" class="content-section">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h3>Fluxo de Caixa do Acampamento</h3>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <button class="btn btn-acamp" data-toggle="modal" data-target="#addTransacaoModal">
+                                <i class="bi bi-plus-circle"></i> Nova Transação
+                            </button>
+                            <button class="btn btn-outline-secondary ml-2" id="exportarFinanceiroBtn">
+                                <i class="bi bi-download"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resumo Financeiro -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Receitas</h5>
+                                    <h3 class="text-success" id="totalReceitas">R$ 0,00</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Despesas</h5>
+                                    <h3 class="text-danger" id="totalDespesas">R$ 0,00</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Saldo</h5>
+                                    <h3 id="saldoAtual">R$ 0,00</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráfico de Receitas e Despesas -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="dashboard-card">
+                                <h4>Receitas e Despesas</h4>
+                                <div class="chart-container">
+                                    <canvas id="receitasDespesasChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card">
+                                <h4>Distribuição de Despesas</h4>
+                                <div class="chart-container">
+                                    <canvas id="distribuicaoDespesasChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros -->
+                    <div class="filter-card mb-4">
+                        <form id="filterFinanceiroForm" class="row">
+                            <div class="form-group col-md-3">
+                                <label for="filterTipoTransacao">Tipo</label>
+                                <select class="form-control" id="filterTipoTransacao">
+                                    <option value="">Todos</option>
+                                    <option value="receita">Receitas</option>
+                                    <option value="despesa">Despesas</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="filterCategoriaTransacao">Categoria</label>
+                                <select class="form-control" id="filterCategoriaTransacao">
+                                    <option value="">Todas</option>
+                                    <!-- Categorias serão carregadas dinamicamente -->
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="filterStatusTransacao">Status</label>
+                                <select class="form-control" id="filterStatusTransacao">
+                                    <option value="">Todos</option>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="material-icons align-middle">search</i> Filtrar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ml-2"
+                                    id="limparFiltroFinanceiro">
+                                    Limpar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Tabela de Transações -->
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="transacoesTable">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th>Categoria</th>
+                                    <th>Descrição</th>
+                                    <th>Valor</th>
+                                    <th>Responsável</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transacoesList">
+                                <!-- Os dados serão carregados dinamicamente do Firebase -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Seção do Check-in -->
+                <div id="checkin" class="content-section">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <h3>Controle de Check-in do Acampamento</h3>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <button class="btn btn-outline-secondary" id="exportarCheckinBtn">
+                                <i class="bi bi-download"></i> Exportar Dados
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Resumo de Check-in -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Total de Inscritos</h5>
+                                    <h3 id="totalInscritosCheckin">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Check-ins Realizados</h5>
+                                    <h3 id="totalCheckinsRealizados" class="text-success">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Pendentes</h5>
+                                    <h3 id="totalCheckinsPendentes" class="text-warning">0</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Progresso</h5>
+                                    <div class="progress mt-2" style="height: 30px;">
+                                        <div class="progress-bar bg-success" id="progressoCheckin" role="progressbar"
+                                            style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                            0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gráficos de Check-in -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="dashboard-card">
+                                <h4>Check-ins por Hora</h4>
+                                <div class="chart-container">
+                                    <canvas id="checkinPorHoraChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="dashboard-card">
+                                <h4>Check-ins por Célula</h4>
+                                <div class="chart-container">
+                                    <canvas id="checkinPorCelulaChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Check-ins -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Últimos Check-ins Realizados</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="checkinsTable">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>Célula</th>
+                                            <th>Data/Hora</th>
+                                            <th>Status</th>
+                                            <th>Responsável</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="checkinsList">
+                                        <!-- Os dados serão carregados dinamicamente do Firebase -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Início Modal ########### -->
+        <!-- Modal para Adicionar Tarefa -->
+        <div class="modal fade" id="addTaskModal" tabindex="-1" role="dialog" aria-labelledby="addTaskModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTaskModalLabel">Adicionar Nova Tarefa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newTaskForm">
+                            <div class="form-group">
+                                <label for="taskDepartment">Departamento</label>
+                                <select class="form-control" id="taskDepartment" required>
+                                    <option value="">Selecione um departamento</option>
+                                    <option value="Supervisão">Supervisão: Mozer e Marcielle</option>
+                                    <option value="Financeiro">Financeiro: Ana Clara</option>
+                                    <option value="Cronograma">Cronograma: Monique</option>
+                                    <option value="Midia">Midia: Rebekah</option>
+                                    <option value="MidiaFisica">Midia Fisica: Lívia</option>
+                                    <option value="Gincana">Gincana: Pedro / Felipe</option>
+                                    <option value="Decoração">Decoração: Amanda / Pietra / Lucas / Saymon</option>
+                                    <option value="Devocionais">Devocionais: Clóvis</option>
+                                    <option value="Louvor">Louvor: Mozer / Andrei / Nicoly E</option>
+                                    <option value="CoberturaEspiritual">Cobertura Espiritual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskTitle">Título da Tarefa</label>
+                                <input type="text" class="form-control" id="taskTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskDescription">Descrição</label>
+                                <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="taskDueDate">Data de Vencimento</label>
+                                    <input type="date" class="form-control" id="taskDueDate" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="taskPriority">Prioridade</label>
+                                    <select class="form-control" id="taskPriority">
+                                        <option value="low">Baixa</option>
+                                        <option value="medium">Média</option>
+                                        <option value="high">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="taskResponsible">Responsável</label>
+                                <select class="form-control" id="taskResponsible">
+                                    <option value="">Selecione um responsável</option>
+                                    <option value="Mozer">Mozer</option>
+                                    <option value="Marcielle">Marcielle</option>
+                                    <option value="Ana Clara">Ana Clara</option>
+                                    <option value="Monique">Monique</option>
+                                    <option value="Rebekah">Rebekah</option>
+                                    <option value="Lívia">Lívia</option>
+                                    <option value="Pedro">Pedro</option>
+                                    <option value="Felipe">Felipe</option>
+                                    <option value="Amanda">Amanda</option>
+                                    <option value="Pietra">Pietra</option>
+                                    <option value="Lucas">Lucas</option>
+                                    <option value="Saymon">Saymon</option>
+                                    <option value="Clóvis">Clóvis</option>
+                                    <option value="Andrei">Andrei</option>
+                                    <option value="Nicoly E">Nicoly E</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="saveTaskBtn">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Editar Tarefa -->
+        <div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="editTaskModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTaskModalLabel">Editar Tarefa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editTaskForm">
+                            <input type="hidden" id="editTaskId">
+                            <div class="form-group">
+                                <label for="editTaskDepartment">Departamento</label>
+                                <select class="form-control" id="editTaskDepartment" required>
+                                    <option value="">Selecione um departamento</option>
+                                    <option value="Supervisão">Supervisão: Mozer e Marcielle</option>
+                                    <option value="Financeiro">Financeiro: Ana Clara</option>
+                                    <option value="Cronograma">Cronograma: Monique</option>
+                                    <option value="Midia">Midia: Rebekah</option>
+                                    <option value="MidiaFisica">Midia Fisica: Lívia</option>
+                                    <option value="Gincana">Gincana: Pedro / Felipe</option>
+                                    <option value="Decoração">Decoração: Amanda / Pietra / Lucas / Saymon</option>
+                                    <option value="Devocionais">Devocionais: Clóvis</option>
+                                    <option value="Louvor">Louvor: Mozer / Andrei / Nicoly E</option>
+                                    <option value="CoberturaEspiritual">Cobertura Espiritual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTaskTitle">Título da Tarefa</label>
+                                <input type="text" class="form-control" id="editTaskTitle" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTaskDescription">Descrição</label>
+                                <textarea class="form-control" id="editTaskDescription" rows="3"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="editTaskDueDate">Data de Vencimento</label>
+                                    <input type="date" class="form-control" id="editTaskDueDate" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="editTaskPriority">Prioridade</label>
+                                    <select class="form-control" id="editTaskPriority">
+                                        <option value="low">Baixa</option>
+                                        <option value="medium">Média</option>
+                                        <option value="high">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTaskResponsible">Responsável</label>
+                                <select class="form-control" id="editTaskResponsible">
+                                    <option value="">Selecione um responsável</option>
+                                    <option value="Mozer">Mozer</option>
+                                    <option value="Marcielle">Marcielle</option>
+                                    <option value="Ana Clara">Ana Clara</option>
+                                    <option value="Monique">Monique</option>
+                                    <option value="Rebekah">Rebekah</option>
+                                    <option value="Lívia">Lívia</option>
+                                    <option value="Pedro">Pedro</option>
+                                    <option value="Felipe">Felipe</option>
+                                    <option value="Amanda">Amanda</option>
+                                    <option value="Pietra">Pietra</option>
+                                    <option value="Lucas">Lucas</option>
+                                    <option value="Saymon">Saymon</option>
+                                    <option value="Clóvis">Clóvis</option>
+                                    <option value="Andrei">Andrei</option>
+                                    <option value="Nicoly E">Nicoly E</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTaskStatus">Status</label>
+                                <select class="form-control" id="editTaskStatus">
+                                    <option value="todo">A Fazer</option>
+                                    <option value="inProgress">Em Andamento</option>
+                                    <option value="completed">Concluído</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="updateTaskBtn">Atualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes da Tarefa -->
+        <div class="modal fade" id="taskDetailModal" tabindex="-1" role="dialog" aria-labelledby="taskDetailModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="taskDetailModalLabel">Detalhes da Tarefa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 id="detailTitle"></h4>
+                                <p class="lead" id="detailDescription"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">Informações</div>
+                                    <div class="card-body">
+                                        <p><strong>Departamento:</strong> <span id="detailDepartment"></span></p>
+                                        <p><strong>Responsável:</strong> <span id="detailResponsible"></span></p>
+                                        <p><strong>Vencimento:</strong> <span id="detailDueDate"></span></p>
+                                        <p><strong>Prioridade:</strong> <span id="detailPriority"></span></p>
+                                        <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-info" id="editTaskBtn">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Adicionar Transação -->
+        <div class="modal fade" id="addTransacaoModal" tabindex="-1" role="dialog"
+            aria-labelledby="addTransacaoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTransacaoModalLabel">Adicionar Nova Transação</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newTransacaoForm">
+                            <div class="form-group">
+                                <label for="transacaoTipo">Tipo de Transação</label>
+                                <select class="form-control" id="transacaoTipo" required>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="receita">Receita</option>
+                                    <option value="despesa">Despesa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transacaoCategoria">Categoria</label>
+                                <select class="form-control" id="transacaoCategoria" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <!-- Opções de receita -->
+                                    <optgroup label="Receitas" id="categoriasReceita">
+                                        <option value="Inscrições">Inscrições</option>
+                                        <option value="Rifas">Rifas</option>
+                                        <option value="Lava Rápido">Lava Rápido</option>
+                                        <option value="Cantina">Cantina</option>
+                                        <option value="Doações">Doações</option>
+                                        <option value="Outras Receitas">Outras Receitas</option>
+                                    </optgroup>
+                                    <!-- Opções de despesa -->
+                                    <optgroup label="Despesas" id="categoriasDespesa">
+                                        <option value="Alimentação">Alimentação</option>
+                                        <option value="Transporte">Transporte</option>
+                                        <option value="Material">Material</option>
+                                        <option value="Decoração">Decoração</option>
+                                        <option value="Equipamentos">Equipamentos</option>
+                                        <option value="Lembrancinhas">Lembrancinhas</option>
+                                        <option value="Outras Despesas">Outras Despesas</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transacaoDescricao">Descrição</label>
+                                <textarea class="form-control" id="transacaoDescricao" rows="2" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="transacaoValor">Valor (R$)</label>
+                                    <input type="number" step="0.01" min="0.01" class="form-control" id="transacaoValor"
+                                        required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="transacaoData">Data</label>
+                                    <input type="date" class="form-control" id="transacaoData" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="transacaoResponsavel">Responsável</label>
+                                    <select class="form-control" id="transacaoResponsavel" required>
+                                        <option value="">Selecione um responsável</option>
+                                        <option value="Mozer">Mozer</option>
+                                        <option value="Marcielle">Marcielle</option>
+                                        <option value="Ana Clara">Ana Clara</option>
+                                        <option value="Monique">Monique</option>
+                                        <option value="Rebekah">Rebekah</option>
+                                        <option value="Lívia">Lívia</option>
+                                        <option value="Pedro">Pedro</option>
+                                        <option value="Felipe">Felipe</option>
+                                        <option value="Amanda">Amanda</option>
+                                        <option value="Pietra">Pietra</option>
+                                        <option value="Lucas">Lucas</option>
+                                        <option value="Saymon">Saymon</option>
+                                        <option value="Clóvis">Clóvis</option>
+                                        <option value="Andrei">Andrei</option>
+                                        <option value="Nicoly E">Nicoly E</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="transacaoFormaPagamento">Forma de Pagamento</label>
+                                    <select class="form-control" id="transacaoFormaPagamento" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Dinheiro">Dinheiro</option>
+                                        <option value="PIX">PIX</option>
+                                        <option value="Transferência">Transferência</option>
+                                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                        <option value="Cartão de Débito">Cartão de Débito</option>
+                                        <option value="Boleto">Boleto</option>
+                                        <option value="Outra">Outra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="transacaoStatus">Status</label>
+                                <select class="form-control" id="transacaoStatus" required>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="pendente">Pendente</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transacaoObservacoes">Observações (opcional)</label>
+                                <textarea class="form-control" id="transacaoObservacoes" rows="2"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="saveTransacaoBtn">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal para Editar Transação -->
+        <div class="modal fade" id="editTransacaoModal" tabindex="-1" role="dialog"
+            aria-labelledby="editTransacaoModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editTransacaoModalLabel">Editar Transação</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editTransacaoForm">
+                            <input type="hidden" id="editTransacaoId">
+                            <div class="form-group">
+                                <label for="editTransacaoTipo">Tipo de Transação</label>
+                                <select class="form-control" id="editTransacaoTipo" required>
+                                    <option value="">Selecione o tipo</option>
+                                    <option value="receita">Receita</option>
+                                    <option value="despesa">Despesa</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTransacaoCategoria">Categoria</label>
+                                <select class="form-control" id="editTransacaoCategoria" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <!-- Opções de receita -->
+                                    <optgroup label="Receitas" id="editCategoriasReceita">
+                                        <option value="Inscrições">Inscrições</option>
+                                        <option value="Rifas">Rifas</option>
+                                        <option value="Lava Rápido">Lava Rápido</option>
+                                        <option value="Cantina">Cantina</option>
+                                        <option value="Doações">Doações</option>
+                                        <option value="Outras Receitas">Outras Receitas</option>
+                                    </optgroup>
+                                    <!-- Opções de despesa -->
+                                    <optgroup label="Despesas" id="editCategoriasDespesa">
+                                        <option value="Alimentação">Alimentação</option>
+                                        <option value="Transporte">Transporte</option>
+                                        <option value="Material">Material</option>
+                                        <option value="Decoração">Decoração</option>
+                                        <option value="Equipamentos">Equipamentos</option>
+                                        <option value="Lembrancinhas">Lembrancinhas</option>
+                                        <option value="Outras Despesas">Outras Despesas</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTransacaoDescricao">Descrição</label>
+                                <textarea class="form-control" id="editTransacaoDescricao" rows="2" required></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="editTransacaoValor">Valor (R$)</label>
+                                    <input type="number" step="0.01" min="0.01" class="form-control"
+                                        id="editTransacaoValor" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="editTransacaoData">Data</label>
+                                    <input type="date" class="form-control" id="editTransacaoData" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="editTransacaoResponsavel">Responsável</label>
+                                    <select class="form-control" id="editTransacaoResponsavel" required>
+                                        <option value="">Selecione um responsável</option>
+                                        <option value="Mozer">Mozer</option>
+                                        <option value="Marcielle">Marcielle</option>
+                                        <option value="Ana Clara">Ana Clara</option>
+                                        <option value="Monique">Monique</option>
+                                        <option value="Rebekah">Rebekah</option>
+                                        <option value="Lívia">Lívia</option>
+                                        <option value="Pedro">Pedro</option>
+                                        <option value="Felipe">Felipe</option>
+                                        <option value="Amanda">Amanda</option>
+                                        <option value="Pietra">Pietra</option>
+                                        <option value="Lucas">Lucas</option>
+                                        <option value="Saymon">Saymon</option>
+                                        <option value="Clóvis">Clóvis</option>
+                                        <option value="Andrei">Andrei</option>
+                                        <option value="Nicoly E">Nicoly E</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="editTransacaoFormaPagamento">Forma de Pagamento</label>
+                                    <select class="form-control" id="editTransacaoFormaPagamento" required>
+                                        <option value="">Selecione</option>
+                                        <option value="Dinheiro">Dinheiro</option>
+                                        <option value="PIX">PIX</option>
+                                        <option value="Transferência">Transferência</option>
+                                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                        <option value="Cartão de Débito">Cartão de Débito</option>
+                                        <option value="Boleto">Boleto</option>
+                                        <option value="Outra">Outra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTransacaoStatus">Status</label>
+                                <select class="form-control" id="editTransacaoStatus" required>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTransacaoObservacoes">Observações (opcional)</label>
+                                <textarea class="form-control" id="editTransacaoObservacoes" rows="2"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="updateTransacaoBtn">Atualizar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes da Transação -->
+        <div class="modal fade" id="transacaoDetailModal" tabindex="-1" role="dialog"
+            aria-labelledby="transacaoDetailModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="transacaoDetailModalLabel">Detalhes da Transação</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4 id="detailTransacaoDescricao"></h4>
+                                <p class="lead" id="detailTransacaoObservacoes"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">Informações</div>
+                                    <div class="card-body">
+                                        <p><strong>Tipo:</strong> <span id="detailTransacaoTipo"></span></p>
+                                        <p><strong>Categoria:</strong> <span id="detailTransacaoCategoria"></span></p>
+                                        <p><strong>Valor:</strong> <span id="detailTransacaoValor"></span></p>
+                                        <p><strong>Data:</strong> <span id="detailTransacaoData"></span></p>
+                                        <p><strong>Responsável:</strong> <span id="detailTransacaoResponsavel"></span>
+                                        </p>
+                                        <p><strong>Forma de Pagamento:</strong> <span
+                                                id="detailTransacaoFormaPagamento"></span></p>
+                                        <p><strong>Status:</strong> <span id="detailTransacaoStatus"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-info" id="editTransacaoBtn">Editar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Modal ########### -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+        <script>
+            // Configuração do Firebase
+            const firebaseConfig = {
+                apiKey: "AIzaSyC31C1X13eqVAOq_o5K2evI8q3GOfnpOpo",
+                authDomain: "iebi-2e84e.firebaseapp.com",
+                projectId: "iebi-2e84e",
+                storageBucket: "iebi-2e84e.appspot.com",
+                messagingSenderId: "634456198202",
+                appId: "1:634456198202:web:8b4de1b4def23a49303903"
+            };
+
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            // Variáveis globais
+            let totalTarefas = 0;
+            let tarefasConcluidas = 0;
+            let tarefasPendentes = [];
+            let tarefasAtrasadas = 0;
+            let departamentos = {};
+            let dataTable;
+
+            // Função para alternar entre as abas
+            $(document).ready(function () {
+                // Adicionar botão de atualização ao cabeçalho da primeira card
+                const primeiroCardHeader = $('#insights .card-header').first();
+                primeiroCardHeader.append(`
+                <button id="atualizarInsightsBtn" class="btn btn-sm btn-light float-right">
+                    <i class="bi bi-arrow-clockwise"></i> Atualizar
+                </button>
+            `);
+
+                // Event listener para o botão de exportação
+                $(document).on('click', '#exportarInsightsBtn', function () {
+                    exportarDadosInsights();
+                });
+
+
+                $('.list-group-item').on('click', function (e) {
+                    e.preventDefault();
+
+                    // Remover classe active de todos os itens
+                    $('.list-group-item').removeClass('active');
+
+                    // Adicionar classe active ao item clicado
+                    $(this).addClass('active');
+
+                    // Obter a seção a ser exibida
+                    const section = $(this).data('section');
+
+                    // Esconder todas as seções
+                    $('.content-section').removeClass('active');
+
+                    // Mostrar a seção correspondente
+                    $('#' + section).addClass('active');
+
+                    // Se for a seção de checklist, inicializar DataTable
+                    if (section === 'checklist' && !dataTable) {
+                        inicializarDataTable();
+                    }
+
+                    // Se for a seção de insights, carregar os dados
+                    if (section === 'insights') {
+                        carregarInsights();
+                    }
+
+                    if (section === 'insights' && window.faixaEtariaChart) {
+                        setTimeout(function () {
+                            window.faixaEtariaChart.resize();
+                            window.celulaChart.resize();
+                            window.igrejaChart.resize();
+                            window.pagamentoChart.resize();
+                            window.progressoChart.resize();
+                        }, 100);
+                    }
+
+                });
+
+                // Botão "Ver todas as tarefas"
+                $('#verTodasTarefas').on('click', function (e) {
+                    e.preventDefault();
+                    $('.list-group-item[data-section="checklist"]').click();
+                });
+
+                // Carregar dados do dashboard ao iniciar
+                carregarDadosDashboard();
+            });
+
+            // Configurar a exibição inicial das categorias nos modais
+            document.addEventListener('DOMContentLoaded', function () {
+                // Inicialmente esconder todas as categorias
+                const categoriasReceita = document.getElementById('categoriasReceita');
+                const categoriasDespesa = document.getElementById('categoriasDespesa');
+                const editCategoriasReceita = document.getElementById('editCategoriasReceita');
+                const editCategoriasDespesa = document.getElementById('editCategoriasDespesa');
+
+                if (categoriasReceita && categoriasDespesa) {
+                    categoriasReceita.style.display = 'none';
+                    categoriasDespesa.style.display = 'none';
+                }
+
+                if (editCategoriasReceita && editCategoriasDespesa) {
+                    editCategoriasReceita.style.display = 'none';
+                    editCategoriasDespesa.style.display = 'none';
+                }
+
+                // Definir data atual como padrão para novos registros
+                const hoje = new Date().toISOString().split('T')[0];
+                const campoData = document.getElementById('transacaoData');
+                if (campoData) {
+                    campoData.value = hoje;
+                }
+            });
+
+            // Inicializar DataTable
+            function inicializarDataTable() {
+                dataTable = $('#tarefasTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    },
+                    responsive: true,
+                    columns: [
+                        { data: 'titulo' },
+                        { data: 'departamento' },
+                        { data: 'responsavel' },
+                        { data: 'vencimento' },
+                        { data: 'prioridade' },
+                        { data: 'status' },
+                        { data: 'acoes' }
+                    ]
+                });
+
+                carregarTarefasTable();
+
+                document.querySelectorAll('.filter-status').forEach(checkbox => {
+                    checkbox.addEventListener('change', function () {
+                        aplicarFiltros();
+                    });
+                });
+            }
+
+            // Função para carregar dados do dashboard
+            function carregarDadosDashboard() {
+                // Limpar os dados anteriores
+                totalTarefas = 0;
+                tarefasConcluidas = 0;
+                tarefasPendentes = [];
+                tarefasAtrasadas = 0;
+                departamentos = {};
+
+                // Buscar tarefas do Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                    .get()
+                    .then((querySnapshot) => {
+                        const hoje = new Date();
+
+                        querySnapshot.forEach((doc) => {
+                            const tarefa = doc.data();
+                            totalTarefas++;
+
+                            // Verificar se a tarefa está concluída
+                            if (tarefa.status === "completed") {
+                                tarefasConcluidas++;
+                            }
+
+                            // Verificar se a tarefa está atrasada
+                            const dataVencimento = new Date(tarefa.dataVencimento);
+                            if (dataVencimento < hoje && tarefa.status !== "completed") {
+                                tarefasAtrasadas++;
+                            }
+
+                            // Adicionar à lista de pendentes se não estiver concluída
+                            if (tarefa.status !== "completed") {
+                                tarefasPendentes.push({
+                                    id: doc.id,
+                                    titulo: tarefa.titulo,
+                                    departamento: tarefa.departamento,
+                                    dataVencimento: dataVencimento,
+                                    prioridade: tarefa.prioridade,
+                                    responsavel: tarefa.responsavel
+                                });
+                            }
+
+                            // Contabilizar para as estatísticas de departamento
+                            if (!departamentos[tarefa.departamento]) {
+                                departamentos[tarefa.departamento] = {
+                                    total: 0,
+                                    concluidas: 0
+                                };
+                            }
+
+                            departamentos[tarefa.departamento].total++;
+                            if (tarefa.status === "completed") {
+                                departamentos[tarefa.departamento].concluidas++;
+                            }
+                        });
+
+                        // Atualizar a interface com os dados processados
+                        atualizarInterfaceDashboard();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar tarefas: ", error);
+                    });
+            }
+
+            // Função para atualizar a interface do dashboard
+            function atualizarInterfaceDashboard() {
+                // Atualizar contadores
+                document.getElementById('totalTarefas').textContent = totalTarefas;
+                document.getElementById('tarefasConcluidas').textContent = tarefasConcluidas;
+                document.getElementById('tarefasAtrasadas').textContent = tarefasAtrasadas;
+
+                // Calcular progresso geral
+                const porcentagemConcluida = totalTarefas > 0 ? Math.round((tarefasConcluidas / totalTarefas) * 100) : 0;
+                const progressBar = document.getElementById('progressoGeral');
+                progressBar.style.width = porcentagemConcluida + '%';
+                progressBar.textContent = porcentagemConcluida + '% Concluído';
+                progressBar.setAttribute('aria-valuenow', porcentagemConcluida);
+
+                // Atualizar lista de departamentos
+                const listaDepartamentos = document.getElementById('listaDepartamentos');
+                listaDepartamentos.innerHTML = '';
+
+                for (const [nome, stats] of Object.entries(departamentos)) {
+                    const porcentagem = stats.total > 0 ? Math.round((stats.concluidas / stats.total) * 100) : 0;
+                    let badgeClass = 'badge-danger';
+
+                    if (porcentagem >= 70) {
+                        badgeClass = 'badge-success';
+                    } else if (porcentagem >= 40) {
+                        badgeClass = 'badge-warning';
+                    } else if (porcentagem >= 10) {
+                        badgeClass = 'badge-info';
+                    }
+
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `
+                    ${nome}
+                    <span class="badge ${badgeClass} badge-pill">${porcentagem}%</span>
+                `;
+                    listaDepartamentos.appendChild(li);
+                }
+
+                // Ordenar tarefas pendentes por prioridade e data
+                tarefasPendentes.sort((a, b) => {
+                    const prioridadeOrdem = { high: 1, medium: 2, low: 3 };
+                    // Primeiro por prioridade
+                    const compPrioridade = prioridadeOrdem[a.prioridade] - prioridadeOrdem[b.prioridade];
+                    // Se mesma prioridade, ordena por data
+                    return compPrioridade !== 0 ? compPrioridade : a.dataVencimento - b.dataVencimento;
+                });
+
+                // Limitar a 5 tarefas
+                const tarefasExibir = tarefasPendentes.slice(0, 5);
+
+                // Atualizar lista de tarefas pendentes
+                const listaTarefasPendentes = document.getElementById('listaTarefasPendentes');
+                listaTarefasPendentes.innerHTML = '';
+
+                if (tarefasExibir.length === 0) {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item text-center';
+                    li.textContent = 'Não há tarefas pendentes';
+                    listaTarefasPendentes.appendChild(li);
+                } else {
+                    tarefasExibir.forEach(tarefa => {
+                        const li = document.createElement('li');
+                        li.className = 'list-group-item';
+
+                        // Determinar a classe de prioridade
+                        let priorityClass = '';
+                        let priorityText = '';
+
+                        if (tarefa.prioridade === 'high') {
+                            priorityClass = 'text-danger';
+                            priorityText = 'Alta';
+                        } else if (tarefa.prioridade === 'medium') {
+                            priorityClass = 'text-warning';
+                            priorityText = 'Média';
+                        } else {
+                            priorityClass = 'text-info';
+                            priorityText = 'Baixa';
+                        }
+
+                        // Formatar data de vencimento
+                        const dataFormatada = tarefa.dataVencimento.toLocaleDateString('pt-BR');
+
+                        // Criar HTML para a tarefa
+                        li.innerHTML = `
+                        <div class="form-check">
+                            <input class="form-check-input task-checkbox" type="checkbox" value="${tarefa.id}" id="task${tarefa.id}">
+                            <label class="form-check-label" for="task${tarefa.id}">
+                                <strong>${tarefa.titulo}</strong>
+                                <span class="badge badge-secondary ml-2">${tarefa.departamento}</span>
+                                <span class="ml-2 ${priorityClass}">Prioridade: ${priorityText}</span>
+                                <br>
+                                <small class="text-muted">Vencimento: ${dataFormatada}</small>
+                            </label>
+                        </div>
+                    `;
+
+                        listaTarefasPendentes.appendChild(li);
+
+                        // Adicionar event listener para marcar como concluída
+                        const checkbox = li.querySelector('.task-checkbox');
+                        checkbox.addEventListener('change', function () {
+                            if (this.checked) {
+                                marcarComoConcluida(tarefa.id);
+                            }
+                        });
+                    });
+                }
+            }
+
+            // Função para carregar tarefas na tabela
+            function carregarTarefasTable() {
+                // Limpar tabela
+                dataTable.clear();
+
+                // Buscar tarefas do Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                    .get()
+                    .then((querySnapshot) => {
+                        let tarefas = [];
+
+                        querySnapshot.forEach((doc) => {
+                            const tarefa = doc.data();
+                            const dataVencimento = new Date(tarefa.dataVencimento);
+
+                            // Traduzir status
+                            let statusTexto = '';
+                            let statusBadge = '';
+
+                            if (tarefa.status === 'todo') {
+                                statusTexto = 'A Fazer';
+                                statusBadge = 'badge-secondary';
+                            } else if (tarefa.status === 'inProgress') {
+                                statusTexto = 'Em Andamento';
+                                statusBadge = 'badge-primary';
+                            } else if (tarefa.status === 'completed') {
+                                statusTexto = 'Concluído';
+                                statusBadge = 'badge-success';
+                            }
+
+                            // Traduzir prioridade
+                            let prioridadeTexto = '';
+                            let prioridadeBadge = '';
+
+                            if (tarefa.prioridade === 'high') {
+                                prioridadeTexto = 'Alta';
+                                prioridadeBadge = 'badge-high';
+                            } else if (tarefa.prioridade === 'medium') {
+                                prioridadeTexto = 'Média';
+                                prioridadeBadge = 'badge-medium';
+                            } else if (tarefa.prioridade === 'low') {
+                                prioridadeTexto = 'Baixa';
+                                prioridadeBadge = 'badge-low';
+                            }
+
+                            // Adicionar à lista
+                            tarefas.push({
+                                id: doc.id,
+                                titulo: tarefa.titulo,
+                                departamento: `<span class="badge badge-secondary">${tarefa.departamento}</span>`,
+                                responsavel: tarefa.responsavel || 'Não atribuído',
+                                vencimento: dataVencimento.toLocaleDateString('pt-BR'),
+                                prioridade: `<span class="badge ${prioridadeBadge}">${prioridadeTexto}</span>`,
+                                status: `<span class="badge ${statusBadge}">${statusTexto}</span>`,
+                                acoes: `
+                                <button class="btn btn-sm btn-info view-task" data-id="${doc.id}"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-sm btn-primary edit-task" data-id="${doc.id}"><i class="bi bi-pencil"></i></button>
+                                <button class="btn btn-sm btn-danger delete-task" data-id="${doc.id}"><i class="bi bi-trash"></i></button>
+                            `
+                            });
+                        });
+
+                        // Adicionar dados à tabela
+                        dataTable.rows.add(tarefas).draw();
+
+                        // Adicionar event listeners para os botões de ação
+                        adicionarEventListenersBotoes();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar tarefas: ", error);
+                    });
+            }
+
+            // Função para adicionar event listeners aos botões
+            function adicionarEventListenersBotoes() {
+                // Botão de visualizar tarefa
+                $('#tarefasTable').on('click', '.view-task', function () {
+                    const id = $(this).data('id');
+                    abrirModalDetalhes(id);
+                });
+
+                // Botão de editar tarefa
+                $('#tarefasTable').on('click', '.edit-task', function () {
+                    const id = $(this).data('id');
+                    abrirModalEdicao(id);
+                });
+
+                // Botão de excluir tarefa
+                $('#tarefasTable').on('click', '.delete-task', function () {
+                    const id = $(this).data('id');
+                    excluirTarefa(id);
+                });
+            }
+
+            // Função para marcar uma tarefa como concluída
+            function marcarComoConcluida(id) {
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist").doc(id).update({
+                    status: "completed",
+                    dataAtualizacao: new Date().toISOString()
+                })
+                    .then(() => {
+                        console.log("Tarefa marcada como concluída!");
+                        // Recarregar os dados do dashboard
+                        carregarDadosDashboard();
+                        // Se a tabela já foi inicializada, recarregar
+                        if (dataTable) {
+                            carregarTarefasTable();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao marcar tarefa como concluída: ", error);
+                        alert("Erro ao marcar tarefa como concluída. Tente novamente.");
+                    });
+            }
+
+            // Função para abrir modal de detalhes
+            function abrirModalDetalhes(id) {
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist").doc(id)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const tarefa = doc.data();
+
+                            // Preencher dados no modal
+                            document.getElementById('detailTitle').textContent = tarefa.titulo;
+                            document.getElementById('detailDescription').textContent = tarefa.descricao || 'Sem descrição';
+                            document.getElementById('detailDepartment').textContent = tarefa.departamento;
+                            document.getElementById('detailResponsible').textContent = tarefa.responsavel || 'Não atribuído';
+
+                            // Formatar data
+                            const dataVencimento = new Date(tarefa.dataVencimento);
+                            document.getElementById('detailDueDate').textContent = dataVencimento.toLocaleDateString('pt-BR');
+
+                            // Traduzir prioridade
+                            let prioridadeTexto = '';
+                            if (tarefa.prioridade === 'high') {
+                                prioridadeTexto = '<span class="text-danger">Alta</span>';
+                            } else if (tarefa.prioridade === 'medium') {
+                                prioridadeTexto = '<span class="text-warning">Média</span>';
+                            } else {
+                                prioridadeTexto = '<span class="text-info">Baixa</span>';
+                            }
+                            document.getElementById('detailPriority').innerHTML = prioridadeTexto;
+
+                            // Traduzir status
+                            let statusTexto = '';
+                            if (tarefa.status === 'todo') {
+                                statusTexto = '<span class="badge badge-secondary">A Fazer</span>';
+                            } else if (tarefa.status === 'inProgress') {
+                                statusTexto = '<span class="badge badge-primary">Em Andamento</span>';
+                            } else if (tarefa.status === 'completed') {
+                                statusTexto = '<span class="badge badge-success">Concluído</span>';
+                            }
+                            document.getElementById('detailStatus').innerHTML = statusTexto;
+
+                            // Adicionar ID ao botão editar
+                            document.getElementById('editTaskBtn').setAttribute('data-id', id);
+
+                            // Abrir o modal
+                            $('#taskDetailModal').modal('show');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar detalhes da tarefa: ", error);
+                    });
+            }
+
+            // Função para abrir modal de edição
+            function abrirModalEdicao(id) {
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist").doc(id)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const tarefa = doc.data();
+
+                            // Preencher campos do formulário
+                            document.getElementById('editTaskId').value = id;
+                            document.getElementById('editTaskDepartment').value = tarefa.departamento;
+                            document.getElementById('editTaskTitle').value = tarefa.titulo;
+                            document.getElementById('editTaskDescription').value = tarefa.descricao || '';
+                            document.getElementById('editTaskResponsible').value = tarefa.responsavel || '';
+                            document.getElementById('editTaskStatus').value = tarefa.status;
+                            document.getElementById('editTaskPriority').value = tarefa.prioridade;
+
+                            // Formatar a data para o padrão YYYY-MM-DD
+                            const dataVencimento = tarefa.dataVencimento.split('T')[0];
+                            document.getElementById('editTaskDueDate').value = dataVencimento;
+
+                            // Abrir o modal
+                            $('#editTaskModal').modal('show');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados para edição: ", error);
+                    });
+            }
+
+            // Event listener para o botão de editar no modal de detalhes
+            document.getElementById('editTaskBtn').addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+
+                // Usar o evento 'hidden.bs.modal' para garantir sequência correta
+                $('#taskDetailModal').on('hidden.bs.modal', function () {
+                    // Remove o event listener para evitar múltiplas chamadas
+                    $('#taskDetailModal').off('hidden.bs.modal');
+                    // Pequeno delay para garantir que o DOM foi atualizado
+                    setTimeout(function () {
+                        abrirModalEdicao(id);
+                    }, 100);
+                });
+
+                // Inicia o fechamento do modal
+                $('#taskDetailModal').modal('hide');
+            });
+
+            // Função para salvar nova tarefa
+            document.getElementById('saveTaskBtn').addEventListener('click', function () {
+                const taskDepartment = document.getElementById('taskDepartment').value;
+                const taskTitle = document.getElementById('taskTitle').value;
+                const taskDescription = document.getElementById('taskDescription').value;
+                const taskDueDate = document.getElementById('taskDueDate').value;
+                const taskPriority = document.getElementById('taskPriority').value;
+                const taskResponsible = document.getElementById('taskResponsible').value;
+
+                if (!taskTitle || !taskDueDate || !taskDepartment) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Adicionar ao Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist").add({
+                    departamento: taskDepartment,
+                    titulo: taskTitle,
+                    descricao: taskDescription,
+                    dataVencimento: taskDueDate,
+                    prioridade: taskPriority,
+                    responsavel: taskResponsible,
+                    status: "todo",
+                    dataCriacao: new Date().toISOString(),
+                    dataAtualizacao: new Date().toISOString()
+                })
+                    .then(() => {
+                        console.log("Tarefa adicionada com sucesso!");
+                        $('#addTaskModal').modal('hide');
+                        document.getElementById('newTaskForm').reset();
+
+                        // Recarregar dados
+                        carregarDadosDashboard();
+                        if (dataTable) {
+                            carregarTarefasTable();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao adicionar tarefa: ", error);
+                        alert("Erro ao adicionar tarefa. Tente novamente.");
+                    });
+            });
+
+            // Função para atualizar tarefa
+            document.getElementById('updateTaskBtn').addEventListener('click', function () {
+                const taskId = document.getElementById('editTaskId').value;
+                const taskDepartment = document.getElementById('editTaskDepartment').value;
+                const taskTitle = document.getElementById('editTaskTitle').value;
+                const taskDescription = document.getElementById('editTaskDescription').value;
+                const taskDueDate = document.getElementById('editTaskDueDate').value;
+                const taskPriority = document.getElementById('editTaskPriority').value;
+                const taskResponsible = document.getElementById('editTaskResponsible').value;
+                const taskStatus = document.getElementById('editTaskStatus').value;
+
+                if (!taskTitle || !taskDueDate || !taskDepartment) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Atualizar no Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist").doc(taskId).update({
+                    departamento: taskDepartment,
+                    titulo: taskTitle,
+                    descricao: taskDescription,
+                    dataVencimento: taskDueDate,
+                    prioridade: taskPriority,
+                    responsavel: taskResponsible,
+                    status: taskStatus,
+                    dataAtualizacao: new Date().toISOString()
+                })
+                    .then(() => {
+                        console.log("Tarefa atualizada com sucesso!");
+                        $('#editTaskModal').modal('hide');
+
+                        // Recarregar dados
+                        carregarDadosDashboard();
+                        if (dataTable) {
+                            carregarTarefasTable();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao atualizar tarefa: ", error);
+                        alert("Erro ao atualizar tarefa. Tente novamente.");
+                    });
+            });
+
+            // Função para excluir tarefa
+            function excluirTarefa(id) {
+                const confirmar = confirm("Tem certeza que deseja excluir esta tarefa?");
+                if (confirmar) {
+                    db.collection("Eventos").doc("ComRoca2025").collection("checklist").doc(id).delete()
+                        .then(() => {
+                            console.log("Tarefa excluída com sucesso!");
+
+                            // Recarregar dados
+                            carregarDadosDashboard();
+                            if (dataTable) {
+                                carregarTarefasTable();
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao excluir tarefa: ", error);
+                            alert("Erro ao excluir tarefa. Tente novamente.");
+                        });
+                }
+            }
+
+            // Filtrar tarefas na tabela
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                aplicarFiltros();
+            });
+
+            // Limpar filtros
+            $('#limparFiltro').on('click', function () {
+                // Resetar o formulário para os selects
+                document.getElementById('filterForm').reset();
+
+                // Desmarcar todos os checkboxes de status
+                document.querySelectorAll('.filter-status').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+
+                // Aplicar filtros (agora vazios)
+                aplicarFiltros();
+            });
+
+            // Função para aplicar filtros
+            function aplicarFiltros() {
+                const filtroDepartamento = document.getElementById('filterDepartamento').value;
+                // Obter valores dos checkboxes marcados
+                const filtroStatus = Array.from(document.querySelectorAll('.filter-status:checked'))
+                    .map(checkbox => checkbox.value);
+                const filtroPrioridade = document.getElementById('filterPrioridade').value;
+
+                // Limpar filtros anteriores
+                dataTable.search('').columns().search('').draw();
+
+                // Aplicar filtros
+                if (filtroDepartamento) {
+                    dataTable.column(1).search(filtroDepartamento).draw();
+                }
+
+                // Aplicar filtro de status com múltiplas seleções
+                if (filtroStatus.length > 0) {
+                    // Criar expressão regular para buscar qualquer um dos status selecionados
+                    const statusTextos = filtroStatus.map(status => {
+                        if (status === 'todo') return 'A Fazer';
+                        if (status === 'inProgress') return 'Em Andamento';
+                        if (status === 'completed') return 'Concluído';
+                        return '';
+                    });
+
+                    // Usar regex para filtrar por qualquer um dos status selecionados
+                    const regexStatus = statusTextos.join('|');
+                    dataTable.column(5).search(regexStatus, true, false).draw();
+                }
+
+                if (filtroPrioridade) {
+                    let textoPrioridade = '';
+                    if (filtroPrioridade === 'high') textoPrioridade = 'Alta';
+                    if (filtroPrioridade === 'medium') textoPrioridade = 'Média';
+                    if (filtroPrioridade === 'low') textoPrioridade = 'Baixa';
+
+                    dataTable.column(4).search(textoPrioridade).draw();
+                }
+            }
+
+
+            // Função para carregar dados dos insights
+            function carregarInsights() {
+                // Destruir gráficos existentes para evitar o erro de canvas já em uso
+                if (window.faixaEtariaChart) {
+                    try {
+                        window.faixaEtariaChart.destroy();
+                        window.igrejaChart.destroy();
+                        window.pagamentoChart.destroy();
+                        window.progressoChart.destroy();
+                        window.celulaChart.destroy();
+                    } catch (e) {
+                        console.warn("Erro ao destruir gráficos existentes:", e);
+                    }
+
+                    // Limpar referências
+                    window.faixaEtariaChart = null;
+                    window.igrejaChart = null;
+                    window.pagamentoChart = null;
+                    window.progressoChart = null;
+                    window.celulaChart = null;
+                }
+
+                // Recriar elementos canvas
+                const containers = [
+                    'faixaEtariaInsightChart',
+                    'igrejaInsightChart',
+                    'pagamentoInsightChart',
+                    'progressoInscricoesChart',
+                    'celulaInsightChart'
+                ];
+
+                containers.forEach(id => {
+                    const container = document.getElementById(id).parentNode;
+                    const oldCanvas = document.getElementById(id);
+                    if (oldCanvas) {
+                        container.removeChild(oldCanvas);
+                    }
+
+                    const newCanvas = document.createElement('canvas');
+                    newCanvas.id = id;
+                    container.appendChild(newCanvas);
+                });
+
+                // Verificar se os gráficos já foram criados
+                //if (window.faixaEtariaChart) {
+                //    return; // Evitar recarregar os gráficos se já existirem
+                //}
+
+                // Limpar dados anteriores
+                let totalParticipantes = 0;
+                let totalPagos = 0;
+                let totalPendentes = 0;
+
+                // Dados para gráficos
+                const faixasEtarias = {
+                    "10-12 anos": 0,
+                    "13-15 anos": 0,
+                    "16-17 anos": 0,
+                    "18+ anos": 0
+                };
+
+                const celulas = {};
+                const igrejas = {};
+                const statusPagamento = {
+                    "Pago": 0,
+                    "Pendente": 0
+                };
+
+                // Dados para progresso de inscrições (simulado por semana)
+                const progressoInscricoes = {
+                    labels: [],
+                    data: []
+                };
+
+                // Buscar participantes do Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                    .where("anoacamp", "==", "2025")
+                    .get()
+                    .then((querySnapshot) => {
+                        totalParticipantes = querySnapshot.size;
+
+                        // Processar dados dos participantes
+                        querySnapshot.forEach((doc) => {
+                            const participante = doc.data();
+
+                            // Contabilizar status de pagamento
+                            if (participante.statusPagamento === 'pago') {
+                                totalPagos++;
+                                statusPagamento["Pago"]++;
+                            } else {
+                                totalPendentes++;
+                                statusPagamento["Pendente"]++;
+                            }
+
+                            // Contabilizar faixa etária
+                            const idade = parseInt(participante.idade);
+                            if (idade >= 10 && idade <= 12) {
+                                faixasEtarias["10-12 anos"]++;
+                            } else if (idade >= 13 && idade <= 15) {
+                                faixasEtarias["13-15 anos"]++;
+                            } else if (idade >= 16 && idade <= 17) {
+                                faixasEtarias["16-17 anos"]++;
+                            } else {
+                                faixasEtarias["18+ anos"]++;
+                            }
+
+                            // Contabilizar igreja
+                            const igreja = participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja;
+                            igrejas[igreja] = (igrejas[igreja] || 0) + 1;
+
+                            // Contabilizar célula
+                            if (participante.celula && participante.celula.trim() !== '') {
+                                celulas[participante.celula] = (celulas[participante.celula] || 0) + 1;
+                            } else {
+                                celulas['Sem célula'] = (celulas['Sem célula'] || 0) + 1;
+                            }
+
+                            // Processar data de registro para o gráfico de progresso
+                            if (participante.dtRegistro) {
+                                const dataRegistro = new Date(participante.dtRegistro);
+                                const semana = `Semana ${Math.floor(dataRegistro.getDate() / 7) + 1}`;
+
+                                if (!progressoInscricoes.labels.includes(semana)) {
+                                    progressoInscricoes.labels.push(semana);
+                                    progressoInscricoes.data.push(1);
+                                } else {
+                                    const index = progressoInscricoes.labels.indexOf(semana);
+                                    progressoInscricoes.data[index]++;
+                                }
+                            }
+                        });
+
+                        // Ordenar as semanas cronologicamente
+                        const semanas = progressoInscricoes.labels.map((semana, index) => {
+                            return {
+                                label: semana,
+                                data: progressoInscricoes.data[index],
+                                num: parseInt(semana.replace('Semana ', ''))
+                            };
+                        }).sort((a, b) => a.num - b.num);
+
+                        progressoInscricoes.labels = semanas.map(s => s.label);
+                        progressoInscricoes.data = semanas.map(s => s.data);
+
+                        // Ordenar células por quantidade (do maior para o menor)
+                        const celulasOrdenadas = Object.entries(celulas)
+                            .sort((a, b) => b[1] - a[1])
+                            .reduce((obj, [key, value]) => {
+                                obj[key] = value;
+                                return obj;
+                            }, {});
+
+                        // Atualizar contadores
+                        document.getElementById('totalParticipantesInsight').textContent = totalParticipantes;
+                        document.getElementById('totalPagosInsight').textContent = totalPagos;
+                        document.getElementById('totalPendentesInsight').textContent = totalPendentes;
+
+                        // Criar gráficos
+                        window.faixaEtariaChart = criarGraficoFaixaEtaria(faixasEtarias);
+                        window.igrejaChart = criarGraficoIgrejas(igrejas);
+                        window.pagamentoChart = criarGraficoPagamento(statusPagamento);
+                        window.progressoChart = criarGraficoProgressoInscricoes(progressoInscricoes);
+                        window.celulaChart = criarGraficoCelulas(celulasOrdenadas);
+
+                        // Buscar informações sobre as rifas
+                        fetch('/count_rifas.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                // Atualizar a interface
+                                document.getElementById('rifasEntreguesCount').textContent = data.rifasEntregues;
+                                document.getElementById('valorPrevistoRifas').textContent =
+                                    `R$ ${data.valorPrevisto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                            })
+                            .catch(error => {
+                                console.error("Erro ao buscar informações de rifas:", error);
+                            });
+
+                        // Gerar recomendações
+                        gerarRecomendacoes(totalParticipantes, totalPagos, faixasEtarias);
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar dados para insights: ", error);
+                    });
+            }
+
+            // Função para criar gráfico de faixa etária
+            function criarGraficoFaixaEtaria(dados) {
+                const canvas = document.getElementById('faixaEtariaInsightChart');
+                const ctx = canvas.getContext('2d');
+
+                // Verificar se já existe um gráfico associado a este canvas
+                const chartInstance = Chart.getChart(canvas);
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                // Configuração do Chart
+                return new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(dados),
+                        datasets: [{
+                            label: 'Quantidade de Inscritos',
+                            data: Object.values(dados),
+                            backgroundColor: [
+                                '#48c9b0',  // Teal
+                                '#82e0aa',  // Mint Green
+                                '#f7dc6f',  // Soft Yellow
+                                '#f0b27a'   // Peach
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Função para criar gráfico de células
+            function criarGraficoCelulas(dados) {
+                const ctx = document.getElementById('celulaInsightChart').getContext('2d');
+
+                // Limitar a 15 células para melhor visualização
+                let labels = Object.keys(dados);
+                let values = Object.values(dados);
+
+                if (labels.length > 15) {
+                    // Pegar as 14 maiores células
+                    labels = labels.slice(0, 14);
+                    values = values.slice(0, 14);
+
+                    // Somar o restante como "Outras"
+                    const outrasSum = Object.values(dados).slice(14).reduce((sum, val) => sum + val, 0);
+                    if (outrasSum > 0) {
+                        labels.push('Outras');
+                        values.push(outrasSum);
+                    }
+                }
+
+                // Gerar cores para cada barra
+                const colors = generateColors(labels.length);
+
+                return new Chart(ctx, {
+                    type: 'bar', // Mudança aqui: usar 'bar' em vez de 'horizontalBar'
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Quantidade de Inscritos',
+                            data: values,
+                            backgroundColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y', // Adicionar esta opção para barras horizontais
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Função auxiliar para gerar cores
+            function generateColors(count) {
+                const baseColors = [
+                    '#48c9b0',  // Teal
+                    '#82e0aa',  // Mint Green
+                    '#f7dc6f',  // Soft Yellow
+                    '#f0b27a',  // Peach
+                    '#ec7063',  // Coral Red
+                    '#af7ac5',  // Lavender
+                    '#5dade2',  // Sky Blue
+                    '#45b39d',  // Turquoise
+                    '#52be80',  // Green
+                    '#58d68d',  // Emerald
+                    '#f4d03f',  // Yellow
+                    '#eb984e',  // Orange
+                    '#cd6155',  // Brick Red
+                    '#a569bd',  // Purple
+                    '#5499c7'   // Blue
+                ];
+
+                // Se temos menos cores que o necessário, repetimos as cores
+                if (count <= baseColors.length) {
+                    return baseColors.slice(0, count);
+                } else {
+                    const result = [];
+                    for (let i = 0; i < count; i++) {
+                        result.push(baseColors[i % baseColors.length]);
+                    }
+                    return result;
+                }
+            }
+
+            // Variável global para armazenar a referência ao gráfico
+            let igrejaChart = null;
+
+            function criarGraficoIgrejas(dados) {
+                const ctx = document.getElementById('igrejaInsightChart').getContext('2d');
+
+                // Verificar se já existe um gráfico e destruí-lo
+                if (igrejaChart !== null) {
+                    igrejaChart.destroy();
+                }
+
+                // Criar o novo gráfico
+                igrejaChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(dados),
+                        datasets: [{
+                            data: Object.values(dados),
+                            backgroundColor: [
+                                '#48c9b0',  // Teal
+                                '#82e0aa',  // Mint Green
+                                '#f7dc6f',  // Soft Yellow
+                                '#f0b27a',  // Peach
+                                '#ec7063'   // Coral Red
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+
+                return igrejaChart;
+            }
+
+
+            // Função para criar gráfico de status de pagamento
+            function criarGraficoPagamento(dados) {
+                const ctx = document.getElementById('pagamentoInsightChart').getContext('2d');
+                return new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(dados),
+                        datasets: [{
+                            data: Object.values(dados),
+                            backgroundColor: [
+                                '#28a745',  // Verde para Pago
+                                '#ffc107'   // Amarelo para Pendente
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // Função para criar gráfico de progresso de inscrições
+            function criarGraficoProgressoInscricoes(dados) {
+                const ctx = document.getElementById('progressoInscricoesChart').getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dados.labels,
+                        datasets: [{
+                            label: 'Novas Inscrições',
+                            data: dados.data,
+                            backgroundColor: 'rgba(61, 117, 23, 0.2)',
+                            borderColor: 'rgba(61, 117, 23, 1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Função para gerar recomendações baseadas nos dados
+            function gerarRecomendacoes(totalParticipantes, totalPagos, faixasEtarias) {
+                const recomendacoesList = document.getElementById('recomendacoesList');
+                recomendacoesList.innerHTML = '';
+
+                const recomendacoes = [];
+
+                // Recomendação baseada em pagamentos
+                const percentualPago = (totalPagos / totalParticipantes) * 100;
+                if (percentualPago < 50) {
+                    recomendacoes.push({
+                        texto: `Apenas ${percentualPago.toFixed(0)}% dos participantes confirmaram pagamento. Considere enviar lembretes ou facilitar formas de pagamento.`,
+                        icone: 'bi-cash-coin',
+                        classe: 'text-warning'
+                    });
+                }
+
+                // Recomendação baseada em faixa etária
+                const menoresIdade = faixasEtarias["10-12 anos"] + faixasEtarias["13-15 anos"] + faixasEtarias["16-17 anos"];
+                if (menoresIdade > 0) {
+                    recomendacoes.push({
+                        texto: `Há ${menoresIdade} participantes menores de idade. Certifique-se de que todos tenham autorização dos responsáveis.`,
+                        icone: 'bi-exclamation-triangle',
+                        classe: 'text-info'
+                    });
+                }
+
+                // Recomendação sobre tarefas
+                recomendacoes.push({
+                    texto: `Verifique se todas as tarefas relacionadas à acomodação estão sendo planejadas para ${totalParticipantes} participantes.`,
+                    icone: 'bi-house',
+                    classe: 'text-primary'
+                });
+
+                // Recomendação sobre equipe
+                const equipesNecessarias = Math.ceil(totalParticipantes / 15);
+                recomendacoes.push({
+                    texto: `Com base no número de inscritos, recomenda-se formar pelo menos ${equipesNecessarias} equipes para atividades em grupo.`,
+                    icone: 'bi-people',
+                    classe: 'text-success'
+                });
+
+                // Recomendação sobre tarefas pendentes
+                db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                    .where("status", "!=", "completed")
+                    .get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.size > 0) {
+                            recomendacoes.push({
+                                texto: `Existem ${querySnapshot.size} tarefas pendentes. Considere priorizar as de alta prioridade.`,
+                                icone: 'bi-list-check',
+                                classe: 'text-danger'
+                            });
+
+                            // Adicionar recomendações à lista após buscar tarefas pendentes
+                            adicionarRecomendacoesALista(recomendacoes);
+                        } else {
+                            // Adicionar recomendações à lista se não houver tarefas pendentes
+                            adicionarRecomendacoesALista(recomendacoes);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar tarefas pendentes: ", error);
+                        // Adicionar recomendações à lista mesmo em caso de erro
+                        adicionarRecomendacoesALista(recomendacoes);
+                    });
+            }
+
+            // Função auxiliar para adicionar recomendações à lista
+            function adicionarRecomendacoesALista(recomendacoes) {
+                const recomendacoesList = document.getElementById('recomendacoesList');
+
+                // Adicionar recomendações à lista
+                recomendacoes.forEach(rec => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex align-items-center';
+                    li.innerHTML = `
+            <i class="bi ${rec.icone} ${rec.classe} me-3" style="font-size: 1.5rem; margin-right: 10px;"></i>
+            <span>${rec.texto}</span>
+        `;
+                    recomendacoesList.appendChild(li);
+                });
+            }
+
+            // Função para atualizar os gráficos de insights
+            function atualizarGraficosInsights() {
+                // Destruir gráficos existentes se houver
+                try {
+                    if (window.faixaEtariaChart) {
+                        window.faixaEtariaChart.destroy();
+                    }
+
+                    if (window.igrejaChart) {
+                        window.igrejaChart.destroy();
+                    }
+
+                    if (window.pagamentoChart) {
+                        window.pagamentoChart.destroy();
+                    }
+
+                    if (window.progressoChart) {
+                        window.progressoChart.destroy();
+                    }
+
+                    if (window.celulaChart) {
+                        window.celulaChart.destroy();
+                    }
+                } catch (e) {
+                    console.warn("Erro ao destruir gráficos:", e);
+                }
+
+                // Limpar referências
+                window.faixaEtariaChart = null;
+                window.igrejaChart = null;
+                window.pagamentoChart = null;
+                window.progressoChart = null;
+                window.celulaChart = null;
+
+                // Recarregar dados após um pequeno delay
+                setTimeout(function () {
+                    carregarInsights();
+                }, 100);
+            }
+
+            // Adicione esta função para exportar dados dos insights
+            function exportarDadosInsights() {
+                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                    .where("anoacamp", "==", "2025")
+                    .get()
+                    .then((querySnapshot) => {
+                        const dados = [];
+                        querySnapshot.forEach((doc) => {
+                            dados.push(doc.data());
+                        });
+
+                        if (dados.length === 0) {
+                            alert('Não há dados para exportar');
+                            return;
+                        }
+
+                        // Define a ordem das colunas
+                        const ordemColunas = [
+                            "anoacamp",
+                            "dtRegistro",
+                            "nome",
+                            "dtnasc",
+                            "idade",
+                            "celular",
+                            "cpf",
+                            "igreja",
+                            "outraIgreja",
+                            "rede",
+                            "supervisor",
+                            "celula",
+                            "email",
+                            "endereco",
+                            "numero",
+                            "compl",
+                            "bairro",
+                            "cidade",
+                            "contato",
+                            "fonecontato",
+                            "statusPagamento",
+                            "dataPagamento",
+                            "formaPagamento"
+                        ];
+
+                        // Cria uma nova array com os dados ordenados
+                        const dadosOrdenados = dados.map(item => {
+                            const novoObj = {};
+                            ordemColunas.forEach(coluna => {
+                                novoObj[coluna] = item[coluna];
+                            });
+                            return novoObj;
+                        });
+
+                        // Usar a biblioteca XLSX para criar e baixar o arquivo Excel
+                        const ws = XLSX.utils.json_to_sheet(dadosOrdenados);
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+                        XLSX.writeFile(wb, "Participantes_ACAMP2025.xlsx");
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados: ", error);
+                        alert('Erro ao buscar dados. Por favor, tente novamente.');
+                    });
+            }
+
+            // Adicionar event listener para a aba de insights
+            $('.list-group-item[data-section="insights"]').on('click', function () {
+                // Carregar dados apenas quando a aba for selecionada
+                setTimeout(carregarInsights, 100);
+            });
+
+            // Adicionar CSS necessário
+            document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                .dashboard-card {
+                    background: white;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 15px;
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+    
+                .chart-container {
+                    position: relative;
+                    height: 300px;
+                    width: 100%;
+                }
+            </style>
+        `);
+
+            // Variáveis globais para o fluxo de caixa
+            let transacoesDataTable;
+            let totalReceitas = 0;
+            let totalDespesas = 0;
+            let categoriasDespesas = {};
+            let receitasDespesasMensais = {
+                labels: [],
+                receitas: [],
+                despesas: []
+            };
+
+            // Função para inicializar a tabela de transações
+            function inicializarTabelaTransacoes() {
+                if (transacoesDataTable) {
+                    transacoesDataTable.destroy();
+                }
+
+                transacoesDataTable = $('#transacoesTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    },
+                    responsive: true,
+                    order: [[0, 'desc']], // Ordenar por data (decrescente)
+                    columns: [
+                        { data: 'data' },
+                        { data: 'tipo' },
+                        { data: 'categoria' },
+                        { data: 'descricao' },
+                        { data: 'valor' },
+                        { data: 'responsavel' },
+                        { data: 'status' },
+                        { data: 'acoes' }
+                    ]
+                });
+
+                carregarTransacoes();
+            }
+
+            // Função para carregar transações do Firestore
+            function carregarTransacoes() {
+                // Limpar dados anteriores
+                transacoesDataTable.clear();
+                totalReceitas = 0;
+                totalDespesas = 0;
+                categoriasDespesas = {};
+                receitasDespesasMensais = {
+                    labels: [],
+                    receitas: [],
+                    despesas: []
+                };
+
+                // Buscar transações do Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro")
+                    .orderBy("data", "desc")
+                    .get()
+                    .then((querySnapshot) => {
+                        let transacoes = [];
+
+                        // Mapear meses para o gráfico
+                        const meses = {};
+
+                        querySnapshot.forEach((doc) => {
+                            const transacao = doc.data();
+                            const dataObj = new Date(transacao.data);
+                            const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+
+                            // Calcular totais
+                            const valor = parseFloat(transacao.valor);
+                            if (transacao.tipo === 'receita' && transacao.status !== 'cancelado') {
+                                totalReceitas += valor;
+                            } else if (transacao.tipo === 'despesa' && transacao.status !== 'cancelado') {
+                                totalDespesas += valor;
+
+                                // Contabilizar para o gráfico de categorias de despesas
+                                if (!categoriasDespesas[transacao.categoria]) {
+                                    categoriasDespesas[transacao.categoria] = 0;
+                                }
+                                categoriasDespesas[transacao.categoria] += valor;
+                            }
+
+                            // Contabilizar para o gráfico de receitas e despesas mensais
+                            const mesAno = dataObj.toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' });
+                            if (!meses[mesAno]) {
+                                meses[mesAno] = { receitas: 0, despesas: 0 };
+                            }
+
+                            if (transacao.tipo === 'receita' && transacao.status !== 'cancelado') {
+                                meses[mesAno].receitas += valor;
+                            } else if (transacao.tipo === 'despesa' && transacao.status !== 'cancelado') {
+                                meses[mesAno].despesas += valor;
+                            }
+
+                            // Definir classes e textos para a tabela
+                            let tipoTexto = transacao.tipo === 'receita' ? 'Receita' : 'Despesa';
+                            let tipoClasse = transacao.tipo === 'receita' ? 'text-success' : 'text-danger';
+
+                            let statusTexto = '';
+                            let statusClasse = '';
+
+                            if (transacao.status === 'confirmado') {
+                                statusTexto = 'Confirmado';
+                                statusClasse = 'badge-success';
+                            } else if (transacao.status === 'pendente') {
+                                statusTexto = 'Pendente';
+                                statusClasse = 'badge-warning';
+                            } else if (transacao.status === 'cancelado') {
+                                statusTexto = 'Cancelado';
+                                statusClasse = 'badge-danger';
+                            }
+
+                            // Formatar valor
+                            const valorFormatado = `R$ ${valor.toFixed(2).replace('.', ',')}`;
+
+                            // Adicionar à lista de transações
+                            transacoes.push({
+                                id: doc.id,
+                                data: dataFormatada,
+                                tipo: `<span class="${tipoClasse}">${tipoTexto}</span>`,
+                                categoria: transacao.categoria,
+                                descricao: transacao.descricao,
+                                valor: `<span class="${tipoClasse}">${valorFormatado}</span>`,
+                                responsavel: transacao.responsavel,
+                                status: `<span class="badge ${statusClasse}">${statusTexto}</span>`,
+                                acoes: `
+                        <button class="btn btn-sm btn-info view-transacao" data-id="${doc.id}"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-primary edit-transacao" data-id="${doc.id}"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-danger delete-transacao" data-id="${doc.id}"><i class="bi bi-trash"></i></button>
+                    `
+                            });
+                        });
+
+                        // Processar dados para o gráfico de receitas e despesas mensais
+                        const mesesOrdenados = Object.keys(meses).sort((a, b) => {
+                            const [mesA, anoA] = a.split(' ');
+                            const [mesB, anoB] = b.split(' ');
+                            return new Date(`01 ${a}`) - new Date(`01 ${b}`);
+                        });
+
+                        receitasDespesasMensais.labels = mesesOrdenados;
+                        receitasDespesasMensais.receitas = mesesOrdenados.map(mes => meses[mes].receitas);
+                        receitasDespesasMensais.despesas = mesesOrdenados.map(mes => meses[mes].despesas);
+
+                        // Adicionar dados à tabela
+                        transacoesDataTable.rows.add(transacoes).draw();
+
+                        // Atualizar resumo financeiro
+                        atualizarResumoFinanceiro();
+
+                        // Criar gráficos
+                        criarGraficosFinanceiros();
+
+                        // Adicionar event listeners para os botões de ação
+                        adicionarEventListenersBotoesTransacoes();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar transações: ", error);
+                    });
+            }
+
+            // Função para atualizar o resumo financeiro
+            function atualizarResumoFinanceiro() {
+                const saldo = totalReceitas - totalDespesas;
+
+                document.getElementById('totalReceitas').textContent = `R$ ${totalReceitas.toFixed(2).replace('.', ',')}`;
+                document.getElementById('totalDespesas').textContent = `R$ ${totalDespesas.toFixed(2).replace('.', ',')}`;
+
+                const saldoElement = document.getElementById('saldoAtual');
+                saldoElement.textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+
+                // Adicionar classe de cor baseada no saldo
+                saldoElement.className = '';
+                if (saldo > 0) {
+                    saldoElement.classList.add('text-success');
+                } else if (saldo < 0) {
+                    saldoElement.classList.add('text-danger');
+                }
+            }
+
+            // Função para criar gráficos financeiros
+            function criarGraficosFinanceiros() {
+                // Destruir gráficos existentes se houver
+                if (window.receitasDespesasChart) {
+                    try {
+                        window.receitasDespesasChart.destroy();
+                    } catch (e) {
+                        console.warn("Erro ao destruir gráfico de receitas e despesas:", e);
+                    }
+                    window.receitasDespesasChart = null;
+                }
+
+                if (window.distribuicaoDespesasChart) {
+                    try {
+                        window.distribuicaoDespesasChart.destroy();
+                    } catch (e) {
+                        console.warn("Erro ao destruir gráfico de distribuição de despesas:", e);
+                    }
+                    window.distribuicaoDespesasChart = null;
+                }
+
+                // Recriar elementos canvas para evitar problemas
+                const containers = [
+                    'receitasDespesasChart',
+                    'distribuicaoDespesasChart'
+                ];
+
+                containers.forEach(id => {
+                    const container = document.getElementById(id).parentNode;
+                    const oldCanvas = document.getElementById(id);
+                    if (oldCanvas) {
+                        container.removeChild(oldCanvas);
+                    }
+
+                    const newCanvas = document.createElement('canvas');
+                    newCanvas.id = id;
+                    container.appendChild(newCanvas);
+                });
+
+                // Gráfico de Receitas e Despesas
+                const ctxReceitasDespesas = document.getElementById('receitasDespesasChart').getContext('2d');
+                window.receitasDespesasChart = new Chart(ctxReceitasDespesas, {
+                    type: 'bar',
+                    data: {
+                        labels: receitasDespesasMensais.labels,
+                        datasets: [
+                            {
+                                label: 'Receitas',
+                                data: receitasDespesasMensais.receitas,
+                                backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                                borderColor: 'rgba(40, 167, 69, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Despesas',
+                                data: receitasDespesasMensais.despesas,
+                                backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                                borderColor: 'rgba(220, 53, 69, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        return 'R$ ' + value.toFixed(2).replace('.', ',');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Gráfico de Distribuição de Despesas
+                const ctxDistribuicaoDespesas = document.getElementById('distribuicaoDespesasChart').getContext('2d');
+
+                // Ordenar categorias por valor (do maior para o menor)
+                const categoriasDespesasOrdenadas = Object.entries(categoriasDespesas)
+                    .sort((a, b) => b[1] - a[1])
+                    .reduce((obj, [key, value]) => {
+                        obj[key] = value;
+                        return obj;
+                    }, {});
+
+                window.distribuicaoDespesasChart = new Chart(ctxDistribuicaoDespesas, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(categoriasDespesasOrdenadas),
+                        datasets: [{
+                            data: Object.values(categoriasDespesasOrdenadas),
+                            backgroundColor: [
+                                '#48c9b0',  // Teal
+                                '#82e0aa',  // Mint Green
+                                '#f7dc6f',  // Soft Yellow
+                                '#f0b27a',  // Peach
+                                '#ec7063',  // Coral Red
+                                '#af7ac5',  // Lavender
+                                '#5dade2',  // Sky Blue
+                                '#45b39d',  // Turquoise
+                                '#52be80',  // Green
+                                '#58d68d'   // Emerald
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const value = context.raw;
+                                        const percentage = ((value / totalDespesas) * 100).toFixed(1);
+                                        return `${context.label}: R$ ${value.toFixed(2).replace('.', ',')} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Função para adicionar event listeners aos botões de transações
+            function adicionarEventListenersBotoesTransacoes() {
+                // Botão de visualizar transação
+                $('#transacoesTable').on('click', '.view-transacao', function () {
+                    const id = $(this).data('id');
+                    abrirModalDetalhesTransacao(id);
+                });
+
+                // Botão de editar transação
+                $('#transacoesTable').on('click', '.edit-transacao', function () {
+                    const id = $(this).data('id');
+                    abrirModalEdicaoTransacao(id);
+                });
+
+                // Botão de excluir transação
+                $('#transacoesTable').on('click', '.delete-transacao', function () {
+                    const id = $(this).data('id');
+                    excluirTransacao(id);
+                });
+            }
+
+            // Função para abrir modal de detalhes da transação
+            function abrirModalDetalhesTransacao(id) {
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro").doc(id)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const transacao = doc.data();
+
+                            // Preencher dados no modal
+                            document.getElementById('detailTransacaoDescricao').textContent = transacao.descricao;
+                            document.getElementById('detailTransacaoObservacoes').textContent = transacao.observacoes || 'Sem observações';
+
+                            // Tipo
+                            const tipoTexto = transacao.tipo === 'receita' ? 'Receita' : 'Despesa';
+                            const tipoClasse = transacao.tipo === 'receita' ? 'text-success' : 'text-danger';
+                            document.getElementById('detailTransacaoTipo').innerHTML = `<span class="${tipoClasse}">${tipoTexto}</span>`;
+
+                            // Categoria
+                            document.getElementById('detailTransacaoCategoria').textContent = transacao.categoria;
+
+                            // Valor
+                            const valor = parseFloat(transacao.valor);
+                            document.getElementById('detailTransacaoValor').innerHTML =
+                                `<span class="${tipoClasse}">R$ ${valor.toFixed(2).replace('.', ',')}</span>`;
+
+                            // Data
+                            const dataObj = new Date(transacao.data);
+                            document.getElementById('detailTransacaoData').textContent = dataObj.toLocaleDateString('pt-BR');
+
+                            // Responsável
+                            document.getElementById('detailTransacaoResponsavel').textContent = transacao.responsavel;
+
+                            // Forma de Pagamento
+                            document.getElementById('detailTransacaoFormaPagamento').textContent = transacao.formaPagamento;
+
+                            // Status
+                            let statusTexto = '';
+                            let statusClasse = '';
+
+                            if (transacao.status === 'confirmado') {
+                                statusTexto = 'Confirmado';
+                                statusClasse = 'badge-success';
+                            } else if (transacao.status === 'pendente') {
+                                statusTexto = 'Pendente';
+                                statusClasse = 'badge-warning';
+                            } else if (transacao.status === 'cancelado') {
+                                statusTexto = 'Cancelado';
+                                statusClasse = 'badge-danger';
+                            }
+
+                            document.getElementById('detailTransacaoStatus').innerHTML =
+                                `<span class="badge ${statusClasse}">${statusTexto}</span>`;
+
+                            // Adicionar ID ao botão editar
+                            document.getElementById('editTransacaoBtn').setAttribute('data-id', id);
+
+                            // Abrir o modal
+                            $('#transacaoDetailModal').modal('show');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar detalhes da transação: ", error);
+                    });
+            }
+
+            // Função para abrir modal de edição de transação
+            function abrirModalEdicaoTransacao(id) {
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro").doc(id)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const transacao = doc.data();
+
+                            // Preencher campos do formulário
+                            document.getElementById('editTransacaoId').value = id;
+                            document.getElementById('editTransacaoTipo').value = transacao.tipo;
+                            document.getElementById('editTransacaoCategoria').value = transacao.categoria;
+                            document.getElementById('editTransacaoDescricao').value = transacao.descricao;
+                            document.getElementById('editTransacaoValor').value = transacao.valor;
+                            document.getElementById('editTransacaoResponsavel').value = transacao.responsavel;
+                            document.getElementById('editTransacaoFormaPagamento').value = transacao.formaPagamento;
+                            document.getElementById('editTransacaoStatus').value = transacao.status;
+                            document.getElementById('editTransacaoObservacoes').value = transacao.observacoes || '';
+
+                            // Formatar a data para o padrão YYYY-MM-DD
+                            const dataFormatada = transacao.data.split('T')[0];
+                            document.getElementById('editTransacaoData').value = dataFormatada;
+
+                            // Abrir o modal
+                            $('#editTransacaoModal').modal('show');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados para edição: ", error);
+                    });
+            }
+
+            // Função para excluir transação
+            function excluirTransacao(id) {
+                const confirmar = confirm("Tem certeza que deseja excluir esta transação?");
+                if (confirmar) {
+                    db.collection("Eventos").doc("ComRoca2025").collection("financeiro").doc(id).delete()
+                        .then(() => {
+                            console.log("Transação excluída com sucesso!");
+                            carregarTransacoes();
+                        })
+                        .catch((error) => {
+                            console.error("Erro ao excluir transação: ", error);
+                            alert("Erro ao excluir transação. Tente novamente.");
+                        });
+                }
+            }
+
+            // Event listener para o botão de editar no modal de detalhes
+            document.getElementById('editTransacaoBtn').addEventListener('click', function () {
+                const id = this.getAttribute('data-id');
+
+                // Usar o evento 'hidden.bs.modal' para garantir sequência correta
+                $('#transacaoDetailModal').on('hidden.bs.modal', function () {
+                    // Remove o event listener para evitar múltiplas chamadas
+                    $('#transacaoDetailModal').off('hidden.bs.modal');
+                    // Pequeno delay para garantir que o DOM foi atualizado
+                    setTimeout(function () {
+                        abrirModalEdicaoTransacao(id);
+                    }, 100);
+                });
+
+                // Inicia o fechamento do modal
+                $('#transacaoDetailModal').modal('hide');
+            });
+
+            // Função para salvar nova transação
+            document.getElementById('saveTransacaoBtn').addEventListener('click', function () {
+                const transacaoTipo = document.getElementById('transacaoTipo').value;
+                const transacaoCategoria = document.getElementById('transacaoCategoria').value;
+                const transacaoDescricao = document.getElementById('transacaoDescricao').value;
+                const transacaoValor = document.getElementById('transacaoValor').value;
+                const transacaoData = document.getElementById('transacaoData').value;
+                const transacaoResponsavel = document.getElementById('transacaoResponsavel').value;
+                const transacaoFormaPagamento = document.getElementById('transacaoFormaPagamento').value;
+                const transacaoStatus = document.getElementById('transacaoStatus').value;
+                const transacaoObservacoes = document.getElementById('transacaoObservacoes').value;
+
+                if (!transacaoTipo || !transacaoCategoria || !transacaoDescricao || !transacaoValor || !transacaoData || !transacaoResponsavel || !transacaoFormaPagamento) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Adicionar ao Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro").add({
+                    tipo: transacaoTipo,
+                    categoria: transacaoCategoria,
+                    descricao: transacaoDescricao,
+                    valor: parseFloat(transacaoValor),
+                    data: transacaoData,
+                    responsavel: transacaoResponsavel,
+                    formaPagamento: transacaoFormaPagamento,
+                    status: transacaoStatus,
+                    observacoes: transacaoObservacoes,
+                    dataCriacao: new Date().toISOString(),
+                    dataAtualizacao: new Date().toISOString()
+                })
+                    .then(() => {
+                        console.log("Transação adicionada com sucesso!");
+                        $('#addTransacaoModal').modal('hide');
+                        document.getElementById('newTransacaoForm').reset();
+
+                        // Recarregar dados
+                        carregarTransacoes();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao adicionar transação: ", error);
+                        alert("Erro ao adicionar transação. Tente novamente.");
+                    });
+            });
+
+            // Função para atualizar transação
+            document.getElementById('updateTransacaoBtn').addEventListener('click', function () {
+                const transacaoId = document.getElementById('editTransacaoId').value;
+                const transacaoTipo = document.getElementById('editTransacaoTipo').value;
+                const transacaoCategoria = document.getElementById('editTransacaoCategoria').value;
+                const transacaoDescricao = document.getElementById('editTransacaoDescricao').value;
+                const transacaoValor = document.getElementById('editTransacaoValor').value;
+                const transacaoData = document.getElementById('editTransacaoData').value;
+                const transacaoResponsavel = document.getElementById('editTransacaoResponsavel').value;
+                const transacaoFormaPagamento = document.getElementById('editTransacaoFormaPagamento').value;
+                const transacaoStatus = document.getElementById('editTransacaoStatus').value;
+                const transacaoObservacoes = document.getElementById('editTransacaoObservacoes').value;
+
+                if (!transacaoTipo || !transacaoCategoria || !transacaoDescricao || !transacaoValor || !transacaoData || !transacaoResponsavel || !transacaoFormaPagamento) {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                    return;
+                }
+
+                // Atualizar no Firestore
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro").doc(transacaoId).update({
+                    tipo: transacaoTipo,
+                    categoria: transacaoCategoria,
+                    descricao: transacaoDescricao,
+                    valor: parseFloat(transacaoValor),
+                    data: transacaoData,
+                    responsavel: transacaoResponsavel,
+                    formaPagamento: transacaoFormaPagamento,
+                    status: transacaoStatus,
+                    observacoes: transacaoObservacoes,
+                    dataAtualizacao: new Date().toISOString()
+                })
+                    .then(() => {
+                        console.log("Transação atualizada com sucesso!");
+                        $('#editTransacaoModal').modal('hide');
+
+                        // Recarregar dados
+                        carregarTransacoes();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao atualizar transação: ", error);
+                        alert("Erro ao atualizar transação. Tente novamente.");
+                    });
+            });
+
+            // Filtrar transações na tabela
+            $('#filterFinanceiroForm').on('submit', function (e) {
+                e.preventDefault();
+                aplicarFiltrosFinanceiros();
+            });
+
+            // Limpar filtros financeiros
+            $('#limparFiltroFinanceiro').on('click', function () {
+                document.getElementById('filterFinanceiroForm').reset();
+                aplicarFiltrosFinanceiros();
+            });
+
+            // Função para aplicar filtros financeiros
+            function aplicarFiltrosFinanceiros() {
+                const filtroTipo = document.getElementById('filterTipoTransacao').value;
+                const filtroCategoria = document.getElementById('filterCategoriaTransacao').value;
+                const filtroStatus = document.getElementById('filterStatusTransacao').value;
+
+                // Limpar filtros anteriores
+                transacoesDataTable.search('').columns().search('').draw();
+
+                // Aplicar filtros
+                if (filtroTipo) {
+                    const tipoTexto = filtroTipo === 'receita' ? 'Receita' : 'Despesa';
+                    transacoesDataTable.column(1).search(tipoTexto).draw();
+                }
+
+                if (filtroCategoria) {
+                    transacoesDataTable.column(2).search(filtroCategoria).draw();
+                }
+
+                if (filtroStatus) {
+                    let statusTexto = '';
+                    if (filtroStatus === 'confirmado') statusTexto = 'Confirmado';
+                    if (filtroStatus === 'pendente') statusTexto = 'Pendente';
+                    if (filtroStatus === 'cancelado') statusTexto = 'Cancelado';
+
+                    transacoesDataTable.column(6).search(statusTexto).draw();
+                }
+            }
+
+            // Função para exportar dados financeiros
+            document.getElementById('exportarFinanceiroBtn').addEventListener('click', function () {
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro")
+                    .orderBy("data", "desc")
+                    .get()
+                    .then((querySnapshot) => {
+                        const dados = [];
+                        querySnapshot.forEach((doc) => {
+                            const transacao = doc.data();
+
+                            // Formatar data
+                            const dataObj = new Date(transacao.data);
+                            const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+
+                            // Traduzir tipo e status
+                            const tipoTexto = transacao.tipo === 'receita' ? 'Receita' : 'Despesa';
+
+                            let statusTexto = '';
+                            if (transacao.status === 'confirmado') statusTexto = 'Confirmado';
+                            if (transacao.status === 'pendente') statusTexto = 'Pendente';
+                            if (transacao.status === 'cancelado') statusTexto = 'Cancelado';
+
+                            // Adicionar à lista
+                            dados.push({
+                                'Data': dataFormatada,
+                                'Tipo': tipoTexto,
+                                'Categoria': transacao.categoria,
+                                'Descrição': transacao.descricao,
+                                'Valor (R$)': parseFloat(transacao.valor).toFixed(2).replace('.', ','),
+                                'Responsável': transacao.responsavel,
+                                'Forma de Pagamento': transacao.formaPagamento,
+                                'Status': statusTexto,
+                                'Observações': transacao.observacoes || ''
+                            });
+                        });
+
+                        if (dados.length === 0) {
+                            alert('Não há dados para exportar');
+                            return;
+                        }
+
+                        // Usar a biblioteca XLSX para criar e baixar o arquivo Excel
+                        const ws = XLSX.utils.json_to_sheet(dados);
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "Fluxo de Caixa");
+                        XLSX.writeFile(wb, "Fluxo_de_Caixa_ACAMP2025.xlsx");
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados: ", error);
+                        alert('Erro ao buscar dados. Por favor, tente novamente.');
+                    });
+            });
+
+            // Mostrar/esconder categorias baseado no tipo selecionado
+            document.getElementById('transacaoTipo').addEventListener('change', function () {
+                const tipo = this.value;
+                const categoriasReceita = document.getElementById('categoriasReceita');
+                const categoriasDespesa = document.getElementById('categoriasDespesa');
+
+                if (tipo === 'receita') {
+                    categoriasReceita.style.display = 'block';
+                    categoriasDespesa.style.display = 'none';
+                } else if (tipo === 'despesa') {
+                    categoriasReceita.style.display = 'none';
+                    categoriasDespesa.style.display = 'block';
+                } else {
+                    categoriasReceita.style.display = 'block';
+                    categoriasDespesa.style.display = 'block';
+                }
+            });
+
+            // Mostrar/esconder categorias baseado no tipo selecionado (modal de edição)
+            document.getElementById('editTransacaoTipo').addEventListener('change', function () {
+                const tipo = this.value;
+                const categoriasReceita = document.getElementById('editCategoriasReceita');
+                const categoriasDespesa = document.getElementById('editCategoriasDespesa');
+
+                if (tipo === 'receita') {
+                    categoriasReceita.style.display = 'block';
+                    categoriasDespesa.style.display = 'none';
+                } else if (tipo === 'despesa') {
+                    categoriasReceita.style.display = 'none';
+                    categoriasDespesa.style.display = 'block';
+                } else {
+                    categoriasReceita.style.display = 'block';
+                    categoriasDespesa.style.display = 'block';
+                }
+            });
+
+            // Carregar categorias no filtro
+            function carregarCategoriasNoFiltro() {
+                db.collection("Eventos").doc("ComRoca2025").collection("financeiro")
+                    .get()
+                    .then((querySnapshot) => {
+                        const categorias = new Set();
+
+                        querySnapshot.forEach((doc) => {
+                            const transacao = doc.data();
+                            categorias.add(transacao.categoria);
+                        });
+
+                        const selectCategoria = document.getElementById('filterCategoriaTransacao');
+
+                        // Limpar opções existentes (exceto a primeira)
+                        while (selectCategoria.options.length > 1) {
+                            selectCategoria.remove(1);
+                        }
+
+                        // Adicionar categorias ordenadas alfabeticamente
+                        [...categorias].sort().forEach(categoria => {
+                            const option = document.createElement('option');
+                            option.value = categoria;
+                            option.textContent = categoria;
+                            selectCategoria.appendChild(option);
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar categorias: ", error);
+                    });
+            }
+
+            // Adicionar event listener para a aba de financeiro
+            $('.list-group-item[data-section="financeiro"]').on('click', function () {
+                // Inicializar tabela e carregar dados apenas quando a aba for selecionada
+                setTimeout(function () {
+                    inicializarTabelaTransacoes();
+                    carregarCategoriasNoFiltro();
+                }, 100);
+            });
+
+            // Variáveis globais para o check-in
+            let checkinsDataTable;
+            let totalInscritos = 0;
+            let totalCheckins = 0;
+            let checkinsPorHora = {};
+            let checkinsPorCelula = {};
+
+            // Função para inicializar a tabela de check-ins
+            function inicializarTabelaCheckins() {
+                if (checkinsDataTable) {
+                    checkinsDataTable.destroy();
+                }
+
+                checkinsDataTable = $('#checkinsTable').DataTable({
+                    language: {
+                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    },
+                    responsive: true,
+                    order: [[2, 'desc']], // Ordenar por data/hora (decrescente)
+                    columns: [
+                        { data: 'nome' },
+                        { data: 'celula' },
+                        { data: 'dataHora' },
+                        { data: 'status' },
+                        { data: 'responsavel' }
+                    ]
+                });
+
+                carregarDadosCheckin();
+            }
+
+            // Função para carregar dados de check-in
+            function carregarDadosCheckin() {
+                // Limpar dados anteriores
+                checkinsDataTable.clear();
+                totalCheckins = 0;
+                checkinsPorHora = {};
+                checkinsPorCelula = {};
+
+                // Primeiro, buscar o total de inscritos
+                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                    .where("anoacamp", "==", "2025")
+                    .get()
+                    .then((querySnapshot) => {
+                        totalInscritos = querySnapshot.size;
+
+                        // Agora, buscar os check-ins
+                        return db.collection("Eventos").doc("ComRoca2025").collection("checkins").get();
+                    })
+                    .then((querySnapshot) => {
+                        let checkins = [];
+                        totalCheckins = querySnapshot.size;
+
+                        querySnapshot.forEach((doc) => {
+                            const checkin = doc.data();
+                            const dataObj = new Date(checkin.dataHora);
+
+                            // Formatar data e hora
+                            const dataFormatada = dataObj.toLocaleDateString('pt-BR');
+                            const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                            const dataHoraFormatada = `${dataFormatada} ${horaFormatada}`;
+
+                            // Contabilizar check-ins por hora
+                            const hora = dataObj.getHours();
+                            const horaChave = `${hora}:00`;
+                            checkinsPorHora[horaChave] = (checkinsPorHora[horaChave] || 0) + 1;
+
+                            // Contabilizar check-ins por célula
+                            const celula = checkin.celula || 'Sem célula';
+                            checkinsPorCelula[celula] = (checkinsPorCelula[celula] || 0) + 1;
+
+                            // Adicionar à lista de check-ins
+                            checkins.push({
+                                id: doc.id,
+                                nome: checkin.nome,
+                                celula: checkin.celula || 'Não informado',
+                                dataHora: dataHoraFormatada,
+                                status: '<span class="badge badge-success">Confirmado</span>',
+                                responsavel: checkin.responsavel || 'Sistema'
+                            });
+                        });
+
+                        // Adicionar dados à tabela
+                        checkinsDataTable.rows.add(checkins).draw();
+
+                        // Atualizar resumo de check-in
+                        atualizarResumoCheckin();
+
+                        // Criar gráficos
+                        criarGraficosCheckin();
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao carregar dados de check-in: ", error);
+                    });
+            }
+
+            // Função para atualizar o resumo de check-in
+            function atualizarResumoCheckin() {
+                const pendentes = totalInscritos - totalCheckins;
+                const percentual = totalInscritos > 0 ? Math.round((totalCheckins / totalInscritos) * 100) : 0;
+
+                document.getElementById('totalInscritosCheckin').textContent = totalInscritos;
+                document.getElementById('totalCheckinsRealizados').textContent = totalCheckins;
+                document.getElementById('totalCheckinsPendentes').textContent = pendentes;
+
+                // Atualizar barra de progresso
+                const progressBar = document.getElementById('progressoCheckin');
+                progressBar.style.width = percentual + '%';
+                progressBar.textContent = percentual + '%';
+                progressBar.setAttribute('aria-valuenow', percentual);
+            }
+
+            // Função para criar gráficos de check-in
+            function criarGraficosCheckin() {
+                // Destruir gráficos existentes se houver
+                try {
+                    // Verificar se os gráficos existem e são instâncias de Chart antes de destruí-los
+                    if (window.checkinPorHoraChart instanceof Chart) {
+                        window.checkinPorHoraChart.destroy();
+                    }
+
+                    if (window.checkinPorCelulaChart instanceof Chart) {
+                        window.checkinPorCelulaChart.destroy();
+                    }
+                } catch (e) {
+                    console.warn("Erro ao destruir gráficos de check-in:", e);
+                }
+
+                // Limpar referências
+                window.checkinPorHoraChart = null;
+                window.checkinPorCelulaChart = null;
+
+                // Recriar elementos canvas
+                const containers = [
+                    'checkinPorHoraChart',
+                    'checkinPorCelulaChart'
+                ];
+
+                containers.forEach(id => {
+                    const container = document.getElementById(id).parentNode;
+                    const oldCanvas = document.getElementById(id);
+                    if (oldCanvas) {
+                        container.removeChild(oldCanvas);
+                    }
+
+                    const newCanvas = document.createElement('canvas');
+                    newCanvas.id = id;
+                    container.appendChild(newCanvas);
+                });
+
+                // Ordenar horas cronologicamente
+                const horasOrdenadas = Object.keys(checkinsPorHora).sort((a, b) => {
+                    return parseInt(a) - parseInt(b);
+                });
+
+                // Gráfico de Check-ins por Hora
+                const ctxHora = document.getElementById('checkinPorHoraChart').getContext('2d');
+                window.checkinPorHoraChart = new Chart(ctxHora, {
+                    type: 'bar',
+                    data: {
+                        labels: horasOrdenadas,
+                        datasets: [{
+                            label: 'Quantidade de Check-ins',
+                            data: horasOrdenadas.map(hora => checkinsPorHora[hora]),
+                            backgroundColor: 'rgba(61, 117, 23, 0.7)',
+                            borderColor: 'rgba(61, 117, 23, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Ordenar células por quantidade (do maior para o menor)
+                const celulasOrdenadas = Object.entries(checkinsPorCelula)
+                    .sort((a, b) => b[1] - a[1])
+                    .reduce((obj, [key, value]) => {
+                        obj[key] = value;
+                        return obj;
+                    }, {});
+
+                // Gerar cores para o gráfico de células
+                const coresCelulas = generateColors(Object.keys(celulasOrdenadas).length);
+
+                // Gráfico de Check-ins por Célula
+                const ctxCelula = document.getElementById('checkinPorCelulaChart').getContext('2d');
+                window.checkinPorCelulaChart = new Chart(ctxCelula, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(celulasOrdenadas),
+                        datasets: [{
+                            data: Object.values(celulasOrdenadas),
+                            backgroundColor: coresCelulas
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+
+            // Função para exportar dados de check-in
+            document.getElementById('exportarCheckinBtn').addEventListener('click', function () {
+                db.collection("Eventos").doc("ComRoca2025").collection("checkins")
+                    .get()
+                    .then((querySnapshot) => {
+                        const dados = [];
+                        querySnapshot.forEach((doc) => {
+                            const checkin = doc.data();
+                            const dataObj = new Date(checkin.dataHora);
+
+                            dados.push({
+                                'Nome': checkin.nome,
+                                'Célula': checkin.celula || 'Não informado',
+                                'Data': dataObj.toLocaleDateString('pt-BR'),
+                                'Hora': dataObj.toLocaleTimeString('pt-BR'),
+                                'Responsável': checkin.responsavel || 'Sistema'
+                            });
+                        });
+
+                        if (dados.length === 0) {
+                            alert('Não há dados de check-in para exportar');
+                            return;
+                        }
+
+                        // Usar a biblioteca XLSX para criar e baixar o arquivo Excel
+                        const ws = XLSX.utils.json_to_sheet(dados);
+                        const wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, ws, "Check-ins");
+                        XLSX.writeFile(wb, "Checkins_ACAMP2025.xlsx");
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados: ", error);
+                        alert('Erro ao buscar dados. Por favor, tente novamente.');
+                    });
+            });
+
+            // Adicionar event listener para a aba de check-in
+            $('.list-group-item[data-section="checkin"]').on('click', function () {
+                // Inicializar tabela e carregar dados apenas quando a aba for selecionada
+                setTimeout(function () {
+                    inicializarTabelaCheckins();
+                }, 100);
+            });
+
+
+        </script>
+</body>
+
+</html>

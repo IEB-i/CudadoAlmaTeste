@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Caixa</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .dashboard-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            border-radius: 10px 10px 0 0;
+            font-weight: bold;
+        }
+
+        .total-card {
+            background: linear-gradient(45deg, #3d7517, #4a8c20);
+            color: white;
+        }
+
+        .entrada-card {
+            background: linear-gradient(45deg, #28a745, #5cb85c);
+            color: white;
+        }
+
+        .saida-card {
+            background: linear-gradient(45deg, #dc3545, #e05d6f);
+            color: white;
+        }
+
+        .saldo-card {
+            background: linear-gradient(45deg, #17a2b8, #5bc0de);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-voltar .material-icons {
+            font-size: 24px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #28a745;
+            background-color: #f1f8f1;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .nav-tabs .nav-link {
+            border-radius: 10px 10px 0 0;
+            font-weight: 600;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #f8f9fa;
+            border-bottom-color: #f8f9fa;
+        }
+
+        .tab-content {
+            background-color: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-top: none;
+        }
+
+        .badge-entrada {
+            background-color: #28a745;
+        }
+
+        .badge-saida {
+            background-color: #dc3545;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">CONTROLE DE CAIXA</h2>
+    </div>
+
+    <div class="container mt-5">
+        <!-- 1. RESUMO FINANCEIRO -->
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-cash-stack mr-2"></i> Resumo Financeiro
+            </h4>
+        </div>
+
+        <!-- Cards de Resumo -->
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3" style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                                <i class="bi bi-receipt"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Total Transações</div>
+                                <div class="stats-value" id="totalTransacoes">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3" style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                <i class="bi bi-arrow-down-circle"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Entradas</div>
+                                <div class="stats-value text-success" id="totalEntradas">R$ 0,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3" style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                <i class="bi bi-arrow-up-circle"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Saídas</div>
+                                <div class="stats-value text-danger" id="totalSaidas">R$ 0,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <div class="card dashboard-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3" style="background: rgba(23, 162, 184, 0.1); color: #17a2b8;">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Saldo Atual</div>
+                                <div class="stats-value text-info" id="saldoAtual">R$ 0,00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-graph-up mr-2"></i> Gráficos e Análises
+            </h4>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-activity"></i> Fluxo de Caixa</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoFluxo"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-pie-chart-fill"></i> Distribuição por Categorias</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="graficoCategorias"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Abas para Gerenciamento -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs" id="caixaTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="transacoes-tab" data-toggle="tab" href="#transacoes" role="tab">
+                            <i class="material-icons align-middle">receipt</i> Transações
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="nova-tab" data-toggle="tab" href="#nova" role="tab">
+                            <i class="material-icons align-middle">add_circle</i> Nova Transação
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab">
+                            <i class="material-icons align-middle">cloud_upload</i> Upload em Massa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="relatorios-tab" data-toggle="tab" href="#relatorios" role="tab">
+                            <i class="material-icons align-middle">bar_chart</i> Relatórios
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="caixaTabsContent">
+                    <!-- Aba de Transações -->
+                    <div class="tab-pane fade show active" id="transacoes" role="tabpanel">
+                        <div class="filter-card p-4 bg-white rounded shadow-sm mb-4">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="filtroTipo">Tipo</label>
+                                        <select class="form-control" id="filtroTipo">
+                                            <option value="todos">Todos</option>
+                                            <option value="entrada">Entradas</option>
+                                            <option value="saida">Saídas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="filtroCategoria">Categoria</label>
+                                        <select class="form-control" id="filtroCategoria">
+                                            <option value="todos">Todas</option>
+                                            <option value="inscricao">Inscrição</option>
+                                            <option value="alimentacao">Alimentação</option>
+                                            <option value="transporte">Transporte</option>
+                                            <option value="material">Material</option>
+                                            <option value="outros">Outros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="filtroDataInicio">Data Início</label>
+                                        <input type="date" class="form-control" id="filtroDataInicio">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="filtroDataFim">Data Fim</label>
+                                        <input type="date" class="form-control" id="filtroDataFim">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button class="btn btn-primary" id="btnAplicarFiltros">
+                                        <i class="material-icons align-middle">filter_list</i> Aplicar Filtros
+                                    </button>
+                                    <button class="btn btn-secondary" id="btnLimparFiltros">
+                                        <i class="material-icons align-middle">clear</i> Limpar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive" style="border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
+                            <table class="table table-striped table-hover mb-0" id="transacoesTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Tipo</th>
+                                        <th>Valor</th>
+                                        <th>Método</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transacoesList">
+                                    <!-- Os dados serão carregados dinamicamente do Firebase -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Aba de Nova Transação -->
+                    <div class="tab-pane fade" id="nova" role="tabpanel">
+                        <div class="filter-card p-4 bg-white rounded shadow-sm">
+                            <form id="novaTransacaoForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="descricao" class="text-muted" style="font-weight: 600;">Descrição</label>
+                                            <input type="text" class="form-control" id="descricao" required>
+                                        </div>
+                                    </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="data">Data</label>
+                                        <input type="date" class="form-control" id="data" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="valor">Valor (R$)</label>
+                                        <input type="text" class="form-control" id="valor" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="tipo">Tipo</label>
+                                        <select class="form-control" id="tipo" required>
+                                            <option value="">Selecione</option>
+                                            <option value="entrada">Entrada</option>
+                                            <option value="saida">Saída</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="categoria">Categoria</label>
+                                        <select class="form-control" id="categoria" required>
+                                            <option value="">Selecione</option>
+                                            <option value="inscricao">Inscrição</option>
+                                            <option value="alimentacao">Alimentação</option>
+                                            <option value="transporte">Transporte</option>
+                                            <option value="material">Material</option>
+                                            <option value="outros">Outros</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="metodo">Método de Pagamento</label>
+                                        <select class="form-control" id="metodo" required>
+                                            <option value="">Selecione</option>
+                                            <option value="pix">PIX</option>
+                                            <option value="cartao">Cartão</option>
+                                            <option value="dinheiro">Dinheiro</option>
+                                            <option value="transferencia">Transferência</option>
+                                            <option value="cheque">Cheque</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="observacao">Observação</label>
+                                        <textarea class="form-control" id="observacao" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" class="btn btn-success shadow-sm" style="border-radius: 8px;">
+                                        <i class="bi bi-check-circle mr-1"></i> Salvar Transação
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+
+                    <!-- Aba de Upload em Massa -->
+                    <div class="tab-pane fade" id="upload" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="upload-area" id="uploadArea">
+                                    <i class="material-icons upload-icon">cloud_upload</i>
+                                    <h4>Arraste e solte um arquivo CSV ou Excel</h4>
+                                    <p>ou</p>
+                                    <label for="fileInput" class="btn btn-primary">
+                                        Selecionar Arquivo
+                                    </label>
+                                    <input type="file" id="fileInput" style="display: none;" accept=".csv, .xlsx, .xls">
+                                    <p class="mt-2 text-muted">Formatos suportados: CSV, Excel (.xlsx, .xls)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3" id="uploadPreviewContainer" style="display: none;">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Pré-visualização dos Dados</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered" id="previewTable">
+                                                <thead id="previewTableHead"></thead>
+                                                <tbody id="previewTableBody"></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="form-group">
+                                                <label for="mapeamentoData">Coluna de Data</label>
+                                                <select class="form-control" id="mapeamentoData"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mapeamentoDescricao">Coluna de Descrição</label>
+                                                <select class="form-control" id="mapeamentoDescricao"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mapeamentoValor">Coluna de Valor</label>
+                                                <select class="form-control" id="mapeamentoValor"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mapeamentoTipo">Coluna de Tipo (Entrada/Saída)</label>
+                                                <select class="form-control" id="mapeamentoTipo"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mapeamentoCategoria">Coluna de Categoria</label>
+                                                <select class="form-control" id="mapeamentoCategoria"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="mapeamentoMetodo">Coluna de Método de Pagamento</label>
+                                                <select class="form-control" id="mapeamentoMetodo"></select>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-secondary" id="btnCancelarUpload">Cancelar</button>
+                                            <button class="btn btn-success" id="btnImportarDados">Importar
+                                                Dados</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Modelo de Arquivo</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Para facilitar o upload, você pode baixar um modelo de arquivo:</p>
+                                        <a href="#" id="btnBaixarModelo" class="btn btn-info">
+                                            <i class="material-icons align-middle">download</i> Baixar Modelo CSV
+                                        </a>
+                                        <div class="mt-3">
+                                            <h6>Instruções:</h6>
+                                            <ol>
+                                                <li>Baixe o modelo ou crie um arquivo CSV/Excel com as colunas: Data,
+                                                    Descrição, Valor, Tipo, Categoria, Método</li>
+                                                <li>Preencha os dados seguindo o formato indicado</li>
+                                                <li>Para o campo "Tipo", use "entrada" ou "saida"</li>
+                                                <li>Para o campo "Categoria", use uma das opções: inscricao,
+                                                    alimentacao, transporte, material, outros</li>
+                                                <li>Para o campo "Método", use uma das opções: pix, cartao, dinheiro,
+                                                    transferencia, cheque</li>
+                                                <li>Salve o arquivo e faça o upload</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aba de Relatórios -->
+                    <div class="tab-pane fade" id="relatorios" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Relatório por Período</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="relatorioForm">
+                                            <div class="form-group">
+                                                <label for="relDataInicio">Data Início</label>
+                                                <input type="date" class="form-control" id="relDataInicio" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="relDataFim">Data Fim</label>
+                                                <input type="date" class="form-control" id="relDataFim" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="relTipo">Tipo</label>
+                                                <select class="form-control" id="relTipo">
+                                                    <option value="todos">Todos</option>
+                                                    <option value="entrada">Entradas</option>
+                                                    <option value="saida">Saídas</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="material-icons align-middle">assessment</i> Gerar Relatório
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Exportar Dados</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>Exporte todos os dados do fluxo de caixa para análise externa:</p>
+                                        <button class="btn btn-info mb-3" id="btnExportarCSV">
+                                            <i class="material-icons align-middle">file_download</i> Exportar para CSV
+                                        </button>
+                                        <button class="btn btn-info" id="btnExportarExcel">
+                                            <i class="material-icons align-middle">file_download</i> Exportar para Excel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5>Resultado do Relatório</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="relatorioResultado">
+                                            <p class="text-center text-muted">Gere um relatório para visualizar os
+                                                resultados aqui.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="excluirModal" tabindex="-1" role="dialog" aria-labelledby="excluirModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="excluirModalLabel">Confirmar Exclusão</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza que deseja excluir esta transação?</p>
+                    <p>Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarExclusao">Confirmar Exclusão</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Transação -->
+    <div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarModalLabel">Editar Transação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editarTransacaoForm">
+                        <input type="hidden" id="editId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="editDescricao">Descrição</label>
+                                    <input type="text" class="form-control" id="editDescricao" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="editData">Data</label>
+                                    <input type="date" class="form-control" id="editData" required>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="editValor">Valor (R$)</label>
+                                    <input type="text" class="form-control" id="editValor" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="editTipo">Tipo</label>
+                                    <select class="form-control" id="editTipo" required>
+                                        <option value="entrada">Entrada</option>
+                                        <option value="saida">Saída</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="editCategoria">Categoria</label>
+                                    <select class="form-control" id="editCategoria" required>
+                                        <option value="inscricao">Inscrição</option>
+                                        <option value="alimentacao">Alimentação</option>
+                                        <option value="transporte">Transporte</option>
+                                        <option value="material">Material</option>
+                                        <option value="outros">Outros</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="editMetodo">Método de Pagamento</label>
+                                    <select class="form-control" id="editMetodo" required>
+                                        <option value="pix">PIX</option>
+                                        <option value="cartao">Cartão</option>
+                                        <option value="dinheiro">Dinheiro</option>
+                                        <option value="transferencia">Transferência</option>
+                                        <option value="cheque">Cheque</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="editObservacao">Observação</label>
+                                    <textarea class="form-control" id="editObservacao" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="salvarEdicao">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+        // Variáveis globais
+        let graficoFluxo;
+        let graficoCategorias;
+        let todasTransacoes = [];
+        let transacoesFiltradas = [];
+
+        // Inicialização
+        $(document).ready(function () {
+            // Registra o plugin de datalabels e configura o estilo moderno global
+            if (typeof ChartDataLabels !== 'undefined') {
+                Chart.register(ChartDataLabels);
+                Chart.defaults.plugins.datalabels = {
+                    color: '#343a40',
+                    font: { weight: 'bold', size: 12 },
+                    formatter: function(value) { return value > 0 ? value : ''; },
+                    anchor: 'end',
+                    align: 'top'
+                };
+            }
+            
+            // Design moderno global para Chart.js
+            Chart.defaults.font.family = "'Montserrat', sans-serif";
+            Chart.defaults.color = "#6c757d";
+            Chart.defaults.scale.grid.color = "rgba(0,0,0,0.04)";
+            Chart.defaults.elements.bar.borderRadius = 8;
+            Chart.defaults.elements.bar.borderSkipped = false;
+            Chart.defaults.elements.arc.borderWidth = 0;
+            Chart.defaults.elements.arc.hoverOffset = 4;
+            Chart.defaults.layout = {
+                padding: {
+                    top: 30,
+                    right: 40,
+                    bottom: 10,
+                    left: 10
+                }
+            };
+
+            // Definir data atual no campo de data
+            document.getElementById('data').valueAsDate = new Date();
+
+            // Inicializar gráficos
+            initGraficos();
+
+            // Carregar dados
+            carregarDashboard();
+            carregarTransacoes();
+
+            // Event listeners
+            $('#novaTransacaoForm').on('submit', registrarTransacao);
+            $('#btnAplicarFiltros').on('click', aplicarFiltros);
+            $('#btnLimparFiltros').on('click', limparFiltros);
+            $('#confirmarExclusao').on('click', excluirTransacao);
+            $('#salvarEdicao').on('click', salvarEdicaoTransacao);
+            $('#relatorioForm').on('submit', gerarRelatorio);
+            $('#btnExportarCSV').on('click', exportarCSV);
+            $('#btnExportarExcel').on('click', exportarExcel);
+            $('#btnBaixarModelo').on('click', baixarModeloCSV);
+
+            // Event listeners para upload de arquivo
+            configurarUploadArea();
+            $('#fileInput').on('change', processarArquivo);
+            $('#btnCancelarUpload').on('click', cancelarUpload);
+            $('#btnImportarDados').on('click', importarDados);
+
+            // Formatar campo de valor para aceitar apenas números e vírgula
+            $('#valor, #editValor').on('input', function () {
+                this.value = this.value.replace(/[^0-9,]/g, '');
+            });
+        });
+
+        function sincronizarPagamentos() {
+            // Buscar pagamentos confirmados que não estão no caixa
+            db.collection("Eventos").doc("ComRoca2026").collection("pagamentos")
+                .where("status", "==", "confirmado")
+                .get()
+                .then((pagamentosSnapshot) => {
+                    const batch = db.batch();
+                    let contador = 0;
+
+                    pagamentosSnapshot.forEach((doc) => {
+                        const pagamento = doc.data();
+
+                        // Verificar se já existe no caixa
+                        db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                            .where("pagamentoId", "==", doc.id)
+                            .get()
+                            .then((caixaSnapshot) => {
+                                if (caixaSnapshot.empty) {
+                                    // Não existe no caixa, criar entrada
+                                    const novaRef = db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc();
+
+                                    batch.set(novaRef, {
+                                        descricao: `Inscrição - ${pagamento.participanteNome}`,
+                                        data: pagamento.dataPagamento.substring(0, 10),
+                                        valor: pagamento.valor,
+                                        tipo: 'entrada',
+                                        categoria: 'inscricao',
+                                        metodo: pagamento.formaPagamento,
+                                        observacao: `Pagamento de inscrição - Ref: ${doc.id}`,
+                                        referenciaOrigem: 'pagamento',
+                                        pagamentoId: doc.id,
+                                        participanteId: pagamento.participanteId,
+                                        dataCriacao: new Date().toISOString()
+                                    });
+
+                                    contador++;
+                                }
+                            });
+                    });
+
+                    // Executar batch se houver novos registros
+                    if (contador > 0) {
+                        return batch.commit();
+                    }
+                })
+                .then(() => {
+                    if (contador > 0) {
+                        console.log(`${contador} pagamentos sincronizados com o caixa`);
+                        carregarDashboard();
+                        carregarTransacoes();
+                    }
+                });
+        }
+
+        // Chamar na inicialização
+        $(document).ready(function () {
+            // ... código existente ...
+            sincronizarPagamentos(); // ADICIONAR ESTA LINHA
+        });
+
+        // Função para inicializar os gráficos
+        function initGraficos() {
+            // Gráfico de Fluxo de Caixa
+            const ctxFluxo = document.getElementById('graficoFluxo').getContext('2d');
+            
+            // Gradientes modernos
+            let gradEntradas = ctxFluxo.createLinearGradient(0, 0, 0, 300);
+            gradEntradas.addColorStop(0, 'rgba(40, 167, 69, 0.4)');
+            gradEntradas.addColorStop(1, 'rgba(40, 167, 69, 0.0)');
+
+            let gradSaidas = ctxFluxo.createLinearGradient(0, 0, 0, 300);
+            gradSaidas.addColorStop(0, 'rgba(220, 53, 69, 0.4)');
+            gradSaidas.addColorStop(1, 'rgba(220, 53, 69, 0.0)');
+
+            let gradSaldo = ctxFluxo.createLinearGradient(0, 0, 0, 300);
+            gradSaldo.addColorStop(0, 'rgba(23, 162, 184, 0.4)');
+            gradSaldo.addColorStop(1, 'rgba(23, 162, 184, 0.0)');
+
+            graficoFluxo = new Chart(ctxFluxo, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Entradas',
+                            data: [],
+                            backgroundColor: gradEntradas,
+                            borderColor: 'rgba(40, 167, 69, 1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: 'rgba(40, 167, 69, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(40, 167, 69, 1)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Saídas',
+                            data: [],
+                            backgroundColor: gradSaidas,
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: 'rgba(220, 53, 69, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(220, 53, 69, 1)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        },
+                        {
+                            label: 'Saldo',
+                            data: [],
+                            backgroundColor: gradSaldo,
+                            borderColor: 'rgba(23, 162, 184, 1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: 'rgba(23, 162, 184, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(23, 162, 184, 1)',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        datalabels: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Categorias
+            const ctxCategorias = document.getElementById('graficoCategorias').getContext('2d');
+            graficoCategorias = new Chart(ctxCategorias, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Inscrição', 'Alimentação', 'Transporte', 'Material', 'Outros'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.85)',
+                            'rgba(220, 53, 69, 0.85)',
+                            'rgba(255, 193, 7, 0.85)',
+                            'rgba(23, 162, 184, 0.85)',
+                            'rgba(108, 117, 125, 0.85)'
+                        ],
+                        borderWidth: 3,
+                        borderColor: '#ffffff',
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            anchor: 'center',
+                            align: 'center',
+                            formatter: function(value) {
+                                return value > 0 ? 'R$ ' + value.toFixed(2) : '';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Função para carregar o dashboard
+        function carregarDashboard() {
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                .get()
+                .then((querySnapshot) => {
+                    let totalTransacoes = querySnapshot.size;
+                    let totalEntradas = 0;
+                    let totalSaidas = 0;
+
+                    // Dados para o gráfico de fluxo
+                    const dadosPorData = {};
+                    const categorias = {
+                        inscricao: 0,
+                        alimentacao: 0,
+                        transporte: 0,
+                        material: 0,
+                        outros: 0
+                    };
+
+                    querySnapshot.forEach((doc) => {
+                        const transacao = doc.data();
+                        const valor = parseFloat(transacao.valor) || 0;
+
+                        // Somar entradas e saídas
+                        if (transacao.tipo === 'entrada') {
+                            totalEntradas += valor;
+                        } else if (transacao.tipo === 'saida') {
+                            totalSaidas += valor;
+                        }
+
+                        // Agrupar por data para o gráfico de fluxo
+                        const dataFormatada = formatarDataSimples(transacao.data);
+                        if (!dadosPorData[dataFormatada]) {
+                            dadosPorData[dataFormatada] = {
+                                entradas: 0,
+                                saidas: 0
+                            };
+                        }
+
+                        if (transacao.tipo === 'entrada') {
+                            dadosPorData[dataFormatada].entradas += valor;
+                        } else if (transacao.tipo === 'saida') {
+                            dadosPorData[dataFormatada].saidas += valor;
+                        }
+
+                        // Contar por categoria
+                        if (transacao.categoria && categorias.hasOwnProperty(transacao.categoria)) {
+                            categorias[transacao.categoria] += valor;
+                        }
+                    });
+
+                    // Atualizar cards
+                    $('#totalTransacoes').text(totalTransacoes);
+                    $('#totalEntradas').text('R$ ' + totalEntradas.toFixed(2).replace('.', ','));
+                    $('#totalSaidas').text('R$ ' + totalSaidas.toFixed(2).replace('.', ','));
+
+                    const saldoAtual = totalEntradas - totalSaidas;
+                    $('#saldoAtual').text('R$ ' + saldoAtual.toFixed(2).replace('.', ','));
+
+                    // Atualizar gráfico de fluxo
+                    atualizarGraficoFluxo(dadosPorData);
+
+                    // Atualizar gráfico de categorias
+                    atualizarGraficoCategorias(categorias);
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar dashboard: ", error);
+                });
+        }
+
+        // Função para atualizar o gráfico de fluxo
+        function atualizarGraficoFluxo(dadosPorData) {
+            // Ordenar datas
+            const datas = Object.keys(dadosPorData).sort();
+
+            // Preparar dados para o gráfico
+            const entradas = [];
+            const saidas = [];
+            const saldos = [];
+            let saldoAcumulado = 0;
+
+            datas.forEach(data => {
+                const entrada = dadosPorData[data].entradas;
+                const saida = dadosPorData[data].saidas;
+
+                entradas.push(entrada);
+                saidas.push(saida);
+
+                saldoAcumulado += (entrada - saida);
+                saldos.push(saldoAcumulado);
+            });
+
+            // Atualizar gráfico
+            graficoFluxo.data.labels = datas;
+            graficoFluxo.data.datasets[0].data = entradas;
+            graficoFluxo.data.datasets[1].data = saidas;
+            graficoFluxo.data.datasets[2].data = saldos;
+            graficoFluxo.update();
+        }
+
+        // Função para atualizar o gráfico de categorias
+        function atualizarGraficoCategorias(categorias) {
+            graficoCategorias.data.datasets[0].data = [
+                categorias.inscricao,
+                categorias.alimentacao,
+                categorias.transporte,
+                categorias.material,
+                categorias.outros
+            ];
+            graficoCategorias.update();
+        }
+
+        // Função para carregar transações
+        function carregarTransacoes() {
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                .orderBy("data", "desc")
+                .get()
+                .then((querySnapshot) => {
+                    todasTransacoes = [];
+
+                    querySnapshot.forEach((doc) => {
+                        const transacao = doc.data();
+                        transacao.id = doc.id;
+                        todasTransacoes.push(transacao);
+                    });
+
+                    // Atualizar a tabela com todas as transações
+                    transacoesFiltradas = [...todasTransacoes];
+                    atualizarTabelaTransacoes(transacoesFiltradas);
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar transações: ", error);
+                });
+        }
+
+        // Função para atualizar a tabela de transações
+        function atualizarTabelaTransacoes(transacoes) {
+            const tabelaTransacoes = $('#transacoesList');
+            tabelaTransacoes.html('');
+
+            if (transacoes.length === 0) {
+                tabelaTransacoes.html('<tr><td colspan="7" class="text-center">Nenhuma transação encontrada</td></tr>');
+                return;
+            }
+
+            transacoes.forEach(transacao => {
+                const dataFormatada = formatarData(transacao.data);
+                const valor = parseFloat(transacao.valor).toFixed(2).replace('.', ',');
+
+                const linha = `
+                    <tr>
+                        <td>${dataFormatada}</td>
+                        <td>${transacao.descricao}</td>
+                        <td>${formatarCategoria(transacao.categoria)}</td>
+                        <td>
+                            <span class="badge ${transacao.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida'}">
+                                ${transacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                            </span>
+                        </td>
+                        <td>R$ ${valor}</td>
+                        <td>${formatarMetodo(transacao.metodo)}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-info btn-sm" onclick="prepararEdicao('${transacao.id}')">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-danger btn-sm" onclick="prepararExclusao('${transacao.id}')">
+                                                                        <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+                tabelaTransacoes.append(linha);
+            });
+        }
+
+        // Função para registrar nova transação
+        function registrarTransacao(e) {
+            e.preventDefault();
+
+            const descricao = $('#descricao').val();
+            const data = $('#data').val();
+            const valorStr = $('#valor').val().replace(',', '.');
+            const valor = parseFloat(valorStr);
+            const tipo = $('#tipo').val();
+            const categoria = $('#categoria').val();
+            const metodo = $('#metodo').val();
+            const observacao = $('#observacao').val();
+
+            if (!descricao || !data || isNaN(valor) || valor <= 0 || !tipo || !categoria || !metodo) {
+                alert('Por favor, preencha todos os campos corretamente.');
+                return;
+            }
+
+            // Adicionar transação ao Firestore
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+                descricao: descricao,
+                data: data,
+                valor: valor,
+                tipo: tipo,
+                categoria: categoria,
+                metodo: metodo,
+                observacao: observacao,
+                dataCriacao: new Date().toISOString()
+            })
+                .then(() => {
+                    alert('Transação registrada com sucesso!');
+                    $('#novaTransacaoForm')[0].reset();
+                    document.getElementById('data').valueAsDate = new Date();
+
+                    // Recarregar dados
+                    carregarDashboard();
+                    carregarTransacoes();
+
+                    // Voltar para a aba de transações
+                    $('#transacoes-tab').tab('show');
+                })
+                .catch((error) => {
+                    console.error("Erro ao registrar transação: ", error);
+                    alert("Erro ao registrar transação. Tente novamente.");
+                });
+        }
+
+        // Função para preparar exclusão
+        function prepararExclusao(id) {
+            $('#confirmarExclusao').data('id', id);
+            $('#excluirModal').modal('show');
+        }
+
+        // Função para excluir transação
+        function excluirTransacao() {
+            const id = $('#confirmarExclusao').data('id');
+
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc(id)
+                .delete()
+                .then(() => {
+                    alert('Transação excluída com sucesso!');
+                    $('#excluirModal').modal('hide');
+
+                    // Recarregar dados
+                    carregarDashboard();
+                    carregarTransacoes();
+                })
+                .catch((error) => {
+                    console.error("Erro ao excluir transação: ", error);
+                    alert("Erro ao excluir transação. Tente novamente.");
+                });
+        }
+
+        // Função para preparar edição
+        function prepararEdicao(id) {
+            const transacao = todasTransacoes.find(t => t.id === id);
+
+            if (!transacao) {
+                alert('Transação não encontrada!');
+                return;
+            }
+
+            // Preencher formulário de edição
+            $('#editId').val(id);
+            $('#editDescricao').val(transacao.descricao);
+            $('#editData').val(transacao.data);
+            $('#editValor').val(parseFloat(transacao.valor).toFixed(2).replace('.', ','));
+            $('#editTipo').val(transacao.tipo);
+            $('#editCategoria').val(transacao.categoria);
+            $('#editMetodo').val(transacao.metodo);
+            $('#editObservacao').val(transacao.observacao || '');
+
+            // Abrir modal
+            $('#editarModal').modal('show');
+        }
+
+        // Função para salvar edição
+        function salvarEdicaoTransacao() {
+            const id = $('#editId').val();
+            const descricao = $('#editDescricao').val();
+            const data = $('#editData').val();
+            const valorStr = $('#editValor').val().replace(',', '.');
+            const valor = parseFloat(valorStr);
+            const tipo = $('#editTipo').val();
+            const categoria = $('#editCategoria').val();
+            const metodo = $('#editMetodo').val();
+            const observacao = $('#editObservacao').val();
+
+            if (!descricao || !data || isNaN(valor) || valor <= 0 || !tipo || !categoria || !metodo) {
+                alert('Por favor, preencha todos os campos corretamente.');
+                return;
+            }
+
+            // Atualizar transação no Firestore
+            db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc(id)
+                .update({
+                    descricao: descricao,
+                    data: data,
+                    valor: valor,
+                    tipo: tipo,
+                    categoria: categoria,
+                    metodo: metodo,
+                    observacao: observacao,
+                    dataAtualizacao: new Date().toISOString()
+                })
+                .then(() => {
+                    alert('Transação atualizada com sucesso!');
+                    $('#editarModal').modal('hide');
+
+                    // Recarregar dados
+                    carregarDashboard();
+                    carregarTransacoes();
+                })
+                .catch((error) => {
+                    console.error("Erro ao atualizar transação: ", error);
+                    alert("Erro ao atualizar transação. Tente novamente.");
+                });
+        }
+
+        // Função para aplicar filtros
+        function aplicarFiltros() {
+            const tipo = $('#filtroTipo').val();
+            const categoria = $('#filtroCategoria').val();
+            const dataInicio = $('#filtroDataInicio').val();
+            const dataFim = $('#filtroDataFim').val();
+
+            // Filtrar transações
+            transacoesFiltradas = todasTransacoes.filter(transacao => {
+                // Filtro por tipo
+                if (tipo !== 'todos' && transacao.tipo !== tipo) {
+                    return false;
+                }
+
+                // Filtro por categoria
+                if (categoria !== 'todos' && transacao.categoria !== categoria) {
+                    return false;
+                }
+
+                // Filtro por data de início
+                if (dataInicio && transacao.data < dataInicio) {
+                    return false;
+                }
+
+                // Filtro por data de fim
+                if (dataFim && transacao.data > dataFim) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Atualizar tabela
+            atualizarTabelaTransacoes(transacoesFiltradas);
+        }
+
+        // Função para limpar filtros
+        function limparFiltros() {
+            $('#filtroTipo').val('todos');
+            $('#filtroCategoria').val('todos');
+            $('#filtroDataInicio').val('');
+            $('#filtroDataFim').val('');
+
+            // Restaurar todas as transações
+            transacoesFiltradas = [...todasTransacoes];
+            atualizarTabelaTransacoes(transacoesFiltradas);
+        }
+
+        // Função para gerar relatório
+        function gerarRelatorio(e) {
+            e.preventDefault();
+
+            const dataInicio = $('#relDataInicio').val();
+            const dataFim = $('#relDataFim').val();
+            const tipo = $('#relTipo').val();
+
+            if (!dataInicio || !dataFim) {
+                alert('Por favor, selecione o período para o relatório.');
+                return;
+            }
+
+            // Filtrar transações para o relatório
+            const transacoesRelatorio = todasTransacoes.filter(transacao => {
+                // Filtro por tipo
+                if (tipo !== 'todos' && transacao.tipo !== tipo) {
+                    return false;
+                }
+
+                // Filtro por período
+                if (transacao.data < dataInicio || transacao.data > dataFim) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Calcular totais
+            let totalEntradas = 0;
+            let totalSaidas = 0;
+
+            transacoesRelatorio.forEach(transacao => {
+                const valor = parseFloat(transacao.valor) || 0;
+                if (transacao.tipo === 'entrada') {
+                    totalEntradas += valor;
+                } else if (transacao.tipo === 'saida') {
+                    totalSaidas += valor;
+                }
+            });
+
+            const saldo = totalEntradas - totalSaidas;
+
+            // Agrupar por categoria
+            const categorias = {
+                inscricao: 0,
+                alimentacao: 0,
+                transporte: 0,
+                material: 0,
+                outros: 0
+            };
+
+            transacoesRelatorio.forEach(transacao => {
+                const valor = parseFloat(transacao.valor) || 0;
+                if (transacao.categoria && categorias.hasOwnProperty(transacao.categoria)) {
+                    if (transacao.tipo === 'entrada') {
+                        categorias[transacao.categoria] += valor;
+                    } else {
+                        categorias[transacao.categoria] -= valor;
+                    }
+                }
+            });
+
+            // Gerar HTML do relatório
+            const dataInicioFormatada = formatarData(dataInicio);
+            const dataFimFormatada = formatarData(dataFim);
+
+            let html = `
+                <div class="alert alert-info">
+                    <h5>Relatório de ${dataInicioFormatada} a ${dataFimFormatada}</h5>
+                    <p>Tipo: ${tipo === 'todos' ? 'Todas as transações' : (tipo === 'entrada' ? 'Apenas entradas' : 'Apenas saídas')}</p>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-success text-white">
+                            <div class="card-body text-center">
+                                <h5>Total de Entradas</h5>
+                                <h3>R$ ${totalEntradas.toFixed(2).replace('.', ',')}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body text-center">
+                                <h5>Total de Saídas</h5>
+                                <h3>R$ ${totalSaidas.toFixed(2).replace('.', ',')}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card ${saldo >= 0 ? 'bg-info' : 'bg-warning'} text-white">
+                            <div class="card-body text-center">
+                                <h5>Saldo no Período</h5>
+                                <h3>R$ ${saldo.toFixed(2).replace('.', ',')}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5>Resumo por Categoria</h5>
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Categoria</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Inscrição</td>
+                            <td>R$ ${categorias.inscricao.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                        <tr>
+                            <td>Alimentação</td>
+                            <td>R$ ${categorias.alimentacao.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                        <tr>
+                            <td>Transporte</td>
+                            <td>R$ ${categorias.transporte.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                        <tr>
+                            <td>Material</td>
+                            <td>R$ ${categorias.material.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                        <tr>
+                            <td>Outros</td>
+                            <td>R$ ${categorias.outros.toFixed(2).replace('.', ',')}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h5>Transações no Período (${transacoesRelatorio.length})</h5>
+            `;
+
+            if (transacoesRelatorio.length > 0) {
+                html += `
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Descrição</th>
+                                    <th>Categoria</th>
+                                    <th>Tipo</th>
+                                    <th>Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                transacoesRelatorio.forEach(transacao => {
+                    const dataFormatada = formatarData(transacao.data);
+                    const valor = parseFloat(transacao.valor).toFixed(2).replace('.', ',');
+
+                    html += `
+                        <tr>
+                            <td>${dataFormatada}</td>
+                            <td>${transacao.descricao}</td>
+                            <td>${formatarCategoria(transacao.categoria)}</td>
+                            <td>
+                                <span class="badge ${transacao.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida'}">
+                                    ${transacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                                </span>
+                            </td>
+                            <td>R$ ${valor}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else {
+                html += `<p class="text-center text-muted">Nenhuma transação encontrada no período selecionado.</p>`;
+            }
+
+            // Exibir relatório
+            $('#relatorioResultado').html(html);
+        }
+
+        // Função para exportar para CSV
+        function exportarCSV() {
+            if (todasTransacoes.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+
+            // Preparar dados para CSV
+            const cabecalho = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Método', 'Observação'];
+            const linhas = todasTransacoes.map(transacao => [
+                formatarData(transacao.data),
+                transacao.descricao,
+                formatarCategoria(transacao.categoria),
+                transacao.tipo === 'entrada' ? 'Entrada' : 'Saída',
+                'R$ ' + parseFloat(transacao.valor).toFixed(2).replace('.', ','),
+                formatarMetodo(transacao.metodo),
+                transacao.observacao || ''
+            ]);
+
+            // Criar conteúdo CSV
+            let csvContent = cabecalho.join(',') + '\n';
+            linhas.forEach(linha => {
+                // Escapar campos que contêm vírgulas
+                const linhaEscapada = linha.map(campo => {
+                    if (campo.includes(',')) {
+                        return `"${campo}"`;
+                    }
+                    return campo;
+                });
+                csvContent += linhaEscapada.join(',') + '\n';
+            });
+
+            // Criar blob e fazer download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const dataAtual = new Date().toISOString().slice(0, 10);
+            saveAs(blob, `caixa_acampamento_${dataAtual}.csv`);
+        }
+
+        // Função para exportar para Excel
+        function exportarExcel() {
+            if (todasTransacoes.length === 0) {
+                alert('Não há dados para exportar.');
+                return;
+            }
+
+            // Preparar dados para Excel
+            const cabecalho = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Método', 'Observação'];
+            const dados = todasTransacoes.map(transacao => [
+                formatarData(transacao.data),
+                transacao.descricao,
+                formatarCategoria(transacao.categoria),
+                transacao.tipo === 'entrada' ? 'Entrada' : 'Saída',
+                'R$ ' + parseFloat(transacao.valor).toFixed(2).replace('.', ','),
+                formatarMetodo(transacao.metodo),
+                transacao.observacao || ''
+            ]);
+
+            // Criar workbook
+            const ws = XLSX.utils.aoa_to_sheet([cabecalho, ...dados]);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Caixa');
+
+            // Fazer download
+            const dataAtual = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `caixa_acampamento_${dataAtual}.xlsx`);
+        }
+
+        // Função para baixar modelo CSV
+        function baixarModeloCSV() {
+            const cabecalho = ['Data', 'Descrição', 'Valor', 'Tipo', 'Categoria', 'Método', 'Observação'];
+            const exemplo = [
+                '2023-01-01', 'Inscrição João Silva', '250.00', 'entrada', 'inscricao', 'pix', 'Pagamento completo'
+            ];
+
+            // Criar conteúdo CSV
+            let csvContent = cabecalho.join(',') + '\n' + exemplo.join(',');
+
+            // Criar blob e fazer download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            saveAs(blob, 'modelo_importacao_caixa.csv');
+        }
+
+        // Configurar área de upload
+        function configurarUploadArea() {
+            const uploadArea = document.getElementById('uploadArea');
+
+            // Eventos de drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                uploadArea.classList.add('dragover');
+            }
+
+            function unhighlight() {
+                uploadArea.classList.remove('dragover');
+            }
+
+            // Evento de drop
+            uploadArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    document.getElementById('fileInput').files = files;
+                    processarArquivo();
+                }
+            }
+        }
+
+        // Processar arquivo para upload
+        function processarArquivo() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            const fileName = file.name.toLowerCase();
+
+            if (fileName.endsWith('.csv')) {
+                processarCSV(file);
+            } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                processarExcel(file);
+            } else {
+                alert('Formato de arquivo não suportado. Use CSV ou Excel (.xlsx, .xls).');
+                fileInput.value = '';
+            }
+        }
+
+        // Processar arquivo CSV
+        function processarCSV(file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const conteudo = e.target.result;
+                const linhas = conteudo.split('\n');
+
+                if (linhas.length < 2) {
+                    alert('O arquivo não contém dados suficientes.');
+                    return;
+                }
+
+                // Extrair cabeçalho
+                const cabecalho = linhas[0].split(',').map(col => col.trim().replace(/"/g, ''));
+
+                // Preparar dados para preview
+                const dados = [];
+                for (let i = 1; i < linhas.length; i++) {
+                    if (linhas[i].trim() === '') continue;
+
+                    // Lidar com campos que contêm vírgulas dentro de aspas
+                    const regex = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
+                    const campos = [];
+                    let match;
+
+                    while ((match = regex.exec(linhas[i])) !== null) {
+                        campos.push(match[0].replace(/"/g, ''));
+                    }
+
+                    if (campos.length > 0) {
+                        dados.push(campos);
+                    }
+                }
+
+                exibirPreviewDados(cabecalho, dados);
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Processar arquivo Excel
+        function processarExcel(file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                // Pegar primeira planilha
+                const primeiraFolha = workbook.SheetNames[0];
+                const planilha = workbook.Sheets[primeiraFolha];
+
+                // Converter para array
+                const dados = XLSX.utils.sheet_to_json(planilha, { header: 1 });
+
+                if (dados.length < 2) {
+                    alert('O arquivo não contém dados suficientes.');
+                    return;
+                }
+
+                const cabecalho = dados[0];
+                const linhas = dados.slice(1);
+
+                exibirPreviewDados(cabecalho, linhas);
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Exibir preview dos dados
+        function exibirPreviewDados(cabecalho, dados) {
+            // Limitar a 10 linhas para o preview
+            const dadosPreview = dados.slice(0, 10);
+
+            // Preencher cabeçalho da tabela
+            const previewTableHead = document.getElementById('previewTableHead');
+            let headerHTML = '<tr>';
+            cabecalho.forEach(col => {
+                headerHTML += `<th>${col}</th>`;
+            });
+            headerHTML += '</tr>';
+            previewTableHead.innerHTML = headerHTML;
+
+            // Preencher corpo da tabela
+            const previewTableBody = document.getElementById('previewTableBody');
+            let bodyHTML = '';
+            dadosPreview.forEach(linha => {
+                bodyHTML += '<tr>';
+                linha.forEach(celula => {
+                    bodyHTML += `<td>${celula}</td>`;
+                });
+                bodyHTML += '</tr>';
+            });
+            previewTableBody.innerHTML = bodyHTML;
+
+            // Preencher opções de mapeamento
+            preencherOpcoesMapeamento(cabecalho);
+
+            // Mostrar container de preview
+            document.getElementById('uploadPreviewContainer').style.display = 'block';
+        }
+
+        // Preencher opções de mapeamento
+        function preencherOpcoesMapeamento(cabecalho) {
+            const campos = ['mapeamentoData', 'mapeamentoDescricao', 'mapeamentoValor', 'mapeamentoTipo', 'mapeamentoCategoria', 'mapeamentoMetodo'];
+
+            campos.forEach(campo => {
+                const select = document.getElementById(campo);
+                select.innerHTML = '<option value="">Selecione a coluna</option>';
+
+                cabecalho.forEach((col, index) => {
+                    const selected = (
+                        (campo === 'mapeamentoData' && col.toLowerCase().includes('data')) ||
+                        (campo === 'mapeamentoDescricao' && col.toLowerCase().includes('descri')) ||
+                        (campo === 'mapeamentoValor' && col.toLowerCase().includes('valor')) ||
+                        (campo === 'mapeamentoTipo' && col.toLowerCase().includes('tipo')) ||
+                        (campo === 'mapeamentoCategoria' && col.toLowerCase().includes('categ')) ||
+                        (campo === 'mapeamentoMetodo' && (col.toLowerCase().includes('metodo') || col.toLowerCase().includes('método')))
+                    ) ? 'selected' : '';
+
+                    select.innerHTML += `<option value="${index}" ${selected}>${col}</option>`;
+                });
+            });
+        }
+
+        // Cancelar upload
+        function cancelarUpload() {
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadPreviewContainer').style.display = 'none';
+        }
+
+        // Importar dados
+        function importarDados() {
+            const fileInput = document.getElementById('fileInput');
+
+            if (!fileInput.files[0]) {
+                alert('Nenhum arquivo selecionado.');
+                return;
+            }
+
+            // Obter índices das colunas mapeadas
+            const indiceData = parseInt(document.getElementById('mapeamentoData').value);
+            const indiceDescricao = parseInt(document.getElementById('mapeamentoDescricao').value);
+            const indiceValor = parseInt(document.getElementById('mapeamentoValor').value);
+            const indiceTipo = parseInt(document.getElementById('mapeamentoTipo').value);
+            const indiceCategoria = parseInt(document.getElementById('mapeamentoCategoria').value);
+            const indiceMetodo = parseInt(document.getElementById('mapeamentoMetodo').value);
+
+            // Verificar se todos os campos obrigatórios foram mapeados
+            if (isNaN(indiceData) || isNaN(indiceDescricao) || isNaN(indiceValor) || isNaN(indiceTipo)) {
+                alert('Por favor, mapeie todos os campos obrigatórios (Data, Descrição, Valor e Tipo).');
+                return;
+            }
+
+            // Processar o arquivo novamente para obter todos os dados
+            const file = fileInput.files[0];
+            const fileName = file.name.toLowerCase();
+
+            if (fileName.endsWith('.csv')) {
+                importarDadosCSV(file, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
+            } else if (fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) {
+                importarDadosExcel(file, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
+            }
+        }
+
+        // Importar dados de CSV
+        function importarDadosCSV(file, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const conteudo = e.target.result;
+                const linhas = conteudo.split('\n');
+
+                // Pular cabeçalho
+                processarLinhasImportacao(linhas.slice(1), indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
+            };
+
+            reader.readAsText(file);
+        }
+
+        // Importar dados de Excel
+        function importarDadosExcel(file, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+
+                // Pegar primeira planilha
+                const primeiraFolha = workbook.SheetNames[0];
+                const planilha = workbook.Sheets[primeiraFolha];
+
+                // Converter para array
+                const dados = XLSX.utils.sheet_to_json(planilha, { header: 1 });
+
+                // Pular cabeçalho
+                processarLinhasImportacao(dados.slice(1), indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
+            };
+
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Processar linhas para importação
+        function processarLinhasImportacao(linhas, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo) {
+            // Preparar lote de transações para adicionar ao Firestore
+            const batch = db.batch();
+            let contadorValidos = 0;
+            let contadorInvalidos = 0;
+
+            linhas.forEach(linha => {
+                // Verificar se é uma linha válida
+                if (!linha || (Array.isArray(linha) && linha.length === 0) || (typeof linha === 'string' && linha.trim() === '')) {
+                    return;
+                }
+
+                // Extrair campos para CSV
+                let campos = linha;
+                if (typeof linha === 'string') {
+                    // Lidar com campos que contêm vírgulas dentro de aspas
+                    const regex = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
+                    campos = [];
+                    let match;
+
+                    while ((match = regex.exec(linha)) !== null) {
+                        campos.push(match[0].replace(/"/g, ''));
+                    }
+                }
+
+                // Extrair valores dos campos mapeados
+                const data = campos[indiceData];
+                const descricao = campos[indiceDescricao];
+                let valorStr = campos[indiceValor];
+                const tipo = campos[indiceTipo];
+                const categoria = isNaN(indiceCategoria) ? 'outros' : campos[indiceCategoria];
+                const metodo = isNaN(indiceMetodo) ? 'outros' : campos[indiceMetodo];
+
+                // Limpar e validar valor
+                valorStr = valorStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+                const valor = parseFloat(valorStr);
+
+                // Validar campos obrigatórios
+                if (!data || !descricao || isNaN(valor) || valor <= 0 || !tipo) {
+                    contadorInvalidos++;
+                    return;
+                }
+
+                // Normalizar tipo
+                const tipoNormalizado = tipo.toLowerCase().includes('entrada') ? 'entrada' : 'saida';
+
+                // Normalizar categoria
+                let categoriaNormalizada = 'outros';
+                if (categoria) {
+                    const catLower = categoria.toLowerCase();
+                    if (catLower.includes('inscri')) categoriaNormalizada = 'inscricao';
+                    else if (catLower.includes('aliment')) categoriaNormalizada = 'alimentacao';
+                    else if (catLower.includes('transp')) categoriaNormalizada = 'transporte';
+                    else if (catLower.includes('mater')) categoriaNormalizada = 'material';
+                }
+
+                // Normalizar método
+                let metodoNormalizado = 'outros';
+                if (metodo) {
+                    const metLower = metodo.toLowerCase();
+                    if (metLower.includes('pix')) metodoNormalizado = 'pix';
+                    else if (metLower.includes('cart')) metodoNormalizado = 'cartao';
+                    else if (metLower.includes('dinheiro')) metodoNormalizado = 'dinheiro';
+                    else if (metLower.includes('transf')) metodoNormalizado = 'transferencia';
+                    else if (metLower.includes('cheque')) metodoNormalizado = 'cheque';
+                }
+
+                // Criar referência para novo documento
+                const novaRef = db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc();
+
+                // Adicionar ao batch
+                batch.set(novaRef, {
+                    descricao: descricao,
+                    data: formatarDataISO(data),
+                    valor: valor,
+                    tipo: tipoNormalizado,
+                    categoria: categoriaNormalizada,
+                    metodo: metodoNormalizado,
+                    observacao: 'Importado via upload de arquivo',
+                    dataCriacao: new Date().toISOString()
+                });
+
+                contadorValidos++;
+            });
+
+            // Executar batch se houver transações válidas
+            if (contadorValidos > 0) {
+                batch.commit()
+                    .then(() => {
+                        alert(`Importação concluída!\n${contadorValidos} transações importadas com sucesso.\n${contadorInvalidos} linhas ignoradas por dados inválidos.`);
+
+                        // Limpar e esconder preview
+                        document.getElementById('fileInput').value = '';
+                        document.getElementById('uploadPreviewContainer').style.display = 'none';
+
+                        // Recarregar dados
+                        carregarDashboard();
+                        carregarTransacoes();
+
+                        // Voltar para a aba de transações
+                        $('#transacoes-tab').tab('show');
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao importar transações: ", error);
+                        alert("Erro ao importar transações. Tente novamente.");
+                    });
+            } else {
+                alert('Nenhuma transação válida encontrada para importar.');
+            }
+        }
+
+        // Funções auxiliares
+        function formatarData(dataString) {
+            if (!dataString) return '';
+
+            try {
+                // Verificar formato ISO (YYYY-MM-DD)
+                if (/^\d{4}-\d{2}-\d{2}/.test(dataString)) {
+                    const data = new Date(dataString);
+                    return data.toLocaleDateString('pt-BR');
+                }
+
+                // Tentar outros formatos comuns
+                const partes = dataString.split(/[\/\-\.]/);
+
+                // Formato DD/MM/YYYY ou MM/DD/YYYY
+                if (partes.length === 3) {
+                    // Assumir DD/MM/YYYY se o primeiro número for <= 31
+                    if (parseInt(partes[0]) <= 31 && parseInt(partes[1]) <= 12) {
+                        return `${partes[0].padStart(2, '0')}/${partes[1].padStart(2, '0')}/${partes[2]}`;
+                    }
+                    // Assumir MM/DD/YYYY
+                    else {
+                        return `${partes[1].padStart(2, '0')}/${partes[0].padStart(2, '0')}/${partes[2]}`;
+                    }
+                }
+
+                return dataString;
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        function formatarDataSimples(dataString) {
+            if (!dataString) return '';
+
+            try {
+                const data = new Date(dataString);
+                return data.toLocaleDateString('pt-BR');
+            } catch (e) {
+                return dataString;
+            }
+        }
+
+        function formatarDataISO(dataString) {
+            if (!dataString) return '';
+
+            try {
+                // Já está no formato ISO (YYYY-MM-DD)
+                if (/^\d{4}-\d{2}-\d{2}/.test(dataString)) {
+                    return dataString.substring(0, 10);
+                }
+
+                // Converter de DD/MM/YYYY para YYYY-MM-DD
+                const partes = dataString.split(/[\/\-\.]/);
+
+                if (partes.length === 3) {
+                    // Assumir DD/MM/YYYY se o primeiro número for <= 31
+                    if (parseInt(partes[0]) <= 31 && parseInt(partes[1]) <= 12) {
+                        return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+                    }
+                    // Assumir MM/DD/YYYY
+                    else {
+                        return `${partes[2]}-${partes[0].padStart(2, '0')}-${partes[1].padStart(2, '0')}`;
+                    }
+                }
+
+                // Fallback: usar a data atual
+                const hoje = new Date();
+                return hoje.toISOString().substring(0, 10);
+            } catch (e) {
+                // Fallback: usar a data atual
+                const hoje = new Date();
+                return hoje.toISOString().substring(0, 10);
+            }
+        }
+
+        function formatarCategoria(categoria) {
+            switch (categoria) {
+                case 'inscricao': return 'Inscrição';
+                case 'alimentacao': return 'Alimentação';
+                case 'transporte': return 'Transporte';
+                case 'material': return 'Material';
+                case 'outros': return 'Outros';
+                default: return categoria || 'Outros';
+            }
+        }
+
+        function formatarMetodo(metodo) {
+            switch (metodo) {
+                case 'pix': return 'PIX';
+                case 'cartao': return 'Cartão';
+                case 'dinheiro': return 'Dinheiro';
+                case 'transferencia': return 'Transferência';
+                case 'cheque': return 'Cheque';
+                default: return metodo || 'Outro';
+            }
+        }
+    </script>
+</body>
+
+</html>

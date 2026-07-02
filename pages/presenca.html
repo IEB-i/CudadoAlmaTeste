@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 100px;
+            background-color: #f8f9fa;
+        }
+
+        /* Animação suave para carregar os elementos */
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Seção de Títulos */
+        .section-title {
+            color: #613704;
+            font-weight: 700;
+            font-size: 1.35rem;
+        }
+
+        /* Indicador do título da seção */
+        .section-title-indicator {
+            background: linear-gradient(135deg, #613704, #ff8c00);
+            width: 5px;
+            height: 24px;
+            border-radius: 4px;
+        }
+
+        /* Card de Estatísticas - Visual Moderno */
+        .stats-icon-wrapper {
+            width: 55px;
+            height: 55px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover .stats-icon-wrapper {
+            transform: scale(1.1);
+        }
+
+        .stats-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        .stats-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 600;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilização moderna dos inputs */
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 10px 15px;
+            height: auto;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .form-control:focus {
+            background-color: #fff;
+            border-color: #ff8c00;
+            box-shadow: 0 0 0 0.2rem rgba(255, 140, 0, 0.15);
+            outline: none;
+        }
+
+        /* Estilização moderna das tabelas */
+        .table-responsive {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #613704;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.8px;
+            border: none;
+            padding: 18px 15px;
+            vertical-align: middle;
+        }
+
+        .table tbody td {
+            padding: 18px 15px;
+            vertical-align: middle;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            color: #495057;
+            transition: background-color 0.2s;
+        }
+
+        .table tbody tr:hover td {
+            background-color: rgba(97, 55, 4, 0.02);
+        }
+
+        /* Modern Badges */
+        .status-badge {
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid transparent;
+        }
+
+        .status-badge i {
+            margin-right: 4px;
+            font-size: 14px;
+        }
+
+        .status-badge.presente {
+            background-color: rgba(40, 167, 69, 0.12);
+            color: #198754;
+            border-color: rgba(40, 167, 69, 0.2);
+        }
+
+        .status-badge.ausente {
+            background-color: rgba(220, 53, 69, 0.12);
+            color: #dc3545;
+            border-color: rgba(220, 53, 69, 0.2);
+        }
+
+        .status-badge.pendente {
+            background-color: rgba(255, 193, 7, 0.12);
+            color: #b58100;
+            border-color: rgba(255, 193, 7, 0.25);
+        }
+
+        /* Estilização moderna dos botões de ação na tabela */
+        .btn-table-action {
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            margin-right: 5px;
+        }
+
+        .btn-table-action:last-child {
+            margin-right: 0;
+        }
+
+        .btn-table-action:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        /* Cores e efeitos para botões específicos */
+        .btn-table-action.btn-presente-modern {
+            color: #198754;
+            border-color: rgba(25, 135, 84, 0.2);
+        }
+
+        .btn-table-action.btn-presente-modern:hover:not(:disabled) {
+            background-color: #198754;
+            color: white;
+            border-color: #198754;
+            transform: scale(1.08);
+            box-shadow: 0 4px 8px rgba(25, 135, 84, 0.2);
+        }
+
+        .btn-table-action.btn-presente-modern:disabled {
+            color: rgba(25, 135, 84, 0.4);
+            border-color: rgba(25, 135, 84, 0.05);
+            background-color: rgba(25, 135, 84, 0.05);
+            cursor: not-allowed;
+        }
+
+        .btn-table-action.btn-ausente-modern {
+            color: #dc3545;
+            border-color: rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-table-action.btn-ausente-modern:hover:not(:disabled) {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+            transform: scale(1.08);
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        }
+
+        .btn-table-action.btn-ausente-modern:disabled {
+            color: rgba(220, 53, 69, 0.4);
+            border-color: rgba(220, 53, 69, 0.05);
+            background-color: rgba(220, 53, 69, 0.05);
+            cursor: not-allowed;
+        }
+
+        .btn-table-action.btn-edit-modern {
+            color: #6c757d;
+            border-color: rgba(108, 117, 125, 0.25);
+        }
+
+        .btn-table-action.btn-edit-modern:hover:not(:disabled) {
+            background-color: #6c757d;
+            color: white;
+            border-color: #343638;
+            transform: scale(1.08);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.25);
+        }
+
+        .btn-table-action.btn-edit-modern:disabled {
+            color: rgba(0, 0, 0, 0.35);
+            border-color: rgba(205, 209, 212, 0.062);
+            background-color: rgba(188, 194, 199, 0.05);
+            cursor: not-allowed;
+        }
+
+        /* Estilos de realce */
+        .search-highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #664d03;
+        }
+
+        .hora-checkin {
+            font-size: 0.85rem;
+            color: #2b5210;
+            font-weight: 700;
+        }
+
+        /* Cabeçalhos ordenáveis */
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: background-color 0.15s ease;
+        }
+
+        th.sortable:hover {
+            background-color: rgba(97, 55, 4, 0.07);
+        }
+
+        th.sortable:active,
+        th.sortable:focus {
+            background-color: rgba(97, 55, 4, 0.07) !important;
+            outline: none;
+        }
+
+        th.sortable .sort-icon {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.75rem;
+            opacity: 0.4;
+            transition: opacity 0.2s, transform 0.2s;
+            vertical-align: middle;
+        }
+
+        th.sortable.asc .sort-icon,
+        th.sortable.desc .sort-icon {
+            opacity: 1;
+            color: #ff8c00;
+        }
+
+        th.sortable.desc .sort-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Custom Scrollbar */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto !important;
+                display: block;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .table-responsive table {
+                min-width: 800px;
+            }
+
+            .table-responsive th,
+            .table-responsive td {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">PAINEL DE PRESENÇA</h2>
+    </div>
+
+    <div class="container mt-5 fade-in-up">
+        <!-- 1. RESUMO DE PRESENÇAS -->
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-person-check mr-2"></i> Resumo de Presenças
+            </h4>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100 shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Total Inscritos</div>
+                                <div class="stats-value" id="totalInscritos">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100 shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
+                                <i class="bi bi-person-check-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Presentes</div>
+                                <div class="stats-value d-flex align-items-end" id="totalPresentes"
+                                    style="color: #198754;">0
+                                    <small class="text-muted ml-2 pb-1 font-weight-bold" id="percentualPresentes"
+                                        style="font-size: 0.82rem;">(0%)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card dashboard-card h-100 shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="stats-icon-wrapper mr-3"
+                                style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                <i class="bi bi-person-x-fill"></i>
+                            </div>
+                            <div>
+                                <div class="stats-label">Ausentes</div>
+                                <div class="stats-value d-flex align-items-end" id="totalAusentes"
+                                    style="color: #dc3545;">0 <small class="text-muted ml-2 pb-1 font-weight-bold"
+                                        id="percentualAusentes" style="font-size: 0.82rem;">(0%)</small></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title-wrapper mt-5 mb-4">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title text-uppercase mb-0">
+                <i class="bi bi-list-check mr-2"></i> Gestão de Participantes
+            </h4>
+        </div>
+
+        <!-- Filtros -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="filter-card p-4 shadow-sm mb-4 border-0"
+                    style="border-radius: 16px; background-color: #ffffff;">
+                    <h5 class="mb-4"
+                        style="color: #613704; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="bi bi-funnel-fill mr-2" style="color: #ff8c00;"></i> Filtrar & Buscar
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group mb-md-0">
+                                <label for="filtroNome" class="text-muted mb-2"
+                                    style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Buscar
+                                    por nome</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"
+                                            style="border-radius: 10px 0 0 10px; border: 1px solid rgba(0,0,0,0.1);"><i
+                                                class="bi bi-search" style="color: #6c757d;"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control border-left-0" id="filtroNome"
+                                        placeholder="Digite o nome do participante..."
+                                        style="border-radius: 0 10px 10px 0;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-md-0">
+                                <label for="filtroStatus" class="text-muted mb-2"
+                                    style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Filtrar
+                                    por status</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"
+                                            style="border-radius: 10px 0 0 10px; border: 1px solid rgba(0,0,0,0.1);"><i
+                                                class="bi bi-tag-fill" style="color: #6c757d;"></i></span>
+                                    </div>
+                                    <select class="form-control border-left-0" id="filtroStatus"
+                                        style="border-radius: 0 10px 10px 0;">
+                                        <option value="todos">Todos os status</option>
+                                        <option value="presente">Presentes</option>
+                                        <option value="ausente">Ausentes</option>
+                                        <option value="pendente">Pendentes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-md-0">
+                                <label for="ordenacao" class="text-muted mb-2"
+                                    style="font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Ordenar
+                                    por</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"
+                                            style="border-radius: 10px 0 0 10px; border: 1px solid rgba(0,0,0,0.1);"><i
+                                                class="bi bi-sort-alpha-down" style="color: #6c757d;"></i></span>
+                                    </div>
+                                    <select class="form-control border-left-0" id="ordenacao"
+                                        style="border-radius: 0 10px 10px 0;">
+                                        <option value="nome">Nome</option>
+                                        <option value="checkin">Hora do check-in</option>
+                                        <option value="idade">Idade</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Participantes -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card dashboard-card border-0 shadow-sm" style="border-radius: 16px;">
+                    <div
+                        class="card-header bg-transparent border-bottom-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0" style="color: #613704; font-weight: 700; font-size: 1.25rem;">
+                            <i class="bi bi-people-fill mr-2" style="color: #ff8c00;"></i> Lista de Participantes
+                        </h5>
+                        <div>
+                            <button class="btn btn-primary shadow-sm" id="btnExportarPresenca"
+                                style="border-radius: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 16px; font-size: 0.8rem;">
+                                <i class="bi bi-cloud-download mr-1"></i> Exportar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive"
+                            style="border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                            <table class="table table-hover mb-0" id="participantesTable">
+                                <thead>
+                                    <tr>
+                                        <th class="sortable" data-col="nome" style="width: 55%;">Nome <i
+                                                class="bi bi-arrow-up sort-icon"></i></th>
+                                        <th class="sortable" data-col="status" style="width: 18%;">Status <i
+                                                class="bi bi-arrow-up sort-icon"></i></th>
+                                        <th class="sortable text-center" data-col="hora" style="width: 15%;">Hora <i
+                                                class="bi bi-arrow-up sort-icon"></i></th>
+                                        <th class="text-center" style="width: 12%;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="participantesList">
+                                    <!-- Os dados serão carregados dinamicamente do Firebase -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Marcar como Pendente -->
+    <div class="modal fade" id="confirmarPresencaModal" tabindex="-1" role="dialog"
+        aria-labelledby="confirmarPresencaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 420px;">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header text-white p-4 border-0"
+                    style="background: linear-gradient(135deg, #4a4e69, #6c757d) !important;">
+                    <h5 class="modal-title font-weight-bold" id="confirmarPresencaModalLabel">
+                        <i class="bi bi-clock-history mr-2"></i> Marcar como Pendente
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                            style="width: 70px; height: 70px;">
+                            <i class="bi bi-clock-history" style="font-size: 2.2rem; color: #6c757d;"></i>
+                        </div>
+                    </div>
+                    <p class="text-center text-muted mb-1" style="font-size: 0.9rem;">Deseja redefinir a presença de</p>
+                    <p class="text-center font-weight-bold mb-3" style="font-size: 1.05rem; color: #2c3e50;"
+                        id="nomePendenteModal"></p>
+                    <p class="text-center text-muted" style="font-size: 0.85rem;">para <strong>Pendente</strong>? O
+                        horário de check-in será removido.</p>
+                    <input type="hidden" id="participanteId">
+                </div>
+                <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal"
+                        style="border-radius: 12px; font-weight: 600;">Cancelar</button>
+                    <button type="button" class="btn px-4 shadow-sm" id="confirmarPendenteBtn"
+                        style="border-radius: 12px; font-weight: bold; background: linear-gradient(135deg, #4a4e69, #6c757d); color: #fff; border: none;">
+                        <i class="bi bi-clock-history mr-1"></i> Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Exportação -->
+
+    <div class="modal fade" id="exportarPresencaModal" tabindex="-1" role="dialog"
+        aria-labelledby="exportarPresencaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header text-white p-4 border-0"
+                    style="background: linear-gradient(135deg, #613704, #8c510a) !important;">
+                    <h5 class="modal-title font-weight-bold" id="exportarPresencaModalLabel">
+                        <i class="bi bi-cloud-download-fill mr-2"></i> Exportar Lista de Presença
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                            style="width: 70px; height: 70px;">
+                            <i class="bi bi-file-earmark-spreadsheet" style="font-size: 2.2rem; color: #ff8c00;"></i>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="formatoExportacaoPresenca" class="text-muted font-weight-bold mb-1"
+                                style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">Formato</label>
+                            <select class="form-control border-0 shadow-sm" id="formatoExportacaoPresenca"
+                                style="border-radius: 10px; height: 45px;">
+                                <option value="excel">Excel (.xlsx)</option>
+                                <option value="csv">CSV (.csv)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group mb-3">
+                            <label for="statusExportar" class="text-muted font-weight-bold mb-1"
+                                style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">Status
+                                Filtrado</label>
+                            <select class="form-control border-0 shadow-sm" id="statusExportar"
+                                style="border-radius: 10px; height: 45px;">
+                                <option value="todos">Todos</option>
+                                <option value="presente">Apenas Presentes</option>
+                                <option value="ausente">Apenas Ausentes</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card border-0 p-3 mt-2 shadow-sm"
+                        style="border-radius: 12px; background-color: #ffffff;">
+                        <h6 class="font-weight-bold mb-3"
+                            style="color: #613704; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">
+                            Configurações Extras</h6>
+                        <div class="custom-control custom-checkbox mb-2">
+                            <input type="checkbox" class="custom-control-input" id="incluirHorarios" checked>
+                            <label class="custom-control-label text-muted font-weight-bold" for="incluirHorarios"
+                                style="font-size: 0.85rem;">Incluir horários de check-in</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="incluirObservacoes">
+                            <label class="custom-control-label text-muted font-weight-bold" for="incluirObservacoes"
+                                style="font-size: 0.85rem;">Incluir observações de presença</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal"
+                        style="border-radius: 12px; font-weight: 600;">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4 shadow-sm" id="confirmarExportacaoPresenca"
+                        style="border-radius: 12px; font-weight: bold; background: linear-gradient(135deg, #613704, #ff8c00); border: none;">
+                        <i class="bi bi-cloud-download mr-1"></i> Exportar Arquivo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Pagamento Rápido e Presença -->
+    <div class="modal fade" id="pagamentoRapidoModal" tabindex="-1" role="dialog"
+        aria-labelledby="pagamentoRapidoModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="modal-header text-white p-4 border-0"
+                    style="background: linear-gradient(135deg, #ff8c00, #ffb300) !important;">
+                    <h5 class="modal-title font-weight-bold" id="pagamentoRapidoModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill mr-2 text-danger"></i> Pagamento Pendente!
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true" style="font-size: 1.5rem;">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4 bg-light">
+                    <div class="alert alert-warning border-0 p-3 mb-4 shadow-sm"
+                        style="border-radius: 12px; background-color: #fff3cd; color: #664d03;">
+                        <i class="bi bi-info-circle-fill mr-2"></i>
+                        Este participante está com o pagamento pendente. Confirme o pagamento para liberar o check-in e
+                        a presença no evento.
+                    </div>
+
+                    <form id="pagamentoRapidoForm">
+                        <input type="hidden" id="pagRapidoParticipanteId">
+
+                        <div class="form-group mb-3">
+                            <label class="text-muted font-weight-bold mb-1"
+                                style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">Participante</label>
+                            <input type="text" class="form-control border-0 shadow-sm font-weight-bold"
+                                id="pagRapidoNome" readonly
+                                style="border-radius: 10px; height: 45px; background-color: #e9ecef;">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="pagRapidoValor" class="text-muted font-weight-bold mb-1"
+                                    style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">Valor
+                                    da Inscrição (R$)</label>
+                                <input type="text" class="form-control border-0 shadow-sm font-weight-bold"
+                                    id="pagRapidoValor" value="30,00"
+                                    style="border-radius: 10px; height: 45px; background-color: #ffffff;">
+                            </div>
+
+                            <div class="col-md-6 form-group mb-3">
+                                <label for="pagRapidoMetodo" class="text-muted font-weight-bold mb-1"
+                                    style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.5px;">Método
+                                    de Pagamento</label>
+                                <select class="form-control border-0 shadow-sm" id="pagRapidoMetodo" required
+                                    style="border-radius: 10px; height: 45px;">
+                                    <option value="pix" selected>PIX</option>
+                                    <option value="cartao">Cartão</option>
+                                    <option value="dinheiro">Dinheiro</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 p-4 bg-white d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary px-4" data-dismiss="modal"
+                        style="border-radius: 12px; font-weight: 600;">Cancelar</button>
+                    <button type="button" class="btn btn-success px-4 shadow-sm" id="btnSalvarPagamentoRapido"
+                        style="border-radius: 12px; font-weight: bold; background: linear-gradient(135deg, #198754, #28a745); border: none;">
+                        <i class="bi bi-check-circle-fill mr-1"></i> Confirmar Pago & Entrada
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+        // Variáveis globais
+        let todosParticipantes = [];
+        let participantesFiltrados = [];
+        let sortCol = 'nome'; // coluna atual de ordenação
+        let sortDir = 'asc';  // direção: 'asc' ou 'desc'
+
+        $(document).ready(function () {
+            // Carregar dados iniciais
+            carregarParticipantes();
+
+            // Atualizar hora atual a cada minuto
+            atualizarHoraAtual();
+            setInterval(atualizarHoraAtual, 60000);
+
+            // Configurar eventos de filtro
+            $('#filtroNome').on('input', aplicarFiltros);
+            $('#filtroStatus').on('change', aplicarFiltros);
+            $('#ordenacao').on('change', aplicarFiltros);
+
+            // Configurar eventos dos botões
+            $('#confirmarPendenteBtn').on('click', function () {
+                const participanteId = $('#participanteId').val();
+                marcarPresencaPendente(participanteId);
+                $('#confirmarPresencaModal').modal('hide');
+            });
+            $('#btnExportarPresenca').on('click', function () {
+                $('#exportarPresencaModal').modal('show');
+            });
+            $('#confirmarExportacaoPresenca').on('click', function () {
+                exportarListaPresenca();
+                $('#exportarPresencaModal').modal('hide');
+            });
+
+
+
+            // Ordenação por clique nos cabeçalhos
+            $('#participantesTable thead th.sortable').on('click', function () {
+                const col = $(this).data('col');
+                if (sortCol === col) {
+                    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortCol = col;
+                    sortDir = 'asc';
+                }
+                // Atualizar visual dos cabeçalhos
+                $('#participantesTable thead th.sortable').removeClass('asc desc');
+                $(this).addClass(sortDir);
+                aplicarFiltros();
+            });
+
+            // Evento do botão de pagamento expresso
+            $('#btnSalvarPagamentoRapido').on('click', salvarPagamentoRapido);
+
+            // Formatar valor do pagamento expresso como moeda em tempo real
+            $('#pagRapidoValor').on('input', function (e) {
+                let valor = e.target.value;
+                valor = valor.replace(/\D/g, ""); // Remove tudo o que não é dígito
+
+                if (valor === "") {
+                    e.target.value = "";
+                    return;
+                }
+
+                valor = parseInt(valor, 10).toString();
+
+                if (valor === "NaN") {
+                    e.target.value = "";
+                    return;
+                }
+
+                while (valor.length < 3) {
+                    valor = "0" + valor;
+                }
+
+                valor = valor.replace(/(\d+)(\d{2})$/, "$1,$2");
+                valor = valor.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+
+                e.target.value = valor;
+            });
+        });
+
+        function carregarParticipantes() {
+            // Buscar todos os participantes inscritos para o evento de 2026
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                .where("anoevento", "==", "2026")
+                .get()
+                .then((querySnapshot) => {
+                    todosParticipantes = [];
+
+                    querySnapshot.forEach((doc) => {
+                        const participante = doc.data();
+                        participante.id = doc.id;
+
+                        // Definir status de presença se não existir
+                        if (!participante.statusPresenca) {
+                            participante.statusPresenca = 'pendente';
+                        }
+
+                        todosParticipantes.push(participante);
+                    });
+
+                    // Aplicar filtros iniciais
+                    aplicarFiltros();
+
+                    // Atualizar estatísticas
+                    atualizarEstatisticas();
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar participantes:", error);
+                    alert("Erro ao carregar participantes. Tente novamente.");
+                });
+        }
+
+        function aplicarFiltros() {
+            const filtroNome = $('#filtroNome').val().toLowerCase();
+            const filtroStatus = $('#filtroStatus').val();
+
+            // Aplicar filtros
+            participantesFiltrados = todosParticipantes.filter(participante => {
+                const nomeMatch = participante.nome.toLowerCase().includes(filtroNome);
+                let statusMatch = true;
+                if (filtroStatus !== 'todos') {
+                    statusMatch = (participante.statusPresenca || 'pendente') === filtroStatus;
+                }
+                return nomeMatch && statusMatch;
+            });
+
+            // Aplicar ordenação pela coluna e direção atuais
+            const dir = sortDir === 'asc' ? 1 : -1;
+            participantesFiltrados.sort((a, b) => {
+                switch (sortCol) {
+                    case 'status': {
+                        const ordem = { presente: 0, pendente: 1, ausente: 2 };
+                        const sA = ordem[a.statusPresenca || 'pendente'] ?? 3;
+                        const sB = ordem[b.statusPresenca || 'pendente'] ?? 3;
+                        return (sA - sB) * dir;
+                    }
+                    case 'hora': {
+                        const dataA = a.dataCheckin ? new Date(a.dataCheckin).getTime() : 0;
+                        const dataB = b.dataCheckin ? new Date(b.dataCheckin).getTime() : 0;
+                        return (dataA - dataB) * dir;
+                    }
+                    case 'nome':
+                    default:
+                        return a.nome.localeCompare(b.nome) * dir;
+                }
+            });
+
+            // Atualizar a tabela após filtrar e ordenar
+            atualizarTabelaParticipantes();
+        }
+
+        function atualizarTabelaParticipantes() {
+            const tabelaParticipantes = $('#participantesList');
+            tabelaParticipantes.html('');
+
+            if (participantesFiltrados.length === 0) {
+                tabelaParticipantes.html('<tr><td colspan="6" class="text-center">Nenhum participante encontrado</td></tr>');
+                return;
+            }
+
+            participantesFiltrados.forEach(participante => {
+                const idade = participante.idade || '';
+                const telefone = formatarTelefone(participante.telefone);
+                const status = participante.statusPresenca || 'pendente';
+
+                // Determinar classe do badge de status
+                let statusClass = 'pendente';
+                let statusText = 'Pendente';
+                let statusIcon = 'schedule';
+
+                switch (status) {
+                    case 'presente':
+                        statusClass = 'presente';
+                        statusText = 'Presente';
+                        statusIcon = 'check_circle';
+                        break;
+                    case 'ausente':
+                        statusClass = 'ausente';
+                        statusText = 'Ausente';
+                        statusIcon = 'cancel';
+                        break;
+                }
+
+                // Determinar classe e texto do badge de pagamento
+                const ePago = participante.statusPagamento === 'pago';
+                const pagBadge = ePago
+                    ? `<span class="badge px-2 py-1 ml-2" style="font-size: 10px; border-radius: 12px; font-weight: 700; background-color: rgba(40, 167, 69, 0.12); color: #198754; border: 1px solid rgba(40, 167, 69, 0.2);"><i class="bi bi-cash-coin mr-1"></i>Pago</span>`
+                    : `<span class="badge px-2 py-1 ml-2" style="font-size: 10px; border-radius: 12px; font-weight: 700; background-color: rgba(255, 193, 7, 0.12); color: #b58100; border: 1px solid rgba(255, 193, 7, 0.25);"><i class="bi bi-exclamation-triangle-fill mr-1"></i>Pendente</span>`;
+
+                // Formatear hora do check-in
+                let checkinInfo = '--:--';
+                if (participante.dataCheckin) {
+                    const data = new Date(participante.dataCheckin);
+                    checkinInfo = data.toLocaleTimeString('pt-BR', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+
+                const linha = `
+                <tr id="participante-row-${participante.id}">
+                    <td>
+                        <strong style="color: #2c3e50;">${participante.nome}</strong>
+                    </td>
+                    <td>
+                        <span class="status-badge ${statusClass}">
+                            <i class="material-icons" style="font-size: 14px; vertical-align: middle;">${statusIcon}</i>
+                            ${statusText}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="hora-checkin">${checkinInfo}</div>
+                        ${participante.observacoesPresenca ? `<small class="text-muted d-block mt-1" style="font-size: 11px;">${participante.observacoesPresenca}</small>` : ''}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <button class="btn-table-action btn-presente-modern" 
+                                    title="Marcar como Presente"
+                                    onclick="marcarPresenca('${participante.id}', 'presente')"
+                                    ${status === 'presente' ? 'disabled' : ''}>
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button class="btn-table-action btn-ausente-modern" 
+                                    title="Marcar como Ausente"
+                                    onclick="marcarPresenca('${participante.id}', 'ausente')"
+                                    ${status === 'ausente' ? 'disabled' : ''}>
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                            <button class="btn-table-action btn-edit-modern" 
+                                    title="Marcar como Pendente"
+                                    onclick="abrirModalPendente('${participante.id}')"
+                                    ${status === 'pendente' ? 'disabled' : ''}>
+                                <i class="bi bi-clock-history" style="font-size: 0.9rem;"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+
+                tabelaParticipantes.append(linha);
+            });
+        }
+
+        function atualizarEstatisticas() {
+            const total = todosParticipantes.length;
+            const presentes = todosParticipantes.filter(p => p.statusPresenca === 'presente').length;
+            const ausentes = todosParticipantes.filter(p => p.statusPresenca === 'ausente').length;
+
+            const percentualPresentes = total > 0 ? Math.round((presentes / total) * 100) : 0;
+            const percentualAusentes = total > 0 ? Math.round((ausentes / total) * 100) : 0;
+
+            $('#totalInscritos').text(total);
+            $('#totalPresentes').text(presentes);
+            $('#totalAusentes').text(ausentes);
+            $('#percentualPresentes').text(`${percentualPresentes}%`);
+            $('#percentualAusentes').text(`${percentualAusentes}%`);
+        }
+
+        function atualizarHoraAtual() {
+            const agora = new Date();
+            const hora = agora.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            $('#ultimaAtualizacao').text(hora);
+        }
+
+        function abrirModalPendente(participanteId) {
+            const participante = todosParticipantes.find(p => p.id === participanteId);
+            if (!participante) return;
+
+            $('#participanteId').val(participanteId);
+            $('#nomePendenteModal').text(participante.nome);
+            $('#confirmarPresencaModal').modal('show');
+        }
+
+        function marcarPresenca(participanteId, status, observacoes = '') {
+            const participante = todosParticipantes.find(p => p.id === participanteId);
+            if (!participante) {
+                alert('Participante não encontrado!');
+                return;
+            }
+
+            // Se for marcar como presente, mas o pagamento não estiver confirmado
+            if (status === 'presente' && (participante.statusPagamento !== 'pago')) {
+                abrirPagamentoRapidoModal(participanteId);
+                return;
+            }
+
+            const agora = new Date().toISOString();
+
+            // Atualizar no Firestore
+            const updateData = {
+                statusPresenca: status,
+                observacoesPresenca: observacoes,
+                dataUltimaAtualizacao: agora
+            };
+
+            // Adicionar data de check-in apenas se for marcar como presente
+            if (status === 'presente') {
+                updateData.dataCheckin = agora;
+            }
+
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .update(updateData)
+                .then(() => {
+                    // Atualizar o participante na lista local
+                    const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                    if (index !== -1) {
+                        todosParticipantes[index].statusPresenca = status;
+                        todosParticipantes[index].observacoesPresenca = observacoes;
+                        if (status === 'presente') {
+                            todosParticipantes[index].dataCheckin = agora;
+                        }
+                    }
+
+                    // Recarregar dados
+                    aplicarFiltros();
+                    atualizarEstatisticas();
+
+                    // Mostrar feedback visual
+                    const statusText = status === 'presente' ? 'presente' : 'ausente';
+                    const participanteModificado = todosParticipantes[index];
+
+                    // Toast de sucesso
+                    const mensagem = `${participanteModificado.nome} marcado como ${statusText}!`;
+
+                    // Criar notificação visual
+                    mostrarNotificacao(mensagem, status === 'presente' ? 'success' : 'warning');
+                })
+                .catch((error) => {
+                    console.error("Erro ao marcar presença: ", error);
+                    alert("Erro ao marcar presença. Tente novamente.");
+                });
+        }
+
+        function marcarPresencaPendente(participanteId, observacoes = '') {
+            const participante = todosParticipantes.find(p => p.id === participanteId);
+            if (!participante) {
+                alert('Participante não encontrado!');
+                return;
+            }
+
+            const agora = new Date().toISOString();
+
+            // Voltar para pendente e limpar dataCheckin
+            const updateData = {
+                statusPresenca: 'pendente',
+                observacoesPresenca: observacoes,
+                dataCheckin: null,
+                dataUltimaAtualizacao: agora
+            };
+
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .update(updateData)
+                .then(() => {
+                    const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                    if (index !== -1) {
+                        todosParticipantes[index].statusPresenca = 'pendente';
+                        todosParticipantes[index].observacoesPresenca = observacoes;
+                        todosParticipantes[index].dataCheckin = null;
+                    }
+
+                    aplicarFiltros();
+                    atualizarEstatisticas();
+
+                    mostrarNotificacao(`Presença de ${participante.nome} foi cancelada.`, 'warning');
+                })
+                .catch((error) => {
+                    console.error("Erro ao cancelar presença: ", error);
+                    alert("Erro ao cancelar presença. Tente novamente.");
+                });
+        }
+
+        function mostrarNotificacao(mensagem, tipo) {
+            // Criar elemento de notificação
+            const notificacao = $(`
+                <div class="alert alert-${tipo === 'success' ? 'success' : 'warning'} alert-dismissible fade show" 
+                     style="position: fixed; top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="material-icons" style="vertical-align: middle; margin-right: 8px;">
+                        ${tipo === 'success' ? 'check_circle' : 'warning'}
+                    </i>
+                    ${mensagem}
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span>&times;</span>
+                    </button>
+                </div>
+            `);
+
+            // Adicionar ao body
+            $('body').append(notificacao);
+
+            // Remover automaticamente após 3 segundos
+            setTimeout(() => {
+                notificacao.alert('close');
+            }, 3000);
+        }
+
+        function exportarListaPresenca() {
+            const formato = $('#formatoExportacaoPresenca').val();
+            const statusExportar = $('#statusExportar').val();
+            const incluirHorarios = $('#incluirHorarios').is(':checked');
+            const incluirObservacoes = $('#incluirObservacoes').is(':checked');
+
+            // Filtrar participantes pelo status selecionado
+            let participantesExportar = [...todosParticipantes];
+
+            if (statusExportar !== 'todos') {
+                participantesExportar = participantesExportar.filter(p =>
+                    (p.statusPresenca || 'pendente') === statusExportar
+                );
+            }
+
+            // Ordenar por nome
+            participantesExportar.sort((a, b) => a.nome.localeCompare(b.nome));
+
+            // Preparar dados para exportação
+            const dados = participantesExportar.map(p => {
+                const status = p.statusPresenca || 'pendente';
+                const statusText = status === 'presente' ? 'Presente' :
+                    status === 'ausente' ? 'Ausente' : 'Pendente';
+
+                const item = {
+                    'Nome': p.nome,
+                    'Idade': p.idade || '',
+                    'Telefone': formatarTelefone(p.telefone),
+                    'Status': statusText
+                };
+
+                if (incluirHorarios && p.dataCheckin) {
+                    const data = new Date(p.dataCheckin);
+                    item['Horário Check-in'] = data.toLocaleString('pt-BR');
+                }
+
+                if (incluirObservacoes && p.observacoesPresenca) {
+                    item['Observações'] = p.observacoesPresenca;
+                }
+
+                return item;
+            });
+
+            // Exportar no formato selecionado
+            if (formato === 'excel') {
+                exportarExcelPresenca(dados);
+            } else {
+                exportarCSVPresenca(dados);
+            }
+        }
+
+        function exportarExcelPresenca(dados) {
+            const ws = XLSX.utils.json_to_sheet(dados);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Lista de Presença");
+
+            const nomeArquivo = `Lista_Presenca_ComRoca2026_${formatarDataArquivo(new Date())}.xlsx`;
+            XLSX.writeFile(wb, nomeArquivo);
+        }
+
+        function exportarCSVPresenca(dados) {
+            const ws = XLSX.utils.json_to_sheet(dados);
+            const csv = XLSX.utils.sheet_to_csv(ws);
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const nomeArquivo = `Lista_Presenca_ComRoca2026_${formatarDataArquivo(new Date())}.csv`;
+            saveAs(blob, nomeArquivo);
+        }
+
+        function formatarTelefone(telefone) {
+            if (!telefone) return '';
+
+            // Remover caracteres não numéricos
+            const numeros = telefone.replace(/\D/g, '');
+
+            // Formatar como (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+            if (numeros.length === 11) {
+                return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 7)}-${numeros.substring(7)}`;
+            } else if (numeros.length === 10) {
+                return `(${numeros.substring(0, 2)}) ${numeros.substring(2, 6)}-${numeros.substring(6)}`;
+            }
+
+            return telefone;
+        }
+
+        function formatarDataArquivo(data) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const hora = String(data.getHours()).padStart(2, '0');
+            const minuto = String(data.getMinutes()).padStart(2, '0');
+
+            return `${dia}-${mes}-${ano}_${hora}-${minuto}`;
+        }
+
+
+
+        function abrirPagamentoRapidoModal(participanteId) {
+            const participante = todosParticipantes.find(p => p.id === participanteId);
+            if (!participante) {
+                alert("Erro: Participante não encontrado.");
+                return;
+            }
+
+            // Preencher campos
+            $('#pagRapidoParticipanteId').val(participanteId);
+            $('#pagRapidoNome').val(participante.nome);
+
+            // Valor da inscrição padrão R$ 30,00
+            const valorInscricao = participante.valorInscricao || 30.00;
+            $('#pagRapidoValor').val(valorInscricao.toFixed(2).replace('.', ','));
+
+            // Abrir o modal
+            $('#pagamentoRapidoModal').modal('show');
+        }
+
+        function salvarPagamentoRapido() {
+            const participanteId = $('#pagRapidoParticipanteId').val();
+            const nomeParticipante = $('#pagRapidoNome').val();
+            const formaPagamento = $('#pagRapidoMetodo').val();
+            const valorPagamento = parseFloat($('#pagRapidoValor').val().replace(/\./g, '').replace(',', '.'));
+
+            if (!participanteId) {
+                alert("Erro: Participante não identificado.");
+                return;
+            }
+
+            if (!valorPagamento || isNaN(valorPagamento) || valorPagamento <= 0) {
+                alert("Por favor, insira um valor de pagamento válido.");
+                return;
+            }
+
+            console.log(`Registrando pagamento rápido para ${nomeParticipante}: R$ ${valorPagamento} via ${formaPagamento}`);
+
+            // Desabilitar o botão para evitar múltiplos cliques
+            const btnSalvar = $('#btnSalvarPagamentoRapido');
+            btnSalvar.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Processando...');
+
+            // 1. Atualizar participante no Firestore
+            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                .update({
+                    statusPagamento: 'pago',
+                    formaPagamento: formaPagamento,
+                    dataPagamento: new Date().toISOString(),
+                    valorPago: valorPagamento
+                })
+                .then(() => {
+                    // 2. Registrar na coleção pagamentos
+                    return db.collection("Eventos").doc("ComRoca2026").collection("pagamentos").add({
+                        participanteId: participanteId,
+                        participanteNome: nomeParticipante,
+                        valor: valorPagamento,
+                        formaPagamento: formaPagamento,
+                        dataPagamento: new Date().toISOString(),
+                        status: 'confirmado'
+                    });
+                })
+                .then((docRef) => {
+                    // 3. Registrar no caixa do evento
+                    return db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+                        descricao: `Inscrição - ${nomeParticipante}`,
+                        data: new Date().toISOString().substring(0, 10),
+                        valor: valorPagamento,
+                        tipo: 'entrada',
+                        categoria: 'inscricao',
+                        metodo: formaPagamento,
+                        observacao: `Pagamento expresso no Check-in - Ref: ${docRef.id}`,
+                        referenciaOrigem: 'pagamento',
+                        pagamentoId: docRef.id,
+                        participanteId: participanteId,
+                        dataCriacao: new Date().toISOString()
+                    });
+                })
+                .then(() => {
+                    // Fechar o modal de pagamento rápido
+                    $('#pagamentoRapidoModal').modal('hide');
+
+                    // Atualizar a lista local com os dados atualizados de pagamento
+                    const index = todosParticipantes.findIndex(p => p.id === participanteId);
+                    if (index !== -1) {
+                        todosParticipantes[index].statusPagamento = 'pago';
+                        todosParticipantes[index].formaPagamento = formaPagamento;
+                        todosParticipantes[index].valorPago = valorPagamento;
+                    }
+
+                    // Toast de sucesso de pagamento
+                    mostrarNotificacao(`Pagamento de ${nomeParticipante} confirmado com sucesso!`, 'success');
+
+                    // 4. Confirmar presença agora que está pago
+                    marcarPresenca(participanteId, 'presente');
+                })
+                .catch((error) => {
+                    console.error("Erro ao registrar pagamento rápido:", error);
+                    alert("Erro ao processar pagamento rápido. Tente novamente.");
+                })
+                .finally(() => {
+                    // Reabilitar o botão
+                    btnSalvar.prop('disabled', false).html('<i class="bi bi-check-circle-fill mr-1"></i> Confirmar Pago & Entrada');
+                });
+        }
+    </script>
+</body>
+
+</html>

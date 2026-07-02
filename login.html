@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Gestão Comunhão na Roça 2026</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <style>
+    body {
+      background: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+
+      padding: 50px 10px 10px 10px;
+    }
+
+    .login-container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(169, 47, 133, 0.15);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid #F3E8F3;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-header img {
+      height: 90px;
+      margin-bottom: 15px;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #613704, #613704);
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .btn-login:hover {
+      background: linear-gradient(135deg, #613704, #613704);
+      color: white;
+    }
+
+    .alert {
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <img src="assets/Logo.png" alt="Logo">
+      <h3>Gestão Comunhão na Roça 2026</h3>
+      <p class="text-muted">Painel Administrativo</p>
+    </div>
+
+    <form id="loginForm">
+      <div class="mb-3">
+        <label for="password" class="form-label">
+          <i class="bi bi-lock"></i> Senha de Acesso
+        </label>
+        <input type="password" class="form-control" id="password" placeholder="Digite a senha" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-login w-100">
+        <i class="bi bi-box-arrow-in-right"></i> Entrar
+      </button>
+    </form>
+
+    <div id="errorAlert" class="alert alert-danger" style="display: none;">
+      <i class="bi bi-exclamation-triangle"></i> Senha incorreta. Tente novamente.
+    </div>
+  </div>
+
+  <script>
+    // Senha simples para demonstração (em produção, usar autenticação mais robusta)
+    const ADMIN_PASSWORD = 'roça2026';
+
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const password = document.getElementById('password').value;
+      const errorAlert = document.getElementById('errorAlert');
+
+      if (password === ADMIN_PASSWORD) {
+        // Salvar autenticação no localStorage
+        localStorage.setItem('adminAuthenticated', 'true');
+        localStorage.setItem('authTimestamp', Date.now().toString());
+
+        // Redirecionar para o painel
+        window.location.href = 'pages/gestao.html';
+      } else {
+        // Mostrar erro
+        errorAlert.style.display = 'block';
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+
+        // Esconder erro após 3 segundos
+        setTimeout(() => {
+          errorAlert.style.display = 'none';
+        }, 3000);
+      }
+    });
+
+    // Verificar se já está autenticado
+    window.addEventListener('load', function () {
+      const isAuthenticated = localStorage.getItem('adminAuthenticated');
+      const authTimestamp = localStorage.getItem('authTimestamp');
+
+      if (isAuthenticated === 'true' && authTimestamp) {
+        const now = Date.now();
+        const authTime = parseInt(authTimestamp);
+        const hoursPassed = (now - authTime) / (1000 * 60 * 60);
+
+        // Autenticação válida por 24 horas
+        if (hoursPassed < 24) {
+          window.location.href = 'pages/gestao.html';
+        } else {
+          // Limpar autenticação expirada
+          localStorage.removeItem('adminAuthenticated');
+          localStorage.removeItem('authTimestamp');
+        }
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
