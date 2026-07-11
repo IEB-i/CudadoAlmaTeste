@@ -370,6 +370,17 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
     <script>
+        // Verificar limite de vagas antes de permitir o preenchimento
+        db.collection("Eventos").doc("ComRoca2026").get().then((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                const totalInscricoes = data.totalInscricoes || (data.contador && data.contador.totalInscricoes) || 0;
+                if (totalInscricoes >= 150) {
+                    alert("As inscrições já foram encerradas. Limite de vagas atingido.");
+                    window.location.href = 'index.html';
+                }
+            }
+        });
 
         // Inicialização do EmailJS - mova para fora do objeto firebaseConfig
         emailjs.init("service_8dce1so");

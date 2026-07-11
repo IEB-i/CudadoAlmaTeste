@@ -283,7 +283,8 @@
                 .get()  // Aqui você já faz a leitura do documento
                 .then((doc) => {
                     if (doc.exists) {
-                        const totalInscricoes = doc.data().contador.totalInscricoes || 0;  // Acesse o campo dentro do documento
+                        const data = doc.data();
+                        const totalInscricoes = data.totalInscricoes || (data.contador && data.contador.totalInscricoes) || 0;
                         console.log(`Total de inscrições ComRoca: ${totalInscricoes}`);
 
                         const btnInscricao = document.getElementById('btnInscricao');
