@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INSCRIÇÕES COMUNHÃ NA ROÇA</title>
+    <title>INSCRIÇÕES CONFERÊNCIA 2026</title>
     <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -195,23 +195,83 @@
 
         }
 
-        .signature-container {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            margin-bottom: 10px;
+        #dtnasc.is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
         }
 
-        .signature-pad {
-            width: 100%;
-            height: 200px;
-            touch-action: none;
-            cursor: crosshair;
+        #dtnascErro {
+            color: #dc3545;
+            display: none;
+            margin-top: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
-        .signature-buttons {
+        .horarios-box {
+            background-color: #ffffff;
+            border: 1px solid rgba(97, 55, 4, 0.15);
+            border-radius: 14px;
+            padding: 20px;
+            margin: 20px auto 25px auto;
+            box-shadow: 0 4px 15px rgba(97, 55, 4, 0.08);
+            text-align: center;
+        }
+
+        .horarios-box h3 {
+            color: #613704;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .horarios-list {
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .horario-card {
+            background: #fdfaf6;
+            border: 1px solid #eddcd0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .horario-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(97, 55, 4, 0.12);
+        }
+
+        .horario-dia {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #613704;
+            margin-bottom: 3px;
+        }
+
+        .horario-hora {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #925306;
+            background: #f3e8de;
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .horario-card {
+                min-width: 95px;
+                padding: 8px 10px;
+            }
         }
     </style>
 </head>
@@ -221,19 +281,38 @@
         <!--<div class="logo-circle">
              <img src="./assets/Logo_360 black-sem fundo.png" alt="Logo ACAMP">
         </div>-->
-        <h2 class="header-title">COMUNHÃO NA ROÇA</h2>
+        <h2 class="header-title">CUIDADO DA ALMA</h2>
     </div>
     <div class="container">
-        <h2 class="text-center mb-4 font-weight-bold">COMUNHÃO NA ROÇA</h2>
+        <h2 class="text-center mb-4 font-weight-bold">CUIDADO DA ALMA</h2>
         <div class="divider"></div>
         <!-- preco -->
         <div class="info-box">
-            <p><strong>Valor da inscrição:</strong> R$ 30,00 Individual </p>
+            <p><strong>Valor da inscrição:</strong> R$ 50,00 Individual </p>
             <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquineta)*</p>
             <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
             <p>*Para realização do Pagamento, entrar em contato com <b>Gustavo Perrusi (Guga)</b></p>
             <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/5583999127728" target="_blank">83
                     99912-7728</a></p>
+        </div>
+
+        <!-- Horários do Evento -->
+        <div class="horarios-box">
+            <h3>Horários do Evento</h3>
+            <div class="horarios-list">
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 16/10</span>
+                    <span class="horario-hora">19:30</span>
+                </div>
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 17/10</span>
+                    <span class="horario-hora">14:00</span>
+                </div>
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 18/10</span>
+                    <span class="horario-hora">10:00</span>
+                </div>
+            </div>
         </div>
 
         <form id="acampForm">
@@ -248,7 +327,8 @@
                 </div> -->
                 <div class="form-group col-md-4">
                     <label for="dtnasc">Data de Nascimento</label>
-                    <input type="date" class="form-control" id="dtnasc" placeholder="DD/MM/AAAA" required>
+                    <input type="text" class="form-control" id="dtnasc" placeholder="DD/MM/AAAA" maxlength="10" inputmode="numeric" autocomplete="off" required>
+                    <small id="dtnascErro" class="text-danger"></small>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="idade">Idade</label>
@@ -277,80 +357,10 @@
                         <option value="Outra">Outra Igreja</option>
                     </select>
                 </div>
-                <div class="form-group col-md-6" id="celulaDiv" style="display: none;">
-                    <label for="celula">Qual é a sua Célula?</label>
-                    <select class="form-control" id="celula">
-                        <option value="">Selecione seu Líder de Célula</option>
-                    </select>
-                </div>
-
-                <div class="form-row" id="infoRedeDiv" style="display: none;">
-                    <div class="form-group col-md-6">
-                        <label for="supervisor">Supervisor</label>
-                        <input type="text" class="form-control" id="supervisor" readonly>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="rede">Rede</label>
-                        <input type="text" class="form-control" id="rede" readonly>
-                    </div>
-                </div>
-
-
                 <div class="form-group col-md-6" id="outraIgrejaDiv" style="display: none;">
                     <label for="outraIgreja">Qual Igreja?</label>
                     <input type="text" class="form-control" id="outraIgreja">
                 </div>
-            </div>
-
-            <div id="responsavelDiv" style="display: none;">
-                <div class="form-group">
-                    <label for="contato">Nome do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="text" class="form-control" id="contato">
-                </div>
-                <div class="form-group" id="cpfResponsavelDiv">
-                    <label for="cpfResponsavel">CPF do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="text" class="form-control" id="cpfResponsavel" placeholder="000.000.000-00">
-                </div>
-                <div class="form-group">
-                    <label for="fonecontato">Celular do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="tel" class="form-control" id="fonecontato" placeholder="(99) 99999-9999">
-                </div>
-                <!-- <div class="form-group" id="autorizacaoDiv">
-                    <div class="info-box"
-                        style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; margin-top: 10px;">
-                        <p class="mb-1"><strong>TERMO DE AUTORIZAÇÃO</strong></p>
-                        <p class="mb-1">Eu <span id="nomeResponsavelSpan" style="font-weight: bold;"></span> autorizo a
-                            participão de <span id="nomeParticipanteSpan" style="font-weight: bold;"></span> no evento
-                            "Essência", organizado pela IEB Missão Resgate na cidade do Conde-PB, a ser realizado no dia
-                            26/04/2026.</p>
-                        <p class="mb-1">Autorizo também que o(a) referido(a) adolescente utilize o transporte oferecido
-                            pela IEB Intermares, onde será acompanhado pelo líderes de jovens Alysson Samuel Batista de
-                            Amorim
-                            (CPF: 093.463.304-57) e Raissa Bruna de A. Rodrigues Amorim (CPF: 070.085.934-90), maiores,
-                            capazes, casados
-                            e empresários.</p>
-                        <p class="mb-1">Declaro estar ciente de todas as informações referentes ao evento e ao
-                            transporte, bem como das normas e condutas esperadas dos participantes. Comprometo-me a
-                            fornecer informações médicas relevantes, caso necessário.</p>
-                        <p class="mb-1">A presente autorização é válida apenas para o dia 26/04/2026 – percurso ida e
-                            volta.</p>
-                    </div>
-
-                </div> -->
-
-                <!-- <div class="form-group mt-3">
-                    <label for="assinatura">Assinatura do Responsável</label>
-                    <div class="signature-container">
-                        <canvas id="signature-pad" class="signature-pad" width="400" height="200"></canvas>
-                    </div>
-                    <div class="signature-buttons mt-2">
-                        <button type="button" class="btn btn-secondary btn-sm" id="clear-signature">Limpar
-                            Assinatura</button>
-                    </div>
-                    <input type="hidden" id="assinaturaData" name="assinaturaData">
-                    <small class="form-text text-muted">Por favor, assine usando o mouse ou touch na tela.</small>
-                </div> -->
-
             </div>
 
             <div class="form-group">
@@ -367,11 +377,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="./firebase/firebaseConfig.js"></script>
     <script src="./firebase/firebaseConfig2.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
     <script>
         // Verificar limite de vagas antes de permitir o preenchimento
-        db.collection("Eventos").doc("ComRoca2026").get().then((doc) => {
+        db.collection("Eventos").doc("Conf2026").get().then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 const totalInscricoes = data.totalInscricoes || (data.contador && data.contador.totalInscricoes) || 0;
@@ -387,7 +396,7 @@
 
         // Função para verificar se o nome já existe
         function verificarNomeExistente(nome) {
-            return db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+            return db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                 .where("nome", "==", nome)
                 .where("anoevento", "==", "2026")
                 .get()
@@ -418,269 +427,172 @@
             input.value = input.value.toUpperCase();
         }
 
-        // Adicionar evento na digitação para campos de texto
+        // Adicionar evento na digitação para campos de texto (exceto data de nascimento)
         const textInputs = document.querySelectorAll('input[type="text"]');
         textInputs.forEach(input => {
-            input.addEventListener('input', function () {
-                toUpperCase(this);
-            });
+            if (input.id !== 'dtnasc') {
+                input.addEventListener('input', function () {
+                    toUpperCase(this);
+                });
+            }
         });
-
-        document.getElementById('nome').addEventListener('input', atualizarTextoAutorizacao);
-        document.getElementById('contato').addEventListener('input', atualizarTextoAutorizacao);
-
-        // Função para atualizar o texto de autorização com os nomes
-        function atualizarTextoAutorizacao() {
-            const nomeParticipante = document.getElementById('nome').value.trim();
-            const nomeResponsavel = document.getElementById('contato').value.trim();
-
-            document.getElementById('nomeParticipanteSpan').textContent = nomeParticipante;
-            document.getElementById('nomeResponsavelSpan').textContent = nomeResponsavel;
-        }
 
         // Máscaras
         // VMasker(document.getElementById("cpf")).maskPattern("999.999.999-99");
         VMasker(document.getElementById("celular")).maskPattern("(99) 99999-9999");
-        VMasker(document.getElementById("fonecontato")).maskPattern("(99) 99999-9999");
-        VMasker(document.getElementById("cpfResponsavel")).maskPattern("999.999.999-99");
         // VMasker(document.getElementById("cep")).maskPattern("99999-999");
 
-        // Calcular idade automaticamente
-        document.getElementById('dtnasc').addEventListener('change', function () {
-            const birthDate = new Date(this.value);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const m = today.getMonth() - birthDate.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
+        // Elementos de Data de Nascimento e Botão Cadastrar
+        const dtnascInput = document.getElementById('dtnasc');
+        const dtnascErro = document.getElementById('dtnascErro');
+        const cadastrarBtn = document.getElementById('cadastrarBtn');
+
+        // Máscara progressiva para Data (DD/MM/AAAA)
+        // 1 -> 1
+        // 14 -> 14
+        // 140 -> 14/0
+        // 1401 -> 14/01
+        // 14012 -> 14/01/2
+        // 140120 -> 14/01/20
+        // 1401202 -> 14/01/202
+        // 14012026 -> 14/01/2026
+        function formatarDataProgressiva(valor) {
+            let v = valor.replace(/\D/g, '').slice(0, 8);
+            if (v.length > 4) {
+                return v.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3');
+            } else if (v.length > 2) {
+                return v.replace(/(\d{2})(\d+)/, '$1/$2');
             }
-            document.getElementById('idade').value = age + " anos";
+            return v;
+        }
 
-            // Controlar a exibição dos campos de responsável e autorização
-            const responsavelDiv = document.getElementById('responsavelDiv');
-            const autorizacaoDiv = document.getElementById('autorizacaoDiv');
-            const contatoField = document.getElementById('contato');
-            const fonecontatoField = document.getElementById('fonecontato');
-            const cpfResponsavelField = document.getElementById('cpfResponsavel');
-            const signatureContainer = document.querySelector('.signature-container')?.parentElement;
+        // Validação rigorosa da Data de Nascimento (Dia, Mês, Ano e se é válida no calendário)
+        function validarDataNascimento(valor) {
+            if (!valor || valor.trim() === '') {
+                return { valida: false, mensagem: "A data de nascimento é obrigatória." };
+            }
+            if (valor.length < 10 || !/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+                return { valida: false, mensagem: "Data incompleta. Digite no formato DD/MM/AAAA." };
+            }
+            const partes = valor.split('/');
+            const dia = parseInt(partes[0], 10);
+            const mes = parseInt(partes[1], 10);
+            const ano = parseInt(partes[2], 10);
+            const anoAtual = new Date().getFullYear();
 
-            if (age < 0) {
-                // Mostrar campos e torná-los obrigatórios para menores de 18
-                responsavelDiv.style.display = 'block';
-                autorizacaoDiv.style.display = 'block';
-                if (signatureContainer) signatureContainer.style.display = 'block';
+            if (ano < 1900 || ano > anoAtual) {
+                return { valida: false, mensagem: `Ano inválido (deve ser entre 1900 e ${anoAtual}).` };
+            }
+            if (mes < 1 || mes > 12) {
+                return { valida: false, mensagem: "Mês inválido (deve ser entre 01 e 12)." };
+            }
+            // Verificar dias válidos de acordo com o mês e ano bissexto
+            const diasNoMes = new Date(ano, mes, 0).getDate();
+            if (dia < 1 || dia > diasNoMes) {
+                return { valida: false, mensagem: `Dia inválido para o mês informado.` };
+            }
 
-                contatoField.required = true;
-                fonecontatoField.required = true;
-                cpfResponsavelField.required = true;
+            const dataNasc = new Date(ano, mes - 1, dia);
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            if (dataNasc > hoje) {
+                return { valida: false, mensagem: "Data de nascimento não pode ser no futuro." };
+            }
 
-                contatoField.parentElement.querySelector('label').innerHTML = 'Nome do Responsável (Obrigatório para menor de 18 anos) *';
-                fonecontatoField.parentElement.querySelector('label').innerHTML = 'Celular do Responsável (Obrigatório para menor de 18 anos) *';
-                cpfResponsavelField.parentElement.querySelector('label').innerHTML = 'CPF do Responsável (Obrigatório para menor de 18 anos) *';
-            } else {
-                // Ocultar campos e remover obrigatoriedade para maiores de 18
-                responsavelDiv.style.display = 'none';
-                autorizacaoDiv.style.display = 'none';
-                if (signatureContainer) signatureContainer.style.display = 'none';
+            return { valida: true, mensagem: "", dataNasc: dataNasc };
+        }
 
-                contatoField.required = false;
-                fonecontatoField.required = false;
-                cpfResponsavelField.required = false;
+        // Função para validar visualmente, calcular idade e controlar o bloqueio do botão salvar
+        function checarValidacaoData(mostrarErro = false) {
+            const valor = dtnascInput.value.trim();
 
-                // Limpar os valores
-                contatoField.value = '';
-                fonecontatoField.value = '';
-                cpfResponsavelField.value = '';
-
-                // Limpar a assinatura se o pad existir
-                if (typeof signaturePad !== 'undefined' && signaturePad) {
-                    signaturePad.clear();
+            if (!valor) {
+                document.getElementById('idade').value = '';
+                if (mostrarErro) {
+                    dtnascInput.classList.add('is-invalid');
+                    dtnascErro.textContent = "Informe a data de nascimento no formato DD/MM/AAAA.";
+                    dtnascErro.style.display = 'block';
+                    cadastrarBtn.disabled = true;
+                } else {
+                    dtnascInput.classList.remove('is-invalid');
+                    dtnascErro.style.display = 'none';
                 }
-
-                contatoField.parentElement.querySelector('label').innerHTML = 'Nome do Responsável';
-                fonecontatoField.parentElement.querySelector('label').innerHTML = 'Celular do Responsável';
-                cpfResponsavelField.parentElement.querySelector('label').innerHTML = 'CPF do Responsável';
+                return false;
             }
 
-            // Atualizar o texto de autorização
-            atualizarTextoAutorizacao();
+            const resultado = validarDataNascimento(valor);
+
+            if (resultado.valida) {
+                dtnascInput.classList.remove('is-invalid');
+                dtnascErro.style.display = 'none';
+                cadastrarBtn.disabled = false;
+
+                // Calcular idade
+                const hoje = new Date();
+                let age = hoje.getFullYear() - resultado.dataNasc.getFullYear();
+                const m = hoje.getMonth() - resultado.dataNasc.getMonth();
+                if (m < 0 || (m === 0 && hoje.getDate() < resultado.dataNasc.getDate())) {
+                    age--;
+                }
+                document.getElementById('idade').value = age + (age === 1 ? " ano" : " anos");
+                return true;
+            } else {
+                document.getElementById('idade').value = '';
+                if (mostrarErro || valor.length === 10) {
+                    dtnascInput.classList.add('is-invalid');
+                    dtnascErro.textContent = resultado.mensagem;
+                    dtnascErro.style.display = 'block';
+                }
+                cadastrarBtn.disabled = true;
+                return false;
+            }
+        }
+
+        // Evento de digitação com máscara progressiva e validação em tempo real
+        dtnascInput.addEventListener('input', function () {
+            this.value = formatarDataProgressiva(this.value);
+            if (this.value.length === 10) {
+                checarValidacaoData(true);
+            } else {
+                this.classList.remove('is-invalid');
+                dtnascErro.style.display = 'none';
+                document.getElementById('idade').value = '';
+                cadastrarBtn.disabled = true; // Mantém botão bloqueado até preenchimento completo e válido
+            }
+        });
+
+        // Evento ao sair do campo (blur): valida e destaca em vermelho com mensagem se estiver incompleto/errado
+        dtnascInput.addEventListener('blur', function () {
+            checarValidacaoData(true);
         });
 
         // Mostrar/esconder campo de outra igreja
         document.getElementById('igreja').addEventListener('change', function () {
-            document.getElementById('outraIgrejaDiv').style.display =
-                this.value === 'Outra' ? 'block' : 'none';
-            document.getElementById('celulaDiv').style.display =
-                this.value === 'IEB Intermares' ? 'block' : 'none';
-        });
-
-        function carregarLideres() {
-            const selectCelula = document.getElementById('celula');
-
-            // Limpar opções anteriores e adicionar a opção padrão
-            selectCelula.innerHTML = '<option value="">Selecione seu Líder de Célula</option>';
-
-            // Lista estática de líderes de células
-            const lideres = [
-                "Ainda não tenho Célula",
-                "ADRIANA / KENEDY - AGUA VIVA 2",
-                "ADVANILTON / EDVÂNIA - AE01",
-                "ALDA - A01",
-                "ALLAN / AILDA - SHOFAR",
-                "ANDERSON / LAURISA - EFATÁ",
-                "ANA / AMANDA - REDE TEEN",
-                "ARTHUR / LORENA - AL01",
-                "BELMIRO / MÔNICA - LEÃO DE JUDÁ",
-                "BERNADETE / JAMILLY - MAANAIM 2",
-                "CHOSEN - REBEKAH / MONIQUE",
-                "CLÁUDIO / JAQUELINE - AGAPE",
-                "CLOVIS / LÍVIA - ROCKS",
-                "EDUARDO / NICOLLY - EN01",
-                "EVELLYN / FERNANDA - EF01",
-                "FÁBIO / EDNALVA - MANANCIAL",
-                "FABRÍCIO / NADJA - SOL DA JUSTIÇA",
-                "FLÁVIO / LIVYA - MARANATA",
-                "GABRIEL / RAYZA - PENIEL",
-                "GILBERTO / MARCIA - AGUA VIVA 1",
-                "GUILHERME / MIGUEL / FILIPE - REDE TEEN",
-                "GUSTAVO / MARIANA - HEAVEN",
-                "GUTEMBERG / ELAINE - ATOS 2",
-                "JAIRO / ROSANA - MORIAH",
-                "JOAO / SHIRLEY - JS01",
-                "LEONARDO / LIDIA - KAIROS",
-                "LINDEMBERG / ADRIANA / LUCIENE - IDE",
-                "MARIA / NILMA - MN01",
-                "NATIVA - SHEKINAH",
-                "PATRÍCIA - ATOS 1",
-                "RAMON / NAZELIA - FILADÉLFIA",
-                "RAQUEL - SHAMMAR",
-                "RHODNEY / KAREN - YAHWEH",
-                "RIBAMAR / JOSELMA - ALIANÇA",
-                "RICARDO / ROSANE - KADOSH",
-                "RUBENS / EMILLY - AGUA VIVA 3",
-                "SAMUEL / RAISSA - MANÁ",
-                "SAYMON / LUCAS - OVERFLOW",
-                "SAULO / ERIKA - ATALAIA",
-                "SIMONE - S01",
-                "THIAGO / NATÁLIA - AWAKE",
-                "THIAGO / NATHALIA - TN01",
-                "Outra Célula"
-            ];
-
-            // Ordenar os líderes alfabeticamente
-            lideres.sort((a, b) => a.localeCompare(b));
-
-            // Adicionar os líderes ordenados ao dropdown
-            lideres.forEach(lider => {
-                const option = document.createElement('option');
-                option.value = lider;
-                option.textContent = lider;
-                selectCelula.appendChild(option);
-            });
-
-            // Adicionar "Outras Células" como última opção
-            const outrasCelulasOption = document.createElement('option');
-            outrasCelulasOption.value = "Outras Células";
-            outrasCelulasOption.textContent = "Outras Células";
-            selectCelula.appendChild(outrasCelulasOption);
-        }
-
-
-        document.getElementById('celula').addEventListener('change', function () {
-            const liderSelecionado = this.value;
-            const infoRedeDiv = document.getElementById('infoRedeDiv');
-
-            if (liderSelecionado && liderSelecionado !== "Outras Células") {
-                // Como não temos mais as informações de supervisor e rede no Firebase,
-                // vamos ocultar esses campos ou deixá-los vazios
-                document.getElementById('supervisor').value = '';
-                document.getElementById('rede').value = '';
-                infoRedeDiv.style.display = 'none';
-            } else {
-                document.getElementById('supervisor').value = '';
-                document.getElementById('rede').value = '';
-                infoRedeDiv.style.display = 'none';
-            }
-        });
-
-
-        // Chame a função quando a igreja for selecionada
-        document.getElementById('igreja').addEventListener('change', function () {
-            const celulaDiv = document.getElementById('celulaDiv');
             const outraIgrejaDiv = document.getElementById('outraIgrejaDiv');
-            const infoRedeDiv = document.getElementById('infoRedeDiv');
-
-            if (this.value === 'IEB Intermares') {
-                celulaDiv.style.display = 'block';
-                outraIgrejaDiv.style.display = 'none';
-                carregarLideres();
-            } else if (this.value === 'Outra') {
-                celulaDiv.style.display = 'none';
+            if (this.value === 'Outra') {
                 outraIgrejaDiv.style.display = 'block';
-                infoRedeDiv.style.display = 'none';
-                document.getElementById('supervisor').value = '';
-                document.getElementById('rede').value = '';
-                document.getElementById('celula').value = '';
             } else {
-                celulaDiv.style.display = 'none';
                 outraIgrejaDiv.style.display = 'none';
-                infoRedeDiv.style.display = 'none';
-                document.getElementById('supervisor').value = '';
-                document.getElementById('rede').value = '';
-                document.getElementById('celula').value = '';
+                document.getElementById('outraIgreja').value = '';
             }
         });
-
-        // Adicionar log para verificar quando o script é carregado
-        //console.log('Script inicializado');
 
         // Verificar se o elemento dataPreenchimento existe
         const dataPreenchimentoElement = document.getElementById('dataPreenchimento');
-        //console.log('Elemento dataPreenchimento encontrado:', dataPreenchimentoElement);
 
-        // Definir a data de preenchimento e verificar o valor
+        // Definir a data de preenchimento
         const dataAtual = new Date().toLocaleDateString('pt-BR');
-        //console.log('Data atual formatada:', dataAtual);
         dataPreenchimentoElement.value = dataAtual;
-        //console.log('Valor após atribuição:', dataPreenchimentoElement.value);
 
-        // No evento de submit do formulário, adicione esta verificação:
+        // No evento de submit do formulário:
         document.getElementById('acampForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Verificar se os campos de responsável estão visíveis e obrigatórios
-            const responsavelDiv = document.getElementById('responsavelDiv');
-            if (responsavelDiv.style.display === 'block') {
-                const contato = document.getElementById('contato').value.trim();
-                const fonecontato = document.getElementById('fonecontato').value.trim();
-                const cpfResponsavel = document.getElementById('cpfResponsavel').value.trim();
-
-                if (!contato || !fonecontato || !cpfResponsavel) {
-                    alert('Por favor, preencha todos os dados do responsável (obrigatório para menores de 18 anos).');
-                    return;
-                }
-
-                // Verificar se a assinatura foi feita
-                if (signaturePad && signaturePad.isEmpty()) {
-                    alert('Por favor, forneça a assinatura do responsável antes de prosseguir.');
-                    return;
-                }
-
-                // Adicionar log para visualizar a assinatura
-                if (signaturePad) {
-                    const assinaturaTemp = signaturePad.toDataURL('image/png');
-                    console.log('Assinatura capturada:');
-                    console.log('Tipo de dados:', typeof assinaturaTemp);
-                    console.log('Tamanho da string:', assinaturaTemp.length);
-                    console.log('Primeiros 100 caracteres:', assinaturaTemp.substring(0, 100) + '...');
-
-                    // Criar um elemento de imagem para visualizar a assinatura no console
-                    const img = new Image();
-                    img.src = assinaturaTemp;
-                    img.onload = function () {
-                        console.log('Dimensões da imagem:', img.width, 'x', img.height);
-                    };
-                }
+            // Validação de segurança na data de nascimento
+            if (!checarValidacaoData(true)) {
+                alert('Por favor, informe uma data de nascimento válida no formato DD/MM/AAAA.');
+                dtnascInput.focus();
+                return;
             }
 
             // First check if elements exist before accessing their style property
@@ -710,16 +622,6 @@
                     return;
                 }
 
-                // Capturar a assinatura se existir
-                let assinaturaData = '';
-                if (signaturePad && !signaturePad.isEmpty() && responsavelDiv.style.display === 'block') {
-                    assinaturaData = signaturePad.toDataURL('image/png');
-                    // Log adicional para confirmar a assinatura que será armazenada
-                    console.log('Assinatura que será armazenada no Firestore:');
-                    console.log('Formato:', assinaturaData.split(',')[0]);
-                    console.log('Tamanho total em bytes:', new Blob([assinaturaData]).size);
-                }
-
                 // Se o nome não existir, continuar com o envio do formulário
                 const formData = {
                     nome: nome,
@@ -728,14 +630,7 @@
                     idade: document.getElementById('idade').value,
                     // email: document.getElementById('email').value,
                     celular: document.getElementById('celular').value,
-                    contato: document.getElementById('contato').value,
-                    fonecontato: document.getElementById('fonecontato').value,
-                    cpfResponsavel: document.getElementById('cpfResponsavel').value, // Adicionado campo de CPF do responsável
-                    assinaturaResponsavel: assinaturaData, // Adicionando a assinatura do responsável
                     igreja: document.getElementById('igreja').value,
-                    celula: document.getElementById('celula').value,
-                    supervisor: document.getElementById('supervisor').value,
-                    rede: document.getElementById('rede').value,
                     outraIgreja: document.getElementById('outraIgreja').value,
                     dataPreenchimento: document.getElementById('dataPreenchimento').value,
                     anoevento: '2026',
@@ -743,15 +638,14 @@
                     dtRegistro: new Date().toISOString()
                 };
 
-                // Log para visualizar o objeto formData completo (sem a assinatura para não sobrecarregar o console)
-                console.log('Dados completos a serem enviados:', { ...formData, assinaturaResponsavel: formData.assinaturaResponsavel ? 'ASSINATURA_BASE64_REMOVIDA_DO_LOG' : null });
+                console.log('Dados completos a serem enviados:', formData);
 
-                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").add(formData)
+                db.collection("Eventos").doc("Conf2026").collection("inscricoes").add(formData)
                     .then((docRef) => {
                         console.log("Documento escrito com ID: ", docRef.id);
 
-                        // ✅ ADICIONE ESTA PARTE - Incrementar contador
-                        return db.collection("Eventos").doc("ComRoca2026").update({
+                        // Incrementar contador
+                        return db.collection("Eventos").doc("Conf2026").update({
                             totalInscricoes: firebase.firestore.FieldValue.increment(1),
                             ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
                         });
@@ -762,7 +656,7 @@
                         // Send email notification
                         const emailData = {
                             to: "[EMAIL_ADDRESS]",
-                            subject: "Nova Inscrição Comunhão na Roça 2026",
+                            subject: "Nova Inscrição Conferência 2026",
                             text: `Nova inscrição realizada:\nNome: ${formData.nome}\nTelefone: ${formData.celular}\nData: ${formData.dataPreenchimento}`
                         };
 
@@ -778,15 +672,10 @@
                         document.getElementById('outraIgrejaDiv').style.display = 'none';
                         document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
                         document.getElementById('idade').value = '';
-
-                        // Limpar a assinatura
-                        if (signaturePad) {
-                            signaturePad.clear();
-                        }
                     })
                     .catch((error) => {
                         console.error("Erro ao adicionar documento: ", error);
-                        console.log(error); // Adicione esta linha para obter mais detalhes sobre o erro
+                        console.log(error);
                         alert('Erro ao realizar inscrição. Por favor, tente novamente.');
                     });
             });
@@ -807,71 +696,6 @@
                 headerTitle.classList.remove('visible');
             }
         });
-
-        // Inicializar o pad de assinatura
-        let signaturePad;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const canvas = document.getElementById('signature-pad');
-            if (canvas) {
-                // Configurar o canvas para o tamanho correto antes de inicializar o SignaturePad
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                const ctx = canvas.getContext("2d");
-                ctx.scale(ratio, ratio);
-
-                // Inicializar o SignaturePad com configurações adicionais
-                signaturePad = new SignaturePad(canvas, {
-                    backgroundColor: 'rgb(255, 255, 255)',
-                    penColor: 'rgb(0, 0, 0)',
-                    velocityFilterWeight: 0.7,  // Suaviza a linha
-                    minWidth: 0.5,              // Largura mínima da linha
-                    maxWidth: 2.5,              // Largura máxima da linha
-                    throttle: 16,               // Intervalo mínimo entre pontos (ms)
-                    minDistance: 5              // Distância mínima entre pontos
-                });
-
-                // Função para redimensionar o canvas
-                function resizeCanvas() {
-                    // Salvar a assinatura atual
-                    const data = signaturePad.toData();
-
-                    // Redimensionar o canvas
-                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                    canvas.width = canvas.offsetWidth * ratio;
-                    canvas.height = canvas.offsetHeight * ratio;
-                    ctx.scale(ratio, ratio);
-
-                    // Limpar e restaurar a assinatura
-                    signaturePad.clear();
-                    if (data && data.length > 0) {
-                        signaturePad.fromData(data);
-                    }
-                }
-
-                // Adicionar evento de redimensionamento
-                window.addEventListener("resize", resizeCanvas);
-
-                // Adicionar eventos de mouse explicitamente
-                canvas.addEventListener('mousedown', function (event) {
-                    console.log('Mouse down event detected');
-                });
-
-                // Botão para limpar a assinatura
-                document.getElementById('clear-signature').addEventListener('click', function () {
-                    signaturePad.clear();
-                    console.log('Assinatura limpa');
-                });
-
-                // Log para confirmar inicialização
-                console.log('SignaturePad inicializado com sucesso');
-            } else {
-                console.error('Canvas para assinatura não encontrado');
-            }
-        });
-
-
     </script>
 </body>
 

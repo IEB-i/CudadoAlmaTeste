@@ -22,7 +22,7 @@
         }
 
         h1 {
-            color: #0b8000;
+            color: #613704;
             margin-bottom: 30px;
         }
 
@@ -55,26 +55,63 @@
             margin-right: auto;
         }
 
-        .btn-nova-inscricao {
-            background: linear-gradient(45deg, #6108a1, #9900CC);
-            border: none;
-            color: white;
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 25px;
-            margin: 20px 0;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
+        .horarios-box {
+            background-color: #ffffff;
+            border: 1px solid rgba(97, 55, 4, 0.15);
+            border-radius: 14px;
+            padding: 22px 20px;
+            margin: 25px auto;
+            max-width: 520px;
+            box-shadow: 0 4px 15px rgba(97, 55, 4, 0.08);
         }
 
-        .btn-nova-inscricao:hover {
-            background: linear-gradient(45deg, #200020, #9900CC);
-            color: white;
-            text-decoration: none;
+        .horarios-box h3 {
+            color: #613704;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .horarios-list {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .horario-card {
+            background: #fdfaf6;
+            border: 1px solid #eddcd0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            min-width: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .horario-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(97, 55, 4, 0.12);
+        }
+
+        .horario-dia {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #613704;
+            margin-bottom: 4px;
+        }
+
+        .horario-hora {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #925306;
+            background: #f3e8de;
+            padding: 3px 12px;
+            border-radius: 6px;
         }
 
         @media screen and (max-width: 768px) {
@@ -86,9 +123,9 @@
                 display: none;
             }
 
-            .btn-nova-inscricao {
-                padding: 10px 25px;
-                font-size: 14px;
+            .horario-card {
+                min-width: 100px;
+                padding: 10px 12px;
             }
         }
     </style>
@@ -98,17 +135,30 @@
     <div class="container">
         <h1>Obrigado!</h1>
         <h2>Dados Coletados com Sucesso!</h2>
-        <p>Olá! Você deu entrada no processo de inscrição para ir ao Evento <strong>Comunhão na Roça.</strong></p>
-        <p>Entre em contato com Gustavo Perrusi (Guga) para que você possa finalizar o processo</p>
+        <p>Olá! Você deu entrada no processo de inscrição para ir ao Evento <strong>Workshop Cuidado da Alma.</strong>
+        </p>
+        <p>Entre em contato com Gustavo Perrusi (Guga) para que você possa finalizar o processo de inscrição e pagamento
+        </p>
         <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/5583999127728" target="_blank">83
                 99912-7728</a></p>
 
-        <!-- Botão para fazer nova inscrição -->
-        <div style="margin: 30px 0;">
-            <a href="frminscricao.html" class="btn-nova-inscricao">
-                <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
-                Fazer Nova Inscrição
-            </a>
+        <!-- Horários do Evento -->
+        <div class="horarios-box">
+            <h3>Horários do Evento</h3>
+            <div class="horarios-list">
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 16/10</span>
+                    <span class="horario-hora">19:30</span>
+                </div>
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 17/10</span>
+                    <span class="horario-hora">14:00</span>
+                </div>
+                <div class="horario-card">
+                    <span class="horario-dia">Dia 18/10</span>
+                    <span class="horario-hora">10:00</span>
+                </div>
+            </div>
         </div>
 
         <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
