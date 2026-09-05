@@ -61,7 +61,7 @@
             box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
             transition: all 0.3s ease;
             position: absolute;
-            top: 69%;
+            top: 75%;
             left: 58%;
             transform: translateX(-50%);
             text-decoration: none;
@@ -80,26 +80,12 @@
             animation: none;
         }
 
-        .btn-esgotado {
-            background: #6c757d !important;
-            color: white !important;
-            cursor: not-allowed !important;
-            box-shadow: none !important;
-            animation: none !important;
-        }
 
-        .btn-esgotado:hover {
-            background: #6c757d !important;
-            transform: translateX(-50%) !important;
-            box-shadow: none !important;
-            color: white !important;
-            text-decoration: none !important;
-        }
 
         .alerta-esgotado {
             position: absolute;
-            top: 49%;
-            left: 50%;
+            top: 71.5%;
+            left: 59%;
             transform: translateX(-50%);
             background-color: #f8d7da;
             border: 2px solid #f5c6cb;
@@ -174,8 +160,8 @@
 
         .loading-spinner {
             position: absolute;
-            top: 55%;
-            left: 50%;
+            top: 76.5%;
+            left: 57%;
             transform: translate(-50%, -50%);
             z-index: 10;
             text-align: center;
@@ -193,7 +179,7 @@
 
         .loading-text {
             margin-top: 10px;
-            color: #663800;
+            color: #613704;
             font-weight: bold;
             font-size: 15px;
             text-align: center;
@@ -243,23 +229,25 @@
 
             .alerta-esgotado {
                 position: absolute;
-                top: 53%;
-                left: 50%;
-                max-width: 90%;
+                top: 68.1%;
+                left: 52%;
+                width: 50%;
+                min-width: 290px;
+                max-width: 340px;
                 font-size: 14px;
-                padding: 12px 20px;
+                padding: 14px 30px;
             }
 
             .loading-spinner {
                 position: absolute;
-                top: 80%;
-                left: 50%;
+                top: 71.5%;
+                left: 50.5%;
             }
 
             .loading-text {
                 margin-top: 8px;
-                color: #ffffff;
-                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+                color: #613704;
+                text-shadow: none;
             }
         }
     </style>
@@ -316,24 +304,12 @@
                         btnInscricao.classList.remove('btn-hidden');
 
                         if (totalInscricoes >= 150) {
-                            // Desabilitar o botão
-                            btnInscricao.classList.add('btn-esgotado');
-                            btnInscricao.classList.remove('btn-gradient');
-                            btnInscricao.textContent = 'Inscrições Encerradas';
-                            btnInscricao.href = '#';
-                            btnInscricao.onclick = function (e) {
-                                e.preventDefault();
-                                alert('Desculpe, as inscrições foram encerradas. Limite de vagas atingido.');
-                                return false;
-                            };
+                            // Inscrições encerradas: Ocultar o botão e exibir o alerta
+                            btnInscricao.classList.add('btn-hidden');
                             alertaEsgotado.style.display = 'block';
                         } else {
-                            // Manter o botão habilitado
-                            btnInscricao.classList.remove('btn-esgotado');
-                            btnInscricao.classList.add('btn-gradient');
-                            btnInscricao.textContent = 'Inscreva-se Agora';
-                            btnInscricao.href = 'frminscricao.html';
-                            btnInscricao.onclick = null;
+                            // Inscrições abertas: Exibir o botão e ocultar o alerta
+                            btnInscricao.classList.remove('btn-hidden');
                             alertaEsgotado.style.display = 'none';
                         }
                     } else {
