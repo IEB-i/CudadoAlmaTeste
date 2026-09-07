@@ -4,700 +4,940 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Caixa</title>
+    <title>Controle de Caixa - Gestão Conf 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
-
+    <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="../css/common.css">
 
     <style>
+        :root {
+            --primary: #613704;
+            --primary-light: #8c4f06;
+            --accent: #FF8C00;
+            --bg-page: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-border: #e2e8f0;
+            --pago-color: #10b981;
+            --pago-bg: #ecfdf5;
+            --pago-text: #065f46;
+            --saida-color: #ef4444;
+            --saida-bg: #fef2f2;
+            --saida-text: #991b1b;
+            --saldo-color: #0284c7;
+            --saldo-bg: #f0f9ff;
+            --saldo-text: #0369a1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            color: #333;
-            padding-top: 80px;
+            color: var(--text-main);
+            padding-top: 95px;
+            background-color: var(--bg-page);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .dashboard-card {
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-            margin-bottom: 20px;
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px 40px 16px;
         }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            border-radius: 10px 10px 0 0;
-            font-weight: bold;
-        }
-
-        .total-card {
-            background: linear-gradient(45deg, #3d7517, #4a8c20);
-            color: white;
-        }
-
-        .entrada-card {
-            background: linear-gradient(45deg, #28a745, #5cb85c);
-            color: white;
-        }
-
-        .saida-card {
-            background: linear-gradient(45deg, #dc3545, #e05d6f);
-            color: white;
-        }
-
-        .saldo-card {
-            background: linear-gradient(45deg, #17a2b8, #5bc0de);
-            color: white;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
+        /* Top Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            height: 75px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(97, 55, 4, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
         }
 
         .btn-voltar {
             position: absolute;
-            left: 20px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
             color: white;
-            border-radius: 50%;
+            border-radius: 12px;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none !important;
         }
 
         .btn-voltar:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transform: translateY(-50%) scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
             color: white;
-            text-decoration: none;
+            transform: translateY(-50%) scale(1.05);
         }
 
-        .btn-voltar .material-icons {
-            font-size: 24px;
+        .header-title {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .upload-area {
-            border: 2px dashed #ccc;
-            border-radius: 10px;
-            padding: 25px;
-            text-align: center;
+        /* Section Titles */
+        .section-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .section-title-indicator {
+            width: 4px;
+            height: 22px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* ================= KPI MODERN BANNERS ================= */
+        .kpi-banner {
+            border-radius: 18px;
+            padding: 16px 20px;
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+            border: 1.5px solid transparent;
+            min-height: 102px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: #ffffff;
             margin-bottom: 20px;
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
         }
 
-        .upload-area:hover,
-        .upload-area.dragover {
-            border-color: #28a745;
-            background-color: #f1f8f1;
+        .kpi-banner:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
         }
 
-        .upload-icon {
-            font-size: 48px;
-            color: #6c757d;
-            margin-bottom: 10px;
+        .kpi-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 2;
         }
 
-        .nav-tabs .nav-link {
-            border-radius: 10px 10px 0 0;
+        .kpi-bottom {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kpi-number {
+            font-size: 1.95rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .kpi-subtext {
+            font-size: 0.85rem;
             font-weight: 600;
+            opacity: 0.85;
         }
 
-        .nav-tabs .nav-link.active {
-            background-color: #f8f9fa;
-            border-bottom-color: #f8f9fa;
+        .kpi-watermark {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4.5rem;
+            opacity: 0.12;
+            pointer-events: none;
+            line-height: 1;
+            z-index: 1;
         }
 
-        .tab-content {
-            background-color: #f8f9fa;
-            border-radius: 0 0 10px 10px;
+        /* 1. Total Transações (Tema Marrom / Caramel) */
+        .kpi-total {
+            background-color: #fbf6f0;
+            border-color: #f1d8be;
+            color: #78350f;
+        }
+
+        .kpi-total .kpi-number {
+            color: #613704;
+        }
+
+        .kpi-total .kpi-subtext {
+            color: #9a3412;
+        }
+
+        .kpi-total .kpi-watermark {
+            color: #613704;
+        }
+
+        /* 2. Entradas (Tema Verde Esmeralda) */
+        .kpi-pago {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+
+        .kpi-pago .kpi-number {
+            color: #15803d;
+        }
+
+        .kpi-pago .kpi-subtext {
+            color: #166534;
+        }
+
+        .kpi-pago .kpi-watermark {
+            color: #10b981;
+        }
+
+        /* 3. Saídas (Tema Vermelho Suave) */
+        .kpi-saida {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+
+        .kpi-saida .kpi-number {
+            color: #dc2626;
+        }
+
+        .kpi-saida .kpi-subtext {
+            color: #b91c1c;
+        }
+
+        .kpi-saida .kpi-watermark {
+            color: #ef4444;
+        }
+
+        /* 4. Saldo Atual (Tema Azul Petróleo / Cyan) */
+        .kpi-saldo {
+            background-color: #f0f9ff;
+            border-color: #bae6fd;
+            color: #0369a1;
+        }
+
+        .kpi-saldo .kpi-number {
+            color: #0284c7;
+        }
+
+        .kpi-saldo .kpi-subtext {
+            color: #0284c7;
+        }
+
+        .kpi-saldo .kpi-watermark {
+            color: #0284c7;
+        }
+
+        /* ================= CARDS E SEÇÕES ================= */
+        .custom-card {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .custom-card-header {
+            background: transparent;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-card-title {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.02rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .custom-card-body {
             padding: 20px;
-            border: 1px solid #dee2e6;
-            border-top: none;
         }
 
-        .badge-entrada {
-            background-color: #28a745;
+        .chart-container {
+            position: relative;
+            height: 280px;
+            width: 100%;
         }
 
-        .badge-saida {
-            background-color: #dc3545;
-        }
-
-        .form-group label {
-            font-weight: 600;
-        }
-
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .filter-section {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
+        /* ================= NAV TABS CUSTOM ================= */
+        .nav-tabs-custom {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
             margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .nav-tabs-custom .nav-item {
+            margin-bottom: -6px;
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            background: #ffffff;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.88rem;
+            padding: 10px 18px;
+            border-radius: 12px 12px 0 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--card-border);
+            border-bottom: none;
+        }
+
+        .nav-tabs-custom .nav-link:hover {
+            color: var(--primary);
+            background: #f8fafc;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            background: var(--primary);
+            color: #ffffff !important;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(97, 55, 4, 0.2);
+        }
+
+        .nav-tabs-custom .nav-link.active i {
+            color: #ffffff !important;
+        }
+
+        /* ================= FORM CONTROLS ================= */
+        .form-control,
+        .custom-select {
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            padding: 8px 14px;
+            height: 42px;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus,
+        .custom-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15);
+            outline: none;
+        }
+
+        .form-label-custom {
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: #ffffff !important;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 20px;
+            font-weight: 700;
+            font-size: 0.86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(97, 55, 4, 0.2);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(97, 55, 4, 0.3);
+        }
+
+        .btn-success-custom {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-success-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        .btn-secondary-custom {
+            background: #ffffff;
+            color: var(--text-muted) !important;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-weight: 700;
+            font-size: 0.86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-secondary-custom:hover {
+            background: #f8fafc;
+            color: var(--text-main) !important;
+            border-color: #94a3b8;
+        }
+
+        .btn-export-custom {
+            background: linear-gradient(135deg, #0284c7, #0369a1);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-weight: 700;
+            font-size: 0.86rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-export-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+        }
+
+        /* ================= MODERN TABLE ================= */
+        .table-responsive-custom {
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            overflow-x: auto;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+        }
+
+        .table-custom {
+            margin-bottom: 0;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-custom thead th {
+            background: #f8fafc;
+            color: var(--text-muted);
+            font-size: 0.74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            border-bottom: 1px solid var(--card-border);
+            border-top: none;
+            padding: 12px 16px;
+            white-space: nowrap;
+        }
+
+        .table-custom tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .table-custom tbody td {
+            padding: 12px 16px;
+            vertical-align: middle;
+            font-size: 0.86rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-main);
+        }
+
+        .table-custom tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Table Badges & Chips */
+        .p-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        .p-badge-entrada {
+            background-color: var(--pago-bg);
+            color: var(--pago-text);
+            border: 1px solid #a7f3d0;
+        }
+
+        .p-badge-saida {
+            background-color: var(--saida-bg);
+            color: var(--saida-text);
+            border: 1px solid #fecaca;
+        }
+
+        .tag-pill {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .action-btn-edit {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .action-btn-edit:hover {
+            background: #bae6fd;
+            color: #0284c7;
+        }
+
+        .action-btn-delete {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .action-btn-delete:hover {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        /* ================= UPLOAD AREA ================= */
+        .upload-area-custom {
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 36px 20px;
+            text-align: center;
+            background-color: #f8fafc;
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .upload-area-custom:hover,
+        .upload-area-custom.dragover {
+            border-color: var(--accent);
+            background-color: #fffaf0;
+            transform: scale(1.01);
+        }
+
+        .upload-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: #ffffff;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            color: var(--accent);
+            font-size: 2rem;
+            margin-bottom: 14px;
+        }
+
+        /* Modal Customization */
+        .modal-custom .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-custom .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 16px 20px;
+            border: none;
+        }
+
+        .modal-custom .modal-title {
+            font-weight: 800;
+            font-size: 1.12rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-custom .close {
+            color: white;
+            opacity: 0.8;
+            text-shadow: none;
+            font-size: 1.5rem;
+            outline: none !important;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-custom .close:hover {
+            opacity: 1;
+        }
+
+        .modal-custom .modal-body {
+            padding: 24px;
+            background: #ffffff;
+        }
+
+        .modal-custom .modal-footer {
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            padding: 14px 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 85px;
+            }
+
+            .main-container {
+                padding: 0 12px 30px 12px;
+            }
+
+            .kpi-number {
+                font-size: 1.7rem;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Header Topo -->
     <div class="header">
         <a href="gestao.html" class="btn-voltar">
-            <i class="material-icons">arrow_back</i>
+            <i class="bi bi-arrow-left" style="font-size: 1.25rem;"></i>
         </a>
-        <h2 class="header-title">CONTROLE DE CAIXA</h2>
+        <h2 class="header-title">
+            CONTROLE DE CAIXA
+        </h2>
     </div>
 
-    <div class="container mt-5">
+    <div class="main-container">
         <!-- 1. RESUMO FINANCEIRO -->
-        <div class="section-title-wrapper mt-5 mb-4">
+        <div class="section-title-wrapper mt-4 mb-3">
             <div class="section-title-indicator"></div>
-            <h4 class="section-title text-uppercase mb-0">
-                <i class="bi bi-cash-stack mr-2"></i> Resumo Financeiro
+            <h4 class="section-title mb-0">
+                <i class="bi bi-cash-stack mr-1"></i> Resumo Financeiro
             </h4>
         </div>
 
-        <!-- Cards de Resumo -->
+        <!-- Cards de Resumo KPI -->
         <div class="row">
-            <div class="col-md-3 mb-3">
-                <div class="card dashboard-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon-wrapper mr-3" style="background: rgba(13, 110, 253, 0.1); color: #0d6efd;">
-                                <i class="bi bi-receipt"></i>
-                            </div>
-                            <div>
-                                <div class="stats-label">Total Transações</div>
-                                <div class="stats-value" id="totalTransacoes">0</div>
-                            </div>
-                        </div>
+            <!-- 1. Total Transações -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-banner kpi-total">
+                    <div class="kpi-top">
+                        <i class="bi bi-receipt"></i> Total Transações
                     </div>
+                    <div class="kpi-bottom">
+                        <div class="kpi-number" id="totalTransacoes">0</div>
+                        <div class="kpi-subtext">registros</div>
+                    </div>
+                    <i class="bi bi-receipt kpi-watermark"></i>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card dashboard-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon-wrapper mr-3" style="background: rgba(40, 167, 69, 0.1); color: #28a745;">
-                                <i class="bi bi-arrow-down-circle"></i>
-                            </div>
-                            <div>
-                                <div class="stats-label">Entradas</div>
-                                <div class="stats-value text-success" id="totalEntradas">R$ 0,00</div>
-                            </div>
-                        </div>
+            <!-- 2. Entradas -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-banner kpi-pago">
+                    <div class="kpi-top">
+                        <i class="bi bi-arrow-down-circle-fill"></i> Entradas
                     </div>
+                    <div class="kpi-bottom">
+                        <div class="kpi-number" id="totalEntradas">R$ 0,00</div>
+                    </div>
+                    <i class="bi bi-arrow-down-circle-fill kpi-watermark"></i>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card dashboard-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon-wrapper mr-3" style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
-                                <i class="bi bi-arrow-up-circle"></i>
-                            </div>
-                            <div>
-                                <div class="stats-label">Saídas</div>
-                                <div class="stats-value text-danger" id="totalSaidas">R$ 0,00</div>
-                            </div>
-                        </div>
+            <!-- 3. Saídas -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-banner kpi-saida">
+                    <div class="kpi-top">
+                        <i class="bi bi-arrow-up-circle-fill"></i> Saídas
                     </div>
+                    <div class="kpi-bottom">
+                        <div class="kpi-number" id="totalSaidas">R$ 0,00</div>
+                    </div>
+                    <i class="bi bi-arrow-up-circle-fill kpi-watermark"></i>
                 </div>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <div class="card dashboard-card h-100">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="stats-icon-wrapper mr-3" style="background: rgba(23, 162, 184, 0.1); color: #17a2b8;">
-                                <i class="bi bi-wallet2"></i>
-                            </div>
-                            <div>
-                                <div class="stats-label">Saldo Atual</div>
-                                <div class="stats-value text-info" id="saldoAtual">R$ 0,00</div>
-                            </div>
-                        </div>
+            <!-- 4. Saldo Atual -->
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="kpi-banner kpi-saldo">
+                    <div class="kpi-top">
+                        <i class="bi bi-wallet2"></i> Saldo Atual
                     </div>
+                    <div class="kpi-bottom">
+                        <div class="kpi-number" id="saldoAtual">R$ 0,00</div>
+                    </div>
+                    <i class="bi bi-cash-stack kpi-watermark"></i>
                 </div>
             </div>
         </div>
 
-        <div class="section-title-wrapper mt-5 mb-4">
+        <!-- 2. GRÁFICOS E ANÁLISES -->
+        <div class="section-title-wrapper mt-4 mb-3">
             <div class="section-title-indicator"></div>
-            <h4 class="section-title text-uppercase mb-0">
-                <i class="bi bi-graph-up mr-2"></i> Gráficos e Análises
+            <h4 class="section-title mb-0">
+                <i class="bi bi-graph-up mr-1"></i> Gráficos e Análises
             </h4>
         </div>
 
-        <!-- Gráficos -->
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <div class="card dashboard-card">
-                    <div class="card-header">
-                        <h5><i class="bi bi-activity"></i> Fluxo de Caixa</h5>
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="custom-card h-100">
+                    <div class="custom-card-header">
+                        <h5 class="custom-card-title">
+                            <i class="bi bi-activity text-success"></i> Fluxo de Caixa
+                        </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="custom-card-body">
                         <div class="chart-container">
                             <canvas id="graficoFluxo"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-6">
-                <div class="card dashboard-card">
-                    <div class="card-header">
-                        <h5><i class="bi bi-pie-chart-fill"></i> Distribuição por Categorias</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="graficoCategorias"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- 3. GESTÃO DO CAIXA -->
+        <div class="section-title-wrapper mt-4 mb-3">
+            <div class="section-title-indicator"></div>
+            <h4 class="section-title mb-0">
+                <i class="bi bi-sliders mr-1"></i> Gestão do Caixa
+            </h4>
         </div>
 
         <!-- Abas para Gerenciamento -->
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <ul class="nav nav-tabs" id="caixaTabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="transacoes-tab" data-toggle="tab" href="#transacoes" role="tab">
-                            <i class="material-icons align-middle">receipt</i> Transações
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="nova-tab" data-toggle="tab" href="#nova" role="tab">
-                            <i class="material-icons align-middle">add_circle</i> Nova Transação
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab">
-                            <i class="material-icons align-middle">cloud_upload</i> Upload em Massa
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="relatorios-tab" data-toggle="tab" href="#relatorios" role="tab">
-                            <i class="material-icons align-middle">bar_chart</i> Relatórios
-                        </a>
-                    </li>
-                </ul>
+        <ul class="nav nav-tabs-custom" id="caixaTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="transacoes-tab" data-toggle="tab" href="#transacoes" role="tab">
+                    <i class="bi bi-receipt"></i> Transações
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nova-tab" data-toggle="tab" href="#nova" role="tab">
+                    <i class="bi bi-plus-circle"></i> Nova Transação
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="upload-tab" data-toggle="tab" href="#upload" role="tab">
+                    <i class="bi bi-cloud-arrow-up"></i> Upload em Massa
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="relatorios-tab" data-toggle="tab" href="#relatorios" role="tab">
+                    <i class="bi bi-bar-chart"></i> Relatórios
+                </a>
+            </li>
+        </ul>
 
-                <div class="tab-content" id="caixaTabsContent">
-                    <!-- Aba de Transações -->
-                    <div class="tab-pane fade show active" id="transacoes" role="tabpanel">
-                        <div class="filter-card p-4 bg-white rounded shadow-sm mb-4">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="filtroTipo">Tipo</label>
-                                        <select class="form-control" id="filtroTipo">
-                                            <option value="todos">Todos</option>
-                                            <option value="entrada">Entradas</option>
-                                            <option value="saida">Saídas</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="filtroCategoria">Categoria</label>
-                                        <select class="form-control" id="filtroCategoria">
-                                            <option value="todos">Todas</option>
-                                            <option value="inscricao">Inscrição</option>
-                                            <option value="alimentacao">Alimentação</option>
-                                            <option value="transporte">Transporte</option>
-                                            <option value="material">Material</option>
-                                            <option value="outros">Outros</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="filtroDataInicio">Data Início</label>
-                                        <input type="date" class="form-control" id="filtroDataInicio">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="filtroDataFim">Data Fim</label>
-                                        <input type="date" class="form-control" id="filtroDataFim">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-right">
-                                    <button class="btn btn-primary" id="btnAplicarFiltros">
-                                        <i class="material-icons align-middle">filter_list</i> Aplicar Filtros
-                                    </button>
-                                    <button class="btn btn-secondary" id="btnLimparFiltros">
-                                        <i class="material-icons align-middle">clear</i> Limpar Filtros
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="table-responsive" style="border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.05);">
-                            <table class="table table-striped table-hover mb-0" id="transacoesTable">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Data</th>
-                                        <th>Descrição</th>
-                                        <th>Categoria</th>
-                                        <th>Tipo</th>
-                                        <th>Valor</th>
-                                        <th>Método</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="transacoesList">
-                                    <!-- Os dados serão carregados dinamicamente do Firebase -->
-                                </tbody>
-                            </table>
-                        </div>
+        <div class="tab-content" id="caixaTabsContent">
+            <!-- ABA 1: TRANSAÇÕES -->
+            <div class="tab-pane fade show active" id="transacoes" role="tabpanel">
+                <!-- Painel de Filtros -->
+                <div class="custom-card mb-4">
+                    <div class="custom-card-header">
+                        <h5 class="custom-card-title">
+                            <i class="bi bi-funnel"></i> Filtros de Pesquisa
+                        </h5>
                     </div>
-
-                    <!-- Aba de Nova Transação -->
-                    <div class="tab-pane fade" id="nova" role="tabpanel">
-                        <div class="filter-card p-4 bg-white rounded shadow-sm">
-                            <form id="novaTransacaoForm">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="descricao" class="text-muted" style="font-weight: 600;">Descrição</label>
-                                            <input type="text" class="form-control" id="descricao" required>
-                                        </div>
-                                    </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="data">Data</label>
-                                        <input type="date" class="form-control" id="data" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="valor">Valor (R$)</label>
-                                        <input type="text" class="form-control" id="valor" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="tipo">Tipo</label>
-                                        <select class="form-control" id="tipo" required>
-                                            <option value="">Selecione</option>
-                                            <option value="entrada">Entrada</option>
-                                            <option value="saida">Saída</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="categoria">Categoria</label>
-                                        <select class="form-control" id="categoria" required>
-                                            <option value="">Selecione</option>
-                                            <option value="inscricao">Inscrição</option>
-                                            <option value="alimentacao">Alimentação</option>
-                                            <option value="transporte">Transporte</option>
-                                            <option value="material">Material</option>
-                                            <option value="outros">Outros</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="metodo">Método de Pagamento</label>
-                                        <select class="form-control" id="metodo" required>
-                                            <option value="">Selecione</option>
-                                            <option value="pix">PIX</option>
-                                            <option value="cartao">Cartão</option>
-                                            <option value="dinheiro">Dinheiro</option>
-                                            <option value="transferencia">Transferência</option>
-                                            <option value="cheque">Cheque</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="observacao">Observação</label>
-                                        <textarea class="form-control" id="observacao" rows="3"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12 text-right">
-                                    <button type="submit" class="btn btn-success shadow-sm" style="border-radius: 8px;">
-                                        <i class="bi bi-check-circle mr-1"></i> Salvar Transação
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                        </div>
-                    </div>
-
-                    <!-- Aba de Upload em Massa -->
-                    <div class="tab-pane fade" id="upload" role="tabpanel">
+                    <div class="custom-card-body">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="upload-area" id="uploadArea">
-                                    <i class="material-icons upload-icon">cloud_upload</i>
-                                    <h4>Arraste e solte um arquivo CSV ou Excel</h4>
-                                    <p>ou</p>
-                                    <label for="fileInput" class="btn btn-primary">
-                                        Selecionar Arquivo
-                                    </label>
-                                    <input type="file" id="fileInput" style="display: none;" accept=".csv, .xlsx, .xls">
-                                    <p class="mt-2 text-muted">Formatos suportados: CSV, Excel (.xlsx, .xls)</p>
-                                </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                                <label class="form-label-custom" for="filtroTipo">Tipo</label>
+                                <select class="custom-select" id="filtroTipo">
+                                    <option value="todos">Todos</option>
+                                    <option value="entrada">Entradas</option>
+                                    <option value="saida">Saídas</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                                <label class="form-label-custom" for="filtroCategoria">Categoria</label>
+                                <select class="custom-select" id="filtroCategoria">
+                                    <option value="todos">Todas</option>
+                                    <option value="inscricao">Inscrição</option>
+                                    <option value="alimentacao">Alimentação</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="material">Material</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                                <label class="form-label-custom" for="filtroDataInicio">Data Início</label>
+                                <input type="date" class="form-control" id="filtroDataInicio">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-3 mb-3">
+                                <label class="form-label-custom" for="filtroDataFim">Data Fim</label>
+                                <input type="date" class="form-control" id="filtroDataFim">
                             </div>
                         </div>
-
-                        <div class="row mt-3" id="uploadPreviewContainer" style="display: none;">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Pré-visualização dos Dados</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-sm table-bordered" id="previewTable">
-                                                <thead id="previewTableHead"></thead>
-                                                <tbody id="previewTableBody"></tbody>
-                                            </table>
-                                        </div>
-                                        <div class="mt-3">
-                                            <div class="form-group">
-                                                <label for="mapeamentoData">Coluna de Data</label>
-                                                <select class="form-control" id="mapeamentoData"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mapeamentoDescricao">Coluna de Descrição</label>
-                                                <select class="form-control" id="mapeamentoDescricao"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mapeamentoValor">Coluna de Valor</label>
-                                                <select class="form-control" id="mapeamentoValor"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mapeamentoTipo">Coluna de Tipo (Entrada/Saída)</label>
-                                                <select class="form-control" id="mapeamentoTipo"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mapeamentoCategoria">Coluna de Categoria</label>
-                                                <select class="form-control" id="mapeamentoCategoria"></select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="mapeamentoMetodo">Coluna de Método de Pagamento</label>
-                                                <select class="form-control" id="mapeamentoMetodo"></select>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn btn-secondary" id="btnCancelarUpload">Cancelar</button>
-                                            <button class="btn btn-success" id="btnImportarDados">Importar
-                                                Dados</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Modelo de Arquivo</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>Para facilitar o upload, você pode baixar um modelo de arquivo:</p>
-                                        <a href="#" id="btnBaixarModelo" class="btn btn-info">
-                                            <i class="material-icons align-middle">download</i> Baixar Modelo CSV
-                                        </a>
-                                        <div class="mt-3">
-                                            <h6>Instruções:</h6>
-                                            <ol>
-                                                <li>Baixe o modelo ou crie um arquivo CSV/Excel com as colunas: Data,
-                                                    Descrição, Valor, Tipo, Categoria, Método</li>
-                                                <li>Preencha os dados seguindo o formato indicado</li>
-                                                <li>Para o campo "Tipo", use "entrada" ou "saida"</li>
-                                                <li>Para o campo "Categoria", use uma das opções: inscricao,
-                                                    alimentacao, transporte, material, outros</li>
-                                                <li>Para o campo "Método", use uma das opções: pix, cartao, dinheiro,
-                                                    transferencia, cheque</li>
-                                                <li>Salve o arquivo e faça o upload</li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="row mt-2">
+                            <div class="col-12 d-flex justify-content-end gap-2" style="gap: 8px;">
+                                <button class="btn btn-secondary-custom" id="btnLimparFiltros">
+                                    <i class="bi bi-x-circle"></i> Limpar
+                                </button>
+                                <button class="btn btn-primary-custom" id="btnAplicarFiltros">
+                                    <i class="bi bi-filter"></i> Aplicar Filtros
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Aba de Relatórios -->
-                    <div class="tab-pane fade" id="relatorios" role="tabpanel">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Relatório por Período</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="relatorioForm">
-                                            <div class="form-group">
-                                                <label for="relDataInicio">Data Início</label>
-                                                <input type="date" class="form-control" id="relDataInicio" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="relDataFim">Data Fim</label>
-                                                <input type="date" class="form-control" id="relDataFim" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="relTipo">Tipo</label>
-                                                <select class="form-control" id="relTipo">
-                                                    <option value="todos">Todos</option>
-                                                    <option value="entrada">Entradas</option>
-                                                    <option value="saida">Saídas</option>
-                                                </select>
-                                            </div>
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="material-icons align-middle">assessment</i> Gerar Relatório
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Exportar Dados</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <p>Exporte todos os dados do fluxo de caixa para análise externa:</p>
-                                        <button class="btn btn-info mb-3" id="btnExportarCSV">
-                                            <i class="material-icons align-middle">file_download</i> Exportar para CSV
-                                        </button>
-                                        <button class="btn btn-info" id="btnExportarExcel">
-                                            <i class="material-icons align-middle">file_download</i> Exportar para Excel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>Resultado do Relatório</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div id="relatorioResultado">
-                                            <p class="text-center text-muted">Gere um relatório para visualizar os
-                                                resultados aqui.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Tabela de Transações -->
+                <div class="table-responsive-custom">
+                    <table class="table table-custom" id="transacoesTable">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Categoria</th>
+                                <th>Tipo</th>
+                                <th>Valor</th>
+                                <th>Método</th>
+                                <th style="text-align: right;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transacoesList">
+                            <!-- Carregamento dinâmico via Firebase -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Modal de Confirmação de Exclusão -->
-    <div class="modal fade" id="excluirModal" tabindex="-1" role="dialog" aria-labelledby="excluirModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="excluirModalLabel">Confirmar Exclusão</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Você tem certeza que deseja excluir esta transação?</p>
-                    <p>Esta ação não pode ser desfeita.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="confirmarExclusao">Confirmar Exclusão</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Edição de Transação -->
-    <div class="modal fade" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editarModalLabel">Editar Transação</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="editarTransacaoForm">
-                        <input type="hidden" id="editId">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="editDescricao">Descrição</label>
-                                    <input type="text" class="form-control" id="editDescricao" required>
+            <!-- ABA 2: NOVA TRANSAÇÃO -->
+            <div class="tab-pane fade" id="nova" role="tabpanel">
+                <div class="custom-card">
+                    <div class="custom-card-header">
+                        <h5 class="custom-card-title">
+                            <i class="bi bi-plus-circle text-success"></i> Cadastrar Nova Transação
+                        </h5>
+                    </div>
+                    <div class="custom-card-body">
+                        <form id="novaTransacaoForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label-custom" for="descricao">Descrição</label>
+                                    <input type="text" class="form-control" id="descricao"
+                                        placeholder="Ex: Compra de crachás" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label-custom" for="data">Data</label>
+                                    <input type="date" class="form-control" id="data" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label class="form-label-custom" for="valor">Valor (R$)</label>
+                                    <input type="text" class="form-control" id="valor" placeholder="0,00" required>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="editData">Data</label>
-                                    <input type="date" class="form-control" id="editData" required>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="editValor">Valor (R$)</label>
-                                    <input type="text" class="form-control" id="editValor" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="editTipo">Tipo</label>
-                                    <select class="form-control" id="editTipo" required>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label-custom" for="tipo">Tipo de Movimentação</label>
+                                    <select class="custom-select" id="tipo" required>
+                                        <option value="">Selecione</option>
                                         <option value="entrada">Entrada</option>
                                         <option value="saida">Saída</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="editCategoria">Categoria</label>
-                                    <select class="form-control" id="editCategoria" required>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label-custom" for="categoria">Categoria</label>
+                                    <select class="custom-select" id="categoria" required>
+                                        <option value="">Selecione</option>
                                         <option value="inscricao">Inscrição</option>
                                         <option value="alimentacao">Alimentação</option>
                                         <option value="transporte">Transporte</option>
@@ -705,11 +945,10 @@
                                         <option value="outros">Outros</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="editMetodo">Método de Pagamento</label>
-                                    <select class="form-control" id="editMetodo" required>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label-custom" for="metodo">Método de Pagamento</label>
+                                    <select class="custom-select" id="metodo" required>
+                                        <option value="">Selecione</option>
                                         <option value="pix">PIX</option>
                                         <option value="cartao">Cartão</option>
                                         <option value="dinheiro">Dinheiro</option>
@@ -718,20 +957,325 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label class="form-label-custom" for="observacao">Observação (Opcional)</label>
+                                    <textarea class="form-control" id="observacao" rows="3" style="height: auto;"
+                                        placeholder="Informações adicionais..."></textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 text-right">
+                                    <button type="submit" class="btn btn-success-custom">
+                                        <i class="bi bi-check-circle"></i> Salvar Transação
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 3: UPLOAD EM MASSA -->
+            <div class="tab-pane fade" id="upload" role="tabpanel">
+                <div class="custom-card mb-4">
+                    <div class="custom-card-header">
+                        <h5 class="custom-card-title">
+                            <i class="bi bi-cloud-arrow-up text-primary"></i> Importar Planilha de Movimentações
+                        </h5>
+                    </div>
+                    <div class="custom-card-body">
+                        <div class="upload-area-custom" id="uploadArea"
+                            onclick="document.getElementById('fileInput').click()">
+                            <div class="upload-icon-wrapper">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+                            <h5 style="font-weight: 800; color: var(--primary);">Arraste e solte seu arquivo CSV ou
+                                Excel aqui</h5>
+                            <p class="text-muted mb-3">ou clique para selecionar do seu dispositivo</p>
+                            <button type="button" class="btn btn-primary-custom"
+                                onclick="event.stopPropagation(); document.getElementById('fileInput').click();">
+                                <i class="bi bi-folder2-open"></i> Selecionar Arquivo
+                            </button>
+                            <input type="file" id="fileInput" style="display: none;" accept=".csv, .xlsx, .xls">
+                            <p class="mt-3 text-muted small mb-0">Formatos suportados: CSV, Excel (.xlsx, .xls)</p>
+                        </div>
+
+                        <!-- Pré-visualização do Upload -->
+                        <div class="mt-4" id="uploadPreviewContainer" style="display: none;">
+                            <div class="custom-card">
+                                <div class="custom-card-header">
+                                    <h5 class="custom-card-title">
+                                        <i class="bi bi-eye"></i> Pré-visualização dos Dados
+                                    </h5>
+                                </div>
+                                <div class="custom-card-body">
+                                    <div class="table-responsive-custom mb-3">
+                                        <table class="table table-custom table-sm" id="previewTable">
+                                            <thead id="previewTableHead"></thead>
+                                            <tbody id="previewTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                    <h6 class="font-weight-bold text-dark mb-3">Mapeamento de Colunas</h6>
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoData">Coluna de Data</label>
+                                            <select class="custom-select" id="mapeamentoData"></select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoDescricao">Coluna de
+                                                Descrição</label>
+                                            <select class="custom-select" id="mapeamentoDescricao"></select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoValor">Coluna de
+                                                Valor</label>
+                                            <select class="custom-select" id="mapeamentoValor"></select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoTipo">Coluna de Tipo</label>
+                                            <select class="custom-select" id="mapeamentoTipo"></select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoCategoria">Coluna de
+                                                Categoria</label>
+                                            <select class="custom-select" id="mapeamentoCategoria"></select>
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label-custom" for="mapeamentoMetodo">Coluna de
+                                                Método</label>
+                                            <select class="custom-select" id="mapeamentoMetodo"></select>
+                                        </div>
+                                    </div>
+                                    <div class="text-right d-flex justify-content-end gap-2" style="gap: 8px;">
+                                        <button class="btn btn-secondary-custom"
+                                            id="btnCancelarUpload">Cancelar</button>
+                                        <button class="btn btn-success-custom" id="btnImportarDados">
+                                            <i class="bi bi-check-circle"></i> Importar Dados
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card de Instruções e Modelo -->
+                        <div class="custom-card mt-4 mb-0">
+                            <div class="custom-card-header">
+                                <h5 class="custom-card-title">
+                                    <i class="bi bi-info-circle text-info"></i> Modelo e Instruções de Importação
+                                </h5>
+                            </div>
+                            <div class="custom-card-body">
+                                <p class="text-muted">Utilize o modelo padronizado para garantir a importação correta de
+                                    todas as colunas:</p>
+                                <a href="#" id="btnBaixarModelo" class="btn btn-secondary-custom mb-3">
+                                    <i class="bi bi-download"></i> Baixar Modelo CSV
+                                </a>
+                                <div class="alert alert-light border rounded-lg p-3">
+                                    <h6 class="font-weight-bold text-dark mb-2">Orientações:</h6>
+                                    <ol class="mb-0 pl-3 text-muted" style="font-size: 0.88rem; line-height: 1.6;">
+                                        <li>Colunas esperadas: <strong>Data, Descrição, Valor, Tipo, Categoria, Método,
+                                                Observação</strong></li>
+                                        <li>Para o campo <strong>Tipo</strong>, preencha: <code>entrada</code> ou
+                                            <code>saida</code></li>
+                                        <li>Para <strong>Categoria</strong>: <code>inscricao</code>,
+                                            <code>alimentacao</code>, <code>transporte</code>, <code>material</code> ou
+                                            <code>outros</code></li>
+                                        <li>Para <strong>Método</strong>: <code>pix</code>, <code>cartao</code>,
+                                            <code>dinheiro</code>, <code>transferencia</code> ou <code>cheque</code>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ABA 4: RELATÓRIOS -->
+            <div class="tab-pane fade" id="relatorios" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="custom-card h-100">
+                            <div class="custom-card-header">
+                                <h5 class="custom-card-title">
+                                    <i class="bi bi-calendar-range text-primary"></i> Relatório por Período
+                                </h5>
+                            </div>
+                            <div class="custom-card-body">
+                                <form id="relatorioForm">
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom" for="relDataInicio">Data Início</label>
+                                        <input type="date" class="form-control" id="relDataInicio" required>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label class="form-label-custom" for="relDataFim">Data Fim</label>
+                                        <input type="date" class="form-control" id="relDataFim" required>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label class="form-label-custom" for="relTipo">Tipo de Transação</label>
+                                        <select class="custom-select" id="relTipo">
+                                            <option value="todos">Todas as Movimentações</option>
+                                            <option value="entrada">Apenas Entradas</option>
+                                            <option value="saida">Apenas Saídas</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom w-100">
+                                        <i class="bi bi-file-earmark-text"></i> Gerar Relatório
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="custom-card h-100">
+                            <div class="custom-card-header">
+                                <h5 class="custom-card-title">
+                                    <i class="bi bi-box-arrow-up-right text-success"></i> Exportar Dados Completos
+                                </h5>
+                            </div>
+                            <div class="custom-card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <p class="text-muted">Faça o download do banco completo de registros do caixa nos
+                                        formatos CSV ou Excel para consolidação externa:</p>
+                                </div>
+                                <div class="d-flex flex-column gap-2" style="gap: 12px;">
+                                    <button class="btn btn-export-custom w-100" id="btnExportarCSV">
+                                        <i class="bi bi-file-earmark-spreadsheet"></i> Exportar para CSV
+                                    </button>
+                                    <button class="btn btn-success-custom w-100" id="btnExportarExcel">
+                                        <i class="bi bi-file-earmark-excel"></i> Exportar para Excel (.xlsx)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resultado do Relatório -->
+                <div class="custom-card mt-2">
+                    <div class="custom-card-header">
+                        <h5 class="custom-card-title">
+                            <i class="bi bi-clipboard-data text-primary"></i> Resultado do Relatório
+                        </h5>
+                    </div>
+                    <div class="custom-card-body">
+                        <div id="relatorioResultado">
+                            <p class="text-center text-muted py-4 mb-0">
+                                <i class="bi bi-arrow-up-circle d-block mb-2"
+                                    style="font-size: 2rem; color: #94a3b8;"></i>
+                                Selecione os parâmetros acima e clique em "Gerar Relatório" para visualizar os
+                                resultados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade modal-custom" id="excluirModal" tabindex="-1" role="dialog"
+        aria-labelledby="excluirModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #dc2626, #991b1b);">
+                    <h5 class="modal-title" id="excluirModalLabel">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-dark font-weight-bold mb-1">Você tem certeza que deseja excluir esta transação?</p>
+                    <p class="text-muted mb-0">Esta ação é irreversível e atualizará imediatamente o saldo do caixa.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarExclusao"
+                        style="border-radius: 10px; font-weight: 700; padding: 9px 18px;">
+                        Confirmar Exclusão
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Transação -->
+    <div class="modal fade modal-custom" id="editarModal" tabindex="-1" role="dialog" aria-labelledby="editarModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarModalLabel">
+                        <i class="bi bi-pencil-square"></i> Editar Transação
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editarTransacaoForm">
+                        <input type="hidden" id="editId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label-custom" for="editDescricao">Descrição</label>
+                                <input type="text" class="form-control" id="editDescricao" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label-custom" for="editData">Data</label>
+                                <input type="date" class="form-control" id="editData" required>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label-custom" for="editValor">Valor (R$)</label>
+                                <input type="text" class="form-control" id="editValor" required>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="editObservacao">Observação</label>
-                                    <textarea class="form-control" id="editObservacao" rows="3"></textarea>
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label-custom" for="editTipo">Tipo de Movimentação</label>
+                                <select class="custom-select" id="editTipo" required>
+                                    <option value="entrada">Entrada</option>
+                                    <option value="saida">Saída</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label-custom" for="editCategoria">Categoria</label>
+                                <select class="custom-select" id="editCategoria" required>
+                                    <option value="inscricao">Inscrição</option>
+                                    <option value="alimentacao">Alimentação</option>
+                                    <option value="transporte">Transporte</option>
+                                    <option value="material">Material</option>
+                                    <option value="outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label-custom" for="editMetodo">Método de Pagamento</label>
+                                <select class="custom-select" id="editMetodo" required>
+                                    <option value="pix">PIX</option>
+                                    <option value="cartao">Cartão</option>
+                                    <option value="dinheiro">Dinheiro</option>
+                                    <option value="transferencia">Transferência</option>
+                                    <option value="cheque">Cheque</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label class="form-label-custom" for="editObservacao">Observação</label>
+                                <textarea class="form-control" id="editObservacao" rows="3"
+                                    style="height: auto;"></textarea>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="salvarEdicao">Salvar Alterações</button>
+                    <button type="button" class="btn btn-secondary-custom" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary-custom" id="salvarEdicao">
+                        <i class="bi bi-check-circle"></i> Salvar Alterações
+                    </button>
                 </div>
             </div>
         </div>
@@ -742,7 +1286,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -752,7 +1297,6 @@
     <script>
         // Variáveis globais
         let graficoFluxo;
-        let graficoCategorias;
         let todasTransacoes = [];
         let transacoesFiltradas = [];
 
@@ -764,15 +1308,15 @@
                 Chart.defaults.plugins.datalabels = {
                     color: '#343a40',
                     font: { weight: 'bold', size: 12 },
-                    formatter: function(value) { return value > 0 ? value : ''; },
+                    formatter: function (value) { return value > 0 ? value : ''; },
                     anchor: 'end',
                     align: 'top'
                 };
             }
-            
+
             // Design moderno global para Chart.js
             Chart.defaults.font.family = "'Montserrat', sans-serif";
-            Chart.defaults.color = "#6c757d";
+            Chart.defaults.color = "#64748b";
             Chart.defaults.scale.grid.color = "rgba(0,0,0,0.04)";
             Chart.defaults.elements.bar.borderRadius = 8;
             Chart.defaults.elements.bar.borderSkipped = false;
@@ -780,15 +1324,18 @@
             Chart.defaults.elements.arc.hoverOffset = 4;
             Chart.defaults.layout = {
                 padding: {
-                    top: 30,
-                    right: 40,
+                    top: 25,
+                    right: 25,
                     bottom: 10,
                     left: 10
                 }
             };
 
             // Definir data atual no campo de data
-            document.getElementById('data').valueAsDate = new Date();
+            const campoData = document.getElementById('data');
+            if (campoData) {
+                campoData.valueAsDate = new Date();
+            }
 
             // Inicializar gráficos
             initGraficos();
@@ -796,6 +1343,7 @@
             // Carregar dados
             carregarDashboard();
             carregarTransacoes();
+            sincronizarPagamentos();
 
             // Event listeners
             $('#novaTransacaoForm').on('submit', registrarTransacao);
@@ -821,8 +1369,7 @@
         });
 
         function sincronizarPagamentos() {
-            // Buscar pagamentos confirmados que não estão no caixa
-            db.collection("Eventos").doc("ComRoca2026").collection("pagamentos")
+            db.collection("Eventos").doc("Conf2026").collection("pagamentos")
                 .where("status", "==", "confirmado")
                 .get()
                 .then((pagamentosSnapshot) => {
@@ -832,26 +1379,24 @@
                     pagamentosSnapshot.forEach((doc) => {
                         const pagamento = doc.data();
 
-                        // Verificar se já existe no caixa
-                        db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+                        db.collection("Eventos").doc("Conf2026").collection("caixa")
                             .where("pagamentoId", "==", doc.id)
                             .get()
                             .then((caixaSnapshot) => {
                                 if (caixaSnapshot.empty) {
-                                    // Não existe no caixa, criar entrada
-                                    const novaRef = db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc();
+                                    const novaRef = db.collection("Eventos").doc("Conf2026").collection("caixa").doc();
 
                                     batch.set(novaRef, {
-                                        descricao: `Inscrição - ${pagamento.participanteNome}`,
-                                        data: pagamento.dataPagamento.substring(0, 10),
+                                        descricao: `Inscrição - ${pagamento.participanteNome || 'Participante'}`,
+                                        data: (pagamento.dataPagamento || new Date().toISOString()).substring(0, 10),
                                         valor: pagamento.valor,
                                         tipo: 'entrada',
                                         categoria: 'inscricao',
-                                        metodo: pagamento.formaPagamento,
+                                        metodo: pagamento.formaPagamento || 'outros',
                                         observacao: `Pagamento de inscrição - Ref: ${doc.id}`,
                                         referenciaOrigem: 'pagamento',
                                         pagamentoId: doc.id,
-                                        participanteId: pagamento.participanteId,
+                                        participanteId: pagamento.participanteId || '',
                                         dataCriacao: new Date().toISOString()
                                     });
 
@@ -860,43 +1405,32 @@
                             });
                     });
 
-                    // Executar batch se houver novos registros
                     if (contador > 0) {
                         return batch.commit();
                     }
                 })
                 .then(() => {
-                    if (contador > 0) {
-                        console.log(`${contador} pagamentos sincronizados com o caixa`);
-                        carregarDashboard();
-                        carregarTransacoes();
-                    }
-                });
+                    carregarDashboard();
+                    carregarTransacoes();
+                })
+                .catch(err => console.error("Erro na sincronização:", err));
         }
-
-        // Chamar na inicialização
-        $(document).ready(function () {
-            // ... código existente ...
-            sincronizarPagamentos(); // ADICIONAR ESTA LINHA
-        });
 
         // Função para inicializar os gráficos
         function initGraficos() {
-            // Gráfico de Fluxo de Caixa
             const ctxFluxo = document.getElementById('graficoFluxo').getContext('2d');
-            
-            // Gradientes modernos
+
             let gradEntradas = ctxFluxo.createLinearGradient(0, 0, 0, 300);
-            gradEntradas.addColorStop(0, 'rgba(40, 167, 69, 0.4)');
-            gradEntradas.addColorStop(1, 'rgba(40, 167, 69, 0.0)');
+            gradEntradas.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
+            gradEntradas.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
 
             let gradSaidas = ctxFluxo.createLinearGradient(0, 0, 0, 300);
-            gradSaidas.addColorStop(0, 'rgba(220, 53, 69, 0.4)');
-            gradSaidas.addColorStop(1, 'rgba(220, 53, 69, 0.0)');
+            gradSaidas.addColorStop(0, 'rgba(239, 68, 68, 0.35)');
+            gradSaidas.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
 
             let gradSaldo = ctxFluxo.createLinearGradient(0, 0, 0, 300);
-            gradSaldo.addColorStop(0, 'rgba(23, 162, 184, 0.4)');
-            gradSaldo.addColorStop(1, 'rgba(23, 162, 184, 0.0)');
+            gradSaldo.addColorStop(0, 'rgba(2, 132, 199, 0.35)');
+            gradSaldo.addColorStop(1, 'rgba(2, 132, 199, 0.0)');
 
             graficoFluxo = new Chart(ctxFluxo, {
                 type: 'line',
@@ -907,14 +1441,14 @@
                             label: 'Entradas',
                             data: [],
                             backgroundColor: gradEntradas,
-                            borderColor: 'rgba(40, 167, 69, 1)',
+                            borderColor: '#10b981',
                             borderWidth: 3,
-                            tension: 0.4,
+                            tension: 0.35,
                             fill: true,
-                            pointBackgroundColor: 'rgba(40, 167, 69, 1)',
+                            pointBackgroundColor: '#10b981',
                             pointBorderColor: '#fff',
                             pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(40, 167, 69, 1)',
+                            pointHoverBorderColor: '#10b981',
                             pointRadius: 4,
                             pointHoverRadius: 6
                         },
@@ -922,14 +1456,14 @@
                             label: 'Saídas',
                             data: [],
                             backgroundColor: gradSaidas,
-                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderColor: '#ef4444',
                             borderWidth: 3,
-                            tension: 0.4,
+                            tension: 0.35,
                             fill: true,
-                            pointBackgroundColor: 'rgba(220, 53, 69, 1)',
+                            pointBackgroundColor: '#ef4444',
                             pointBorderColor: '#fff',
                             pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(220, 53, 69, 1)',
+                            pointHoverBorderColor: '#ef4444',
                             pointRadius: 4,
                             pointHoverRadius: 6
                         },
@@ -937,14 +1471,14 @@
                             label: 'Saldo',
                             data: [],
                             backgroundColor: gradSaldo,
-                            borderColor: 'rgba(23, 162, 184, 1)',
+                            borderColor: '#0284c7',
                             borderWidth: 3,
-                            tension: 0.4,
+                            tension: 0.35,
                             fill: true,
-                            pointBackgroundColor: 'rgba(23, 162, 184, 1)',
+                            pointBackgroundColor: '#0284c7',
                             pointBorderColor: '#fff',
                             pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: 'rgba(23, 162, 184, 1)',
+                            pointHoverBorderColor: '#0284c7',
                             pointRadius: 4,
                             pointHoverRadius: 6
                         }
@@ -955,12 +1489,21 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return 'R$ ' + value;
+                                }
+                            }
                         }
                     },
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20
+                            }
                         },
                         datalabels: {
                             display: false
@@ -969,56 +1512,17 @@
                 }
             });
 
-            // Gráfico de Categorias
-            const ctxCategorias = document.getElementById('graficoCategorias').getContext('2d');
-            graficoCategorias = new Chart(ctxCategorias, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Inscrição', 'Alimentação', 'Transporte', 'Material', 'Outros'],
-                    datasets: [{
-                        data: [0, 0, 0, 0, 0],
-                        backgroundColor: [
-                            'rgba(40, 167, 69, 0.85)',
-                            'rgba(220, 53, 69, 0.85)',
-                            'rgba(255, 193, 7, 0.85)',
-                            'rgba(23, 162, 184, 0.85)',
-                            'rgba(108, 117, 125, 0.85)'
-                        ],
-                        borderWidth: 3,
-                        borderColor: '#ffffff',
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        datalabels: {
-                            color: '#fff',
-                            anchor: 'center',
-                            align: 'center',
-                            formatter: function(value) {
-                                return value > 0 ? 'R$ ' + value.toFixed(2) : '';
-                            }
-                        }
-                    }
-                }
-            });
         }
 
         // Função para carregar o dashboard
         function carregarDashboard() {
-            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+            db.collection("Eventos").doc("Conf2026").collection("caixa")
                 .get()
                 .then((querySnapshot) => {
                     let totalTransacoes = querySnapshot.size;
                     let totalEntradas = 0;
                     let totalSaidas = 0;
 
-                    // Dados para o gráfico de fluxo
                     const dadosPorData = {};
                     const categorias = {
                         inscricao: 0,
@@ -1032,14 +1536,12 @@
                         const transacao = doc.data();
                         const valor = parseFloat(transacao.valor) || 0;
 
-                        // Somar entradas e saídas
                         if (transacao.tipo === 'entrada') {
                             totalEntradas += valor;
                         } else if (transacao.tipo === 'saida') {
                             totalSaidas += valor;
                         }
 
-                        // Agrupar por data para o gráfico de fluxo
                         const dataFormatada = formatarDataSimples(transacao.data);
                         if (!dadosPorData[dataFormatada]) {
                             dadosPorData[dataFormatada] = {
@@ -1054,7 +1556,6 @@
                             dadosPorData[dataFormatada].saidas += valor;
                         }
 
-                        // Contar por categoria
                         if (transacao.categoria && categorias.hasOwnProperty(transacao.categoria)) {
                             categorias[transacao.categoria] += valor;
                         }
@@ -1068,11 +1569,8 @@
                     const saldoAtual = totalEntradas - totalSaidas;
                     $('#saldoAtual').text('R$ ' + saldoAtual.toFixed(2).replace('.', ','));
 
-                    // Atualizar gráfico de fluxo
+                    // Atualizar gráficos
                     atualizarGraficoFluxo(dadosPorData);
-
-                    // Atualizar gráfico de categorias
-                    atualizarGraficoCategorias(categorias);
                 })
                 .catch((error) => {
                     console.error("Erro ao carregar dashboard: ", error);
@@ -1081,10 +1579,8 @@
 
         // Função para atualizar o gráfico de fluxo
         function atualizarGraficoFluxo(dadosPorData) {
-            // Ordenar datas
             const datas = Object.keys(dadosPorData).sort();
 
-            // Preparar dados para o gráfico
             const entradas = [];
             const saidas = [];
             const saldos = [];
@@ -1101,7 +1597,6 @@
                 saldos.push(saldoAcumulado);
             });
 
-            // Atualizar gráfico
             graficoFluxo.data.labels = datas;
             graficoFluxo.data.datasets[0].data = entradas;
             graficoFluxo.data.datasets[1].data = saidas;
@@ -1109,21 +1604,9 @@
             graficoFluxo.update();
         }
 
-        // Função para atualizar o gráfico de categorias
-        function atualizarGraficoCategorias(categorias) {
-            graficoCategorias.data.datasets[0].data = [
-                categorias.inscricao,
-                categorias.alimentacao,
-                categorias.transporte,
-                categorias.material,
-                categorias.outros
-            ];
-            graficoCategorias.update();
-        }
-
         // Função para carregar transações
         function carregarTransacoes() {
-            db.collection("Eventos").doc("ComRoca2026").collection("caixa")
+            db.collection("Eventos").doc("Conf2026").collection("caixa")
                 .orderBy("data", "desc")
                 .get()
                 .then((querySnapshot) => {
@@ -1135,7 +1618,6 @@
                         todasTransacoes.push(transacao);
                     });
 
-                    // Atualizar a tabela com todas as transações
                     transacoesFiltradas = [...todasTransacoes];
                     atualizarTabelaTransacoes(transacoesFiltradas);
                 })
@@ -1144,39 +1626,43 @@
                 });
         }
 
-        // Função para atualizar a tabela de transações
+        // Função para atualizar a tabela de transações com visual moderno
         function atualizarTabelaTransacoes(transacoes) {
             const tabelaTransacoes = $('#transacoesList');
             tabelaTransacoes.html('');
 
             if (transacoes.length === 0) {
-                tabelaTransacoes.html('<tr><td colspan="7" class="text-center">Nenhuma transação encontrada</td></tr>');
+                tabelaTransacoes.html('<tr><td colspan="7" class="text-center text-muted py-4"><i class="bi bi-inbox mr-1"></i> Nenhuma transação encontrada</td></tr>');
                 return;
             }
 
             transacoes.forEach(transacao => {
                 const dataFormatada = formatarData(transacao.data);
                 const valor = parseFloat(transacao.valor).toFixed(2).replace('.', ',');
+                const isEntrada = transacao.tipo === 'entrada';
 
                 const linha = `
                     <tr>
-                        <td>${dataFormatada}</td>
-                        <td>${transacao.descricao}</td>
-                        <td>${formatarCategoria(transacao.categoria)}</td>
+                        <td style="font-weight: 600; color: #475569;">${dataFormatada}</td>
+                        <td style="font-weight: 700; color: var(--text-main);">${transacao.descricao}</td>
+                        <td><span class="tag-pill"><i class="bi bi-tag-fill text-muted"></i> ${formatarCategoria(transacao.categoria)}</span></td>
                         <td>
-                            <span class="badge ${transacao.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida'}">
-                                ${transacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                            <span class="p-badge ${isEntrada ? 'p-badge-entrada' : 'p-badge-saida'}">
+                                <i class="bi ${isEntrada ? 'bi-arrow-down-circle' : 'bi-arrow-up-circle'}"></i>
+                                ${isEntrada ? 'Entrada' : 'Saída'}
                             </span>
                         </td>
-                        <td>R$ ${valor}</td>
-                        <td>${formatarMetodo(transacao.metodo)}</td>
-                        <td>
-                            <div class="btn-group" role="group">
-                                <button class="btn btn-info btn-sm" onclick="prepararEdicao('${transacao.id}')">
-                                    <i class="material-icons">edit</i>
+                        <td style="font-weight: 800; color: ${isEntrada ? '#15803d' : '#dc2626'};">
+                            ${isEntrada ? '+ ' : '- '}R$ ${valor}
+                        </td>
+                        <td><span class="tag-pill"><i class="bi bi-credit-card mr-1 text-muted"></i> ${formatarMetodo(transacao.metodo)}</span></td>
+                        <td style="text-align: right;">
+                            <div class="d-inline-flex gap-1" style="gap: 4px;">
+                                <button class="action-btn-sm action-btn-edit" title="Editar Transação" onclick="prepararEdicao('${transacao.id}')">
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm" onclick="prepararExclusao('${transacao.id}')">
-                                                                        <i class="material-icons">delete</i>
+                                <button class="action-btn-sm action-btn-delete" title="Excluir Transação" onclick="prepararExclusao('${transacao.id}')">
+                                    <i class="bi bi-trash"></i>
                                 </button>
                             </div>
                         </td>
@@ -1201,12 +1687,11 @@
             const observacao = $('#observacao').val();
 
             if (!descricao || !data || isNaN(valor) || valor <= 0 || !tipo || !categoria || !metodo) {
-                alert('Por favor, preencha todos os campos corretamente.');
+                alert('Por favor, preencha todos os campos obrigatórios corretamente.');
                 return;
             }
 
-            // Adicionar transação ao Firestore
-            db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+            db.collection("Eventos").doc("Conf2026").collection("caixa").add({
                 descricao: descricao,
                 data: data,
                 valor: valor,
@@ -1219,13 +1704,12 @@
                 .then(() => {
                     alert('Transação registrada com sucesso!');
                     $('#novaTransacaoForm')[0].reset();
-                    document.getElementById('data').valueAsDate = new Date();
+                    const campoData = document.getElementById('data');
+                    if (campoData) campoData.valueAsDate = new Date();
 
-                    // Recarregar dados
                     carregarDashboard();
                     carregarTransacoes();
 
-                    // Voltar para a aba de transações
                     $('#transacoes-tab').tab('show');
                 })
                 .catch((error) => {
@@ -1244,13 +1728,12 @@
         function excluirTransacao() {
             const id = $('#confirmarExclusao').data('id');
 
-            db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc(id)
+            db.collection("Eventos").doc("Conf2026").collection("caixa").doc(id)
                 .delete()
                 .then(() => {
                     alert('Transação excluída com sucesso!');
                     $('#excluirModal').modal('hide');
 
-                    // Recarregar dados
                     carregarDashboard();
                     carregarTransacoes();
                 })
@@ -1269,7 +1752,6 @@
                 return;
             }
 
-            // Preencher formulário de edição
             $('#editId').val(id);
             $('#editDescricao').val(transacao.descricao);
             $('#editData').val(transacao.data);
@@ -1279,7 +1761,6 @@
             $('#editMetodo').val(transacao.metodo);
             $('#editObservacao').val(transacao.observacao || '');
 
-            // Abrir modal
             $('#editarModal').modal('show');
         }
 
@@ -1300,8 +1781,7 @@
                 return;
             }
 
-            // Atualizar transação no Firestore
-            db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc(id)
+            db.collection("Eventos").doc("Conf2026").collection("caixa").doc(id)
                 .update({
                     descricao: descricao,
                     data: data,
@@ -1316,7 +1796,6 @@
                     alert('Transação atualizada com sucesso!');
                     $('#editarModal').modal('hide');
 
-                    // Recarregar dados
                     carregarDashboard();
                     carregarTransacoes();
                 })
@@ -1333,24 +1812,19 @@
             const dataInicio = $('#filtroDataInicio').val();
             const dataFim = $('#filtroDataFim').val();
 
-            // Filtrar transações
             transacoesFiltradas = todasTransacoes.filter(transacao => {
-                // Filtro por tipo
                 if (tipo !== 'todos' && transacao.tipo !== tipo) {
                     return false;
                 }
 
-                // Filtro por categoria
                 if (categoria !== 'todos' && transacao.categoria !== categoria) {
                     return false;
                 }
 
-                // Filtro por data de início
                 if (dataInicio && transacao.data < dataInicio) {
                     return false;
                 }
 
-                // Filtro por data de fim
                 if (dataFim && transacao.data > dataFim) {
                     return false;
                 }
@@ -1358,7 +1832,6 @@
                 return true;
             });
 
-            // Atualizar tabela
             atualizarTabelaTransacoes(transacoesFiltradas);
         }
 
@@ -1369,7 +1842,6 @@
             $('#filtroDataInicio').val('');
             $('#filtroDataFim').val('');
 
-            // Restaurar todas as transações
             transacoesFiltradas = [...todasTransacoes];
             atualizarTabelaTransacoes(transacoesFiltradas);
         }
@@ -1387,14 +1859,11 @@
                 return;
             }
 
-            // Filtrar transações para o relatório
             const transacoesRelatorio = todasTransacoes.filter(transacao => {
-                // Filtro por tipo
                 if (tipo !== 'todos' && transacao.tipo !== tipo) {
                     return false;
                 }
 
-                // Filtro por período
                 if (transacao.data < dataInicio || transacao.data > dataFim) {
                     return false;
                 }
@@ -1402,7 +1871,6 @@
                 return true;
             });
 
-            // Calcular totais
             let totalEntradas = 0;
             let totalSaidas = 0;
 
@@ -1417,7 +1885,6 @@
 
             const saldo = totalEntradas - totalSaidas;
 
-            // Agrupar por categoria
             const categorias = {
                 inscricao: 0,
                 alimentacao: 0,
@@ -1437,89 +1904,71 @@
                 }
             });
 
-            // Gerar HTML do relatório
             const dataInicioFormatada = formatarData(dataInicio);
             const dataFimFormatada = formatarData(dataFim);
 
             let html = `
-                <div class="alert alert-info">
-                    <h5>Relatório de ${dataInicioFormatada} a ${dataFimFormatada}</h5>
-                    <p>Tipo: ${tipo === 'todos' ? 'Todas as transações' : (tipo === 'entrada' ? 'Apenas entradas' : 'Apenas saídas')}</p>
+                <div class="alert alert-info d-flex align-items-center mb-4" style="background: #f0f9ff; border: 1px solid #bae6fd; color: #0369a1; border-radius: 12px;">
+                    <div>
+                        <h6 class="font-weight-bold mb-1"><i class="bi bi-info-circle mr-1"></i> Período: ${dataInicioFormatada} a ${dataFimFormatada}</h6>
+                        <span class="small">Tipo filtrado: ${tipo === 'todos' ? 'Todas as movimentações' : (tipo === 'entrada' ? 'Apenas entradas' : 'Apenas saídas')}</span>
+                    </div>
                 </div>
                 
                 <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card bg-success text-white">
-                            <div class="card-body text-center">
-                                <h5>Total de Entradas</h5>
-                                <h3>R$ ${totalEntradas.toFixed(2).replace('.', ',')}</h3>
-                            </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="kpi-banner kpi-pago mb-0">
+                            <div class="kpi-top"><i class="bi bi-arrow-down-circle-fill"></i> Total Entradas</div>
+                            <div class="kpi-bottom"><div class="kpi-number" style="font-size: 1.6rem;">R$ ${totalEntradas.toFixed(2).replace('.', ',')}</div></div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body text-center">
-                                <h5>Total de Saídas</h5>
-                                <h3>R$ ${totalSaidas.toFixed(2).replace('.', ',')}</h3>
-                            </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="kpi-banner kpi-saida mb-0">
+                            <div class="kpi-top"><i class="bi bi-arrow-up-circle-fill"></i> Total Saídas</div>
+                            <div class="kpi-bottom"><div class="kpi-number" style="font-size: 1.6rem;">R$ ${totalSaidas.toFixed(2).replace('.', ',')}</div></div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card ${saldo >= 0 ? 'bg-info' : 'bg-warning'} text-white">
-                            <div class="card-body text-center">
-                                <h5>Saldo no Período</h5>
-                                <h3>R$ ${saldo.toFixed(2).replace('.', ',')}</h3>
-                            </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="kpi-banner ${saldo >= 0 ? 'kpi-saldo' : 'kpi-saida'} mb-0">
+                            <div class="kpi-top"><i class="bi bi-wallet2"></i> Saldo do Período</div>
+                            <div class="kpi-bottom"><div class="kpi-number" style="font-size: 1.6rem;">R$ ${saldo.toFixed(2).replace('.', ',')}</div></div>
                         </div>
                     </div>
                 </div>
                 
-                <h5>Resumo por Categoria</h5>
-                <table class="table table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Inscrição</td>
-                            <td>R$ ${categorias.inscricao.toFixed(2).replace('.', ',')}</td>
-                        </tr>
-                        <tr>
-                            <td>Alimentação</td>
-                            <td>R$ ${categorias.alimentacao.toFixed(2).replace('.', ',')}</td>
-                        </tr>
-                        <tr>
-                            <td>Transporte</td>
-                            <td>R$ ${categorias.transporte.toFixed(2).replace('.', ',')}</td>
-                        </tr>
-                        <tr>
-                            <td>Material</td>
-                            <td>R$ ${categorias.material.toFixed(2).replace('.', ',')}</td>
-                        </tr>
-                        <tr>
-                            <td>Outros</td>
-                            <td>R$ ${categorias.outros.toFixed(2).replace('.', ',')}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h6 class="font-weight-bold text-dark mb-3"><i class="bi bi-pie-chart mr-1"></i> Balanço por Categoria</h6>
+                <div class="table-responsive-custom mb-4">
+                    <table class="table table-custom mb-0">
+                        <thead>
+                            <tr>
+                                <th>Categoria</th>
+                                <th style="text-align: right;">Balanço Líquido</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Inscrição</td><td style="text-align: right; font-weight: 700;">R$ ${categorias.inscricao.toFixed(2).replace('.', ',')}</td></tr>
+                            <tr><td>Alimentação</td><td style="text-align: right; font-weight: 700;">R$ ${categorias.alimentacao.toFixed(2).replace('.', ',')}</td></tr>
+                            <tr><td>Transporte</td><td style="text-align: right; font-weight: 700;">R$ ${categorias.transporte.toFixed(2).replace('.', ',')}</td></tr>
+                            <tr><td>Material</td><td style="text-align: right; font-weight: 700;">R$ ${categorias.material.toFixed(2).replace('.', ',')}</td></tr>
+                            <tr><td>Outros</td><td style="text-align: right; font-weight: 700;">R$ ${categorias.outros.toFixed(2).replace('.', ',')}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
                 
-                <h5>Transações no Período (${transacoesRelatorio.length})</h5>
+                <h6 class="font-weight-bold text-dark mb-3"><i class="bi bi-list-ul mr-1"></i> Movimentações no Período (${transacoesRelatorio.length})</h6>
             `;
 
             if (transacoesRelatorio.length > 0) {
                 html += `
-                    <div class="table-responsive">
-                        <table class="table table-striped table-sm">
-                            <thead class="thead-light">
+                    <div class="table-responsive-custom">
+                        <table class="table table-custom">
+                            <thead>
                                 <tr>
                                     <th>Data</th>
                                     <th>Descrição</th>
                                     <th>Categoria</th>
                                     <th>Tipo</th>
-                                    <th>Valor</th>
+                                    <th style="text-align: right;">Valor</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1528,18 +1977,21 @@
                 transacoesRelatorio.forEach(transacao => {
                     const dataFormatada = formatarData(transacao.data);
                     const valor = parseFloat(transacao.valor).toFixed(2).replace('.', ',');
+                    const isEntrada = transacao.tipo === 'entrada';
 
                     html += `
                         <tr>
                             <td>${dataFormatada}</td>
-                            <td>${transacao.descricao}</td>
-                            <td>${formatarCategoria(transacao.categoria)}</td>
+                            <td style="font-weight: 700;">${transacao.descricao}</td>
+                            <td><span class="tag-pill">${formatarCategoria(transacao.categoria)}</span></td>
                             <td>
-                                <span class="badge ${transacao.tipo === 'entrada' ? 'badge-entrada' : 'badge-saida'}">
-                                    ${transacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}
+                                <span class="p-badge ${isEntrada ? 'p-badge-entrada' : 'p-badge-saida'}">
+                                    ${isEntrada ? 'Entrada' : 'Saída'}
                                 </span>
                             </td>
-                            <td>R$ ${valor}</td>
+                            <td style="text-align: right; font-weight: 700; color: ${isEntrada ? '#15803d' : '#dc2626'};">
+                                ${isEntrada ? '+ ' : '- '}R$ ${valor}
+                            </td>
                         </tr>
                     `;
                 });
@@ -1550,10 +2002,9 @@
                     </div>
                 `;
             } else {
-                html += `<p class="text-center text-muted">Nenhuma transação encontrada no período selecionado.</p>`;
+                html += `<p class="text-center text-muted py-4">Nenhuma movimentação encontrada no período selecionado.</p>`;
             }
 
-            // Exibir relatório
             $('#relatorioResultado').html(html);
         }
 
@@ -1564,7 +2015,6 @@
                 return;
             }
 
-            // Preparar dados para CSV
             const cabecalho = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Método', 'Observação'];
             const linhas = todasTransacoes.map(transacao => [
                 formatarData(transacao.data),
@@ -1576,10 +2026,8 @@
                 transacao.observacao || ''
             ]);
 
-            // Criar conteúdo CSV
             let csvContent = cabecalho.join(',') + '\n';
             linhas.forEach(linha => {
-                // Escapar campos que contêm vírgulas
                 const linhaEscapada = linha.map(campo => {
                     if (campo.includes(',')) {
                         return `"${campo}"`;
@@ -1589,10 +2037,9 @@
                 csvContent += linhaEscapada.join(',') + '\n';
             });
 
-            // Criar blob e fazer download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const dataAtual = new Date().toISOString().slice(0, 10);
-            saveAs(blob, `caixa_acampamento_${dataAtual}.csv`);
+            saveAs(blob, `caixa_conf2026_${dataAtual}.csv`);
         }
 
         // Função para exportar para Excel
@@ -1602,39 +2049,33 @@
                 return;
             }
 
-            // Preparar dados para Excel
             const cabecalho = ['Data', 'Descrição', 'Categoria', 'Tipo', 'Valor', 'Método', 'Observação'];
             const dados = todasTransacoes.map(transacao => [
                 formatarData(transacao.data),
                 transacao.descricao,
                 formatarCategoria(transacao.categoria),
                 transacao.tipo === 'entrada' ? 'Entrada' : 'Saída',
-                'R$ ' + parseFloat(transacao.valor).toFixed(2).replace('.', ','),
+                parseFloat(transacao.valor) || 0,
                 formatarMetodo(transacao.metodo),
                 transacao.observacao || ''
             ]);
 
-            // Criar workbook
             const ws = XLSX.utils.aoa_to_sheet([cabecalho, ...dados]);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Caixa');
 
-            // Fazer download
             const dataAtual = new Date().toISOString().slice(0, 10);
-            XLSX.writeFile(wb, `caixa_acampamento_${dataAtual}.xlsx`);
+            XLSX.writeFile(wb, `caixa_conf2026_${dataAtual}.xlsx`);
         }
 
         // Função para baixar modelo CSV
         function baixarModeloCSV() {
             const cabecalho = ['Data', 'Descrição', 'Valor', 'Tipo', 'Categoria', 'Método', 'Observação'];
             const exemplo = [
-                '2023-01-01', 'Inscrição João Silva', '250.00', 'entrada', 'inscricao', 'pix', 'Pagamento completo'
+                '2026-01-01', 'Inscrição João Silva', '250.00', 'entrada', 'inscricao', 'pix', 'Pagamento completo'
             ];
 
-            // Criar conteúdo CSV
             let csvContent = cabecalho.join(',') + '\n' + exemplo.join(',');
-
-            // Criar blob e fazer download
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             saveAs(blob, 'modelo_importacao_caixa.csv');
         }
@@ -1642,8 +2083,8 @@
         // Configurar área de upload
         function configurarUploadArea() {
             const uploadArea = document.getElementById('uploadArea');
+            if (!uploadArea) return;
 
-            // Eventos de drag and drop
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 uploadArea.addEventListener(eventName, preventDefaults, false);
             });
@@ -1669,7 +2110,6 @@
                 uploadArea.classList.remove('dragover');
             }
 
-            // Evento de drop
             uploadArea.addEventListener('drop', handleDrop, false);
 
             function handleDrop(e) {
@@ -1717,15 +2157,12 @@
                     return;
                 }
 
-                // Extrair cabeçalho
                 const cabecalho = linhas[0].split(',').map(col => col.trim().replace(/"/g, ''));
 
-                // Preparar dados para preview
                 const dados = [];
                 for (let i = 1; i < linhas.length; i++) {
                     if (linhas[i].trim() === '') continue;
 
-                    // Lidar com campos que contêm vírgulas dentro de aspas
                     const regex = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
                     const campos = [];
                     let match;
@@ -1753,11 +2190,9 @@
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
 
-                // Pegar primeira planilha
                 const primeiraFolha = workbook.SheetNames[0];
                 const planilha = workbook.Sheets[primeiraFolha];
 
-                // Converter para array
                 const dados = XLSX.utils.sheet_to_json(planilha, { header: 1 });
 
                 if (dados.length < 2) {
@@ -1776,10 +2211,8 @@
 
         // Exibir preview dos dados
         function exibirPreviewDados(cabecalho, dados) {
-            // Limitar a 10 linhas para o preview
             const dadosPreview = dados.slice(0, 10);
 
-            // Preencher cabeçalho da tabela
             const previewTableHead = document.getElementById('previewTableHead');
             let headerHTML = '<tr>';
             cabecalho.forEach(col => {
@@ -1788,7 +2221,6 @@
             headerHTML += '</tr>';
             previewTableHead.innerHTML = headerHTML;
 
-            // Preencher corpo da tabela
             const previewTableBody = document.getElementById('previewTableBody');
             let bodyHTML = '';
             dadosPreview.forEach(linha => {
@@ -1800,10 +2232,8 @@
             });
             previewTableBody.innerHTML = bodyHTML;
 
-            // Preencher opções de mapeamento
             preencherOpcoesMapeamento(cabecalho);
 
-            // Mostrar container de preview
             document.getElementById('uploadPreviewContainer').style.display = 'block';
         }
 
@@ -1845,7 +2275,6 @@
                 return;
             }
 
-            // Obter índices das colunas mapeadas
             const indiceData = parseInt(document.getElementById('mapeamentoData').value);
             const indiceDescricao = parseInt(document.getElementById('mapeamentoDescricao').value);
             const indiceValor = parseInt(document.getElementById('mapeamentoValor').value);
@@ -1853,13 +2282,11 @@
             const indiceCategoria = parseInt(document.getElementById('mapeamentoCategoria').value);
             const indiceMetodo = parseInt(document.getElementById('mapeamentoMetodo').value);
 
-            // Verificar se todos os campos obrigatórios foram mapeados
             if (isNaN(indiceData) || isNaN(indiceDescricao) || isNaN(indiceValor) || isNaN(indiceTipo)) {
                 alert('Por favor, mapeie todos os campos obrigatórios (Data, Descrição, Valor e Tipo).');
                 return;
             }
 
-            // Processar o arquivo novamente para obter todos os dados
             const file = fileInput.files[0];
             const fileName = file.name.toLowerCase();
 
@@ -1878,7 +2305,6 @@
                 const conteudo = e.target.result;
                 const linhas = conteudo.split('\n');
 
-                // Pular cabeçalho
                 processarLinhasImportacao(linhas.slice(1), indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
             };
 
@@ -1893,14 +2319,11 @@
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
 
-                // Pegar primeira planilha
                 const primeiraFolha = workbook.SheetNames[0];
                 const planilha = workbook.Sheets[primeiraFolha];
 
-                // Converter para array
                 const dados = XLSX.utils.sheet_to_json(planilha, { header: 1 });
 
-                // Pular cabeçalho
                 processarLinhasImportacao(dados.slice(1), indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo);
             };
 
@@ -1909,21 +2332,17 @@
 
         // Processar linhas para importação
         function processarLinhasImportacao(linhas, indiceData, indiceDescricao, indiceValor, indiceTipo, indiceCategoria, indiceMetodo) {
-            // Preparar lote de transações para adicionar ao Firestore
             const batch = db.batch();
             let contadorValidos = 0;
             let contadorInvalidos = 0;
 
             linhas.forEach(linha => {
-                // Verificar se é uma linha válida
                 if (!linha || (Array.isArray(linha) && linha.length === 0) || (typeof linha === 'string' && linha.trim() === '')) {
                     return;
                 }
 
-                // Extrair campos para CSV
                 let campos = linha;
                 if (typeof linha === 'string') {
-                    // Lidar com campos que contêm vírgulas dentro de aspas
                     const regex = /(".*?"|[^",]+)(?=\s*,|\s*$)/g;
                     campos = [];
                     let match;
@@ -1933,7 +2352,6 @@
                     }
                 }
 
-                // Extrair valores dos campos mapeados
                 const data = campos[indiceData];
                 const descricao = campos[indiceDescricao];
                 let valorStr = campos[indiceValor];
@@ -1941,33 +2359,28 @@
                 const categoria = isNaN(indiceCategoria) ? 'outros' : campos[indiceCategoria];
                 const metodo = isNaN(indiceMetodo) ? 'outros' : campos[indiceMetodo];
 
-                // Limpar e validar valor
-                valorStr = valorStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+                valorStr = String(valorStr).replace('R$', '').replace(/\s/g, '').replace(',', '.');
                 const valor = parseFloat(valorStr);
 
-                // Validar campos obrigatórios
                 if (!data || !descricao || isNaN(valor) || valor <= 0 || !tipo) {
                     contadorInvalidos++;
                     return;
                 }
 
-                // Normalizar tipo
-                const tipoNormalizado = tipo.toLowerCase().includes('entrada') ? 'entrada' : 'saida';
+                const tipoNormalizado = String(tipo).toLowerCase().includes('entrada') ? 'entrada' : 'saida';
 
-                // Normalizar categoria
                 let categoriaNormalizada = 'outros';
                 if (categoria) {
-                    const catLower = categoria.toLowerCase();
+                    const catLower = String(categoria).toLowerCase();
                     if (catLower.includes('inscri')) categoriaNormalizada = 'inscricao';
                     else if (catLower.includes('aliment')) categoriaNormalizada = 'alimentacao';
                     else if (catLower.includes('transp')) categoriaNormalizada = 'transporte';
                     else if (catLower.includes('mater')) categoriaNormalizada = 'material';
                 }
 
-                // Normalizar método
                 let metodoNormalizado = 'outros';
                 if (metodo) {
-                    const metLower = metodo.toLowerCase();
+                    const metLower = String(metodo).toLowerCase();
                     if (metLower.includes('pix')) metodoNormalizado = 'pix';
                     else if (metLower.includes('cart')) metodoNormalizado = 'cartao';
                     else if (metLower.includes('dinheiro')) metodoNormalizado = 'dinheiro';
@@ -1975,10 +2388,8 @@
                     else if (metLower.includes('cheque')) metodoNormalizado = 'cheque';
                 }
 
-                // Criar referência para novo documento
-                const novaRef = db.collection("Eventos").doc("ComRoca2026").collection("caixa").doc();
+                const novaRef = db.collection("Eventos").doc("Conf2026").collection("caixa").doc();
 
-                // Adicionar ao batch
                 batch.set(novaRef, {
                     descricao: descricao,
                     data: formatarDataISO(data),
@@ -1993,21 +2404,17 @@
                 contadorValidos++;
             });
 
-            // Executar batch se houver transações válidas
             if (contadorValidos > 0) {
                 batch.commit()
                     .then(() => {
                         alert(`Importação concluída!\n${contadorValidos} transações importadas com sucesso.\n${contadorInvalidos} linhas ignoradas por dados inválidos.`);
 
-                        // Limpar e esconder preview
                         document.getElementById('fileInput').value = '';
                         document.getElementById('uploadPreviewContainer').style.display = 'none';
 
-                        // Recarregar dados
                         carregarDashboard();
                         carregarTransacoes();
 
-                        // Voltar para a aba de transações
                         $('#transacoes-tab').tab('show');
                     })
                     .catch((error) => {
@@ -2024,23 +2431,17 @@
             if (!dataString) return '';
 
             try {
-                // Verificar formato ISO (YYYY-MM-DD)
                 if (/^\d{4}-\d{2}-\d{2}/.test(dataString)) {
-                    const data = new Date(dataString);
+                    const data = new Date(dataString + 'T00:00:00');
                     return data.toLocaleDateString('pt-BR');
                 }
 
-                // Tentar outros formatos comuns
                 const partes = dataString.split(/[\/\-\.]/);
 
-                // Formato DD/MM/YYYY ou MM/DD/YYYY
                 if (partes.length === 3) {
-                    // Assumir DD/MM/YYYY se o primeiro número for <= 31
                     if (parseInt(partes[0]) <= 31 && parseInt(partes[1]) <= 12) {
                         return `${partes[0].padStart(2, '0')}/${partes[1].padStart(2, '0')}/${partes[2]}`;
-                    }
-                    // Assumir MM/DD/YYYY
-                    else {
+                    } else {
                         return `${partes[1].padStart(2, '0')}/${partes[0].padStart(2, '0')}/${partes[2]}`;
                     }
                 }
@@ -2055,6 +2456,10 @@
             if (!dataString) return '';
 
             try {
+                if (/^\d{4}-\d{2}-\d{2}/.test(dataString)) {
+                    const data = new Date(dataString + 'T00:00:00');
+                    return data.toLocaleDateString('pt-BR');
+                }
                 const data = new Date(dataString);
                 return data.toLocaleDateString('pt-BR');
             } catch (e) {
@@ -2066,30 +2471,23 @@
             if (!dataString) return '';
 
             try {
-                // Já está no formato ISO (YYYY-MM-DD)
                 if (/^\d{4}-\d{2}-\d{2}/.test(dataString)) {
                     return dataString.substring(0, 10);
                 }
 
-                // Converter de DD/MM/YYYY para YYYY-MM-DD
                 const partes = dataString.split(/[\/\-\.]/);
 
                 if (partes.length === 3) {
-                    // Assumir DD/MM/YYYY se o primeiro número for <= 31
                     if (parseInt(partes[0]) <= 31 && parseInt(partes[1]) <= 12) {
                         return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
-                    }
-                    // Assumir MM/DD/YYYY
-                    else {
+                    } else {
                         return `${partes[2]}-${partes[0].padStart(2, '0')}-${partes[1].padStart(2, '0')}`;
                     }
                 }
 
-                // Fallback: usar a data atual
                 const hoje = new Date();
                 return hoje.toISOString().substring(0, 10);
             } catch (e) {
-                // Fallback: usar a data atual
                 const hoje = new Date();
                 return hoje.toISOString().substring(0, 10);
             }

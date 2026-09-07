@@ -4,506 +4,1050 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Participantes</title>
+    <title>Participantes - Gestão Conf 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
+        :root {
+            --primary: #613704;
+            --primary-light: #8c4f06;
+            --accent: #FF8C00;
+            --bg-page: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-border: #e2e8f0;
+            --pago-color: #10b981;
+            --pago-bg: #ecfdf5;
+            --pago-text: #065f46;
+            --pendente-color: #f59e0b;
+            --pendente-bg: #fffbeb;
+            --pendente-text: #92400e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            color: #333;
-            padding-top: 80px;
+            color: var(--text-main);
+            padding-top: 85px;
+            background-color: var(--bg-page);
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .filter-card {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            margin-bottom: 20px;
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
         }
 
-        .btn-export {
-            background: linear-gradient(45deg, #3d7517, #3d7517);
-            color: white;
-            border: none;
-        }
-
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
-        }
-
-        .badge-pago {
-            background-color: #28a745;
-        }
-
-        .badge-pendente {
-            background-color: #ffc107;
+        /* Top Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            height: 75px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(97, 55, 4, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 16px;
         }
 
         .btn-voltar {
             position: absolute;
-            left: 20px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
             color: white;
-            border-radius: 50%;
+            border-radius: 12px;
             width: 40px;
             height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none !important;
         }
 
         .btn-voltar:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transform: translateY(-50%) scale(1.05);
+            background: rgba(255, 255, 255, 0.3);
             color: white;
-            text-decoration: none;
+            transform: translateY(-50%) scale(1.05);
         }
 
-        .btn-voltar .material-icons {
-            font-size: 24px;
+        .header-title {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.2rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Fixar o cabeçalho da tabela */
-        .dataTables_wrapper .dataTables_scroll div.dataTables_scrollHead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background-color: #fff;
-        }
-
-        /* Ajustar a área de rolagem para mostrar apenas o corpo da tabela */
-        .dataTables_wrapper .dataTables_scroll {
-            max-height: 400px;
-            /* Ajuste conforme necessário */
-        }
-
-        .dataTables_wrapper .dataTables_scrollBody {
-            max-height: 350px;
-            /* Altura máxima para o corpo da tabela */
-            overflow-y: auto;
-        }
-
-        /* Garantir que os controles de pesquisa fiquem fora da área de rolagem */
-        .dataTables_wrapper .dataTables_filter,
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_info,
-        .dataTables_wrapper .dataTables_paginate {
+        /* ================= KPI MODERN BANNERS (INFORMATIVOS) ================= */
+        .kpi-banner {
+            border-radius: 18px;
+            padding: 16px 20px;
             position: relative;
-            z-index: 20;
-            background-color: #fff;
-            padding: 5px 0;
+            overflow: hidden;
+            cursor: default;
+            border: 1.5px solid transparent;
+            min-height: 98px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
         }
 
-        /* Ajustar o espaçamento entre os controles e a tabela */
-        .dataTables_wrapper .dataTables_filter {
+        .kpi-top {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kpi-bottom {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .kpi-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .kpi-subtext {
+            font-size: 0.88rem;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+
+        .kpi-watermark {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4.8rem;
+            opacity: 0.15;
+            pointer-events: none;
+            line-height: 1;
+            z-index: 1;
+        }
+
+        /* 1. Total Inscritos (Tema Marrom / Caramel) */
+        .kpi-total {
+            background-color: #fbf6f0;
+            border-color: #f1d8be;
+            color: #78350f;
+        }
+        .kpi-total .kpi-number {
+            color: #613704;
+        }
+        .kpi-total .kpi-subtext {
+            color: #9a3412;
+        }
+        .kpi-total .kpi-watermark {
+            color: #613704;
+        }
+
+        /* 2. Pagos (Tema Verde Esmeralda) */
+        .kpi-pago {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #15803d;
+        }
+        .kpi-pago .kpi-number {
+            color: #15803d;
+        }
+        .kpi-pago .kpi-subtext {
+            color: #166534;
+        }
+        .kpi-pago .kpi-watermark {
+            color: #10b981;
+        }
+
+        /* 3. Pendentes (Tema Âmbar) */
+        .kpi-pendente {
+            background-color: #fffbeb;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+        .kpi-pendente .kpi-number {
+            color: #b45309;
+        }
+        .kpi-pendente .kpi-subtext {
+            color: #b45309;
+        }
+        .kpi-pendente .kpi-watermark {
+            color: #f59e0b;
+        }
+
+        /* ================= PAINEL DE FILTROS MODERNOS ================= */
+        .control-panel {
+            background: #ffffff;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        .search-input {
+            padding-left: 40px !important;
+            padding-right: 36px !important;
+            border-radius: 10px !important;
+            border: 1px solid #cbd5e1 !important;
+            height: 42px;
+            font-size: 0.9rem;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.15) !important;
+            outline: none;
+        }
+
+        .btn-clear-search {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            transition: color 0.2s ease;
+        }
+
+        .btn-clear-search:hover {
+            color: #64748b;
+        }
+
+        /* Container de Filtros Rápidos (Pills / Chips) */
+        .quick-filters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .filter-group-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: #64748b;
+            min-width: 65px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 2px;
+        }
+
+        .filter-pills {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .filter-pill {
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #64748b;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.74rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+            outline: none !important;
+        }
+
+        .filter-pill:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #334155;
+        }
+
+        .filter-pill.active {
+            background: #fbf4ec !important;
+            color: #613704 !important;
+            border-color: #d6b896 !important;
+            font-weight: 700;
+        }
+
+        /* Pill de Pago quando ativa (Tom suave e elegante) */
+        .filter-pill.pill-pago.active {
+            background: #ecfdf5 !important;
+            color: #065f46 !important;
+            border-color: #a7f3d0 !important;
+            font-weight: 700;
+        }
+
+        /* Pill de Pendente quando ativa (Tom suave e elegante) */
+        .filter-pill.pill-pendente.active {
+            background: #fffbeb !important;
+            color: #92400e !important;
+            border-color: #fde68a !important;
+            font-weight: 700;
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white !important;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+            height: 42px;
+            white-space: nowrap;
+        }
+
+        .btn-export:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+
+        /* ================= CARDS ULTRA LIMPOS ================= */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .p-card {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .p-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(97, 55, 4, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        /* Borda lateral de status */
+        .p-card.status-pago {
+            border-left: 5px solid var(--pago-color);
+        }
+
+        .p-card.status-pendente {
+            border-left: 5px solid var(--pendente-color);
+        }
+
+        .p-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
             margin-bottom: 10px;
         }
 
-        /* Garantir que o título da tabela fique fixo */
-        .container h3 {
-            position: sticky;
-            top: 0;
-            background-color: #fff;
-            z-index: 30;
-            padding: 10px 0;
-            margin-bottom: 15px;
+        .p-user-details {
+            flex: 1;
+            min-width: 0;
         }
 
-
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            /* Espaço adicional na parte inferior */
-        }
-
-        /* Garante que o cabeçalho e o corpo da tabela tenham a mesma largura */
-        #participantesTable thead th,
-        #participantesTable tbody td {
+        .p-name {
+            font-size: 1.02rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin: 0;
             white-space: nowrap;
-            min-width: 100px;
-        }
-
-        /* Melhora a aparência da tabela com rolagem */
-        #participantesTable {
-            width: 100% !important;
-            margin-bottom: 0;
-        }
-
-        .table-container {
-            position: relative;
-            margin-bottom: 30px;
-        }
-
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            /* Importante para manter os cantos arredondados */
+            text-overflow: ellipsis;
+            line-height: 1.3;
+        }
+
+        .p-date {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Status Badge */
+        .p-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .p-badge-pago {
+            background-color: var(--pago-bg);
+            color: var(--pago-text);
+            border: 1px solid #a7f3d0;
+        }
+
+        .p-badge-pendente {
+            background-color: var(--pendente-bg);
+            color: var(--pendente-text);
+            border: 1px solid #fde68a;
+        }
+
+        /* Chips / Tags */
+        .p-chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .p-chip {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Botão do WhatsApp Integrado */
+        .p-whatsapp-btn {
+            background: #ecfdf5;
+            color: #065f46 !important;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 8px 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            text-decoration: none !important;
+            transition: all 0.2s ease;
+            margin-bottom: 0;
+            width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .p-whatsapp-btn:hover {
+            background: #d1fae5;
+            color: #047857 !important;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .p-whatsapp-btn.disabled-btn {
+            background: #f8fafc;
+            color: #94a3b8 !important;
+            border-color: #e2e8f0;
+            pointer-events: none;
+        }
+
+        /* Rodapé de Ações do Card (Dois Botões Lado a Lado) */
+        .p-card-footer {
+            border-top: 1px solid #f1f5f9;
+            padding-top: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .btn-view-details {
+            width: 100%;
+            background: var(--primary);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-view-details:hover {
+            background: var(--primary-light);
+            box-shadow: 0 3px 8px rgba(97, 55, 4, 0.2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 16px;
+            background: #ffffff;
+            border-radius: 14px;
+            border: 2px dashed #cbd5e1;
+            margin-bottom: 25px;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Modal Customization */
+        .modal-custom .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-custom .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 16px 20px;
+            border: none;
+        }
+
+        .modal-custom .modal-title {
+            font-weight: 800;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-custom .close {
+            color: white;
+            opacity: 0.8;
+            text-shadow: none;
+        }
+
+        .modal-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 14px;
+            height: 100%;
+        }
+
+        .modal-box-title {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 4px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.86rem;
+        }
+
+        .info-item strong {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .info-item span {
+            font-weight: 700;
+            color: var(--text-main);
+            text-align: right;
+        }
+
+        /* Responsividade Mobile Extrema */
+        @media (max-width: 576px) {
+            body {
+                padding-top: 75px;
+            }
+
+            .header-title {
+                font-size: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .p-card {
+                padding: 14px;
+            }
+
+            .main-container {
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Header Fixo -->
     <div class="header">
-        <a href="gestao.html" class="btn-voltar">
-            <i class="material-icons">arrow_back</i>
+        <a href="gestao.html" class="btn-voltar" title="Voltar ao Painel">
+            <i class="bi bi-arrow-left"></i>
         </a>
-        <h2 class="header-title">PARTICIPANTES INSCRITOS</h2>
+        <h2 class="header-title">
+            <i class="bi bi-people-fill"></i> PARTICIPANTES
+        </h2>
     </div>
 
-    <div class="container mt-5">
-        <div class="section-title-wrapper mt-4">
-            <div class="section-title-indicator"></div>
-            <h4 class="section-title">Lista de Participantes Inscritos</h4>
-            <div class="ml-auto">
-                <button class="btn btn-export">
-                    <i class="material-icons align-middle">file_download</i> Exportar Excel
-                </button>
-            </div>
-        </div>
+    <div class="main-container mt-3">
 
-        <div class="filter-card">
-            <form id="filterForm" class="row">
-                <div class="form-group col-md-3">
-                    <label for="filterIgreja">Igreja</label>
-                    <select class="form-control" id="filterIgreja">
-                        <option value="">Todas</option>
-                        <option value="IEB Intermares">IEB Intermares</option>
-                        <option value="IEB Cidade Verde">IEB Cidade Verde</option>
-                        <option value="IEB Vila Feliz">IEB Vila Feliz</option>
-                        <option value="Outra">Outra Igreja</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="filterIdade">Faixa Etária</label>
-                    <select class="form-control" id="filterIdade">
-                        <option value="">Todas</option>
-                        <option value="10-12">10-12 anos</option>
-                        <option value="13-15">13-15 anos</option>
-                        <option value="16-17">16-17 anos</option>
-                        <option value="18+">18+</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="filterPagamento">Status Pagamento</label>
-                    <select class="form-control" id="filterPagamento">
-                        <option value="">Todos</option>
-                        <option value="pago">Pago</option>
-                        <option value="pendente">Pendente</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="material-icons align-middle">search</i> Filtrar
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary ml-2" id="limparFiltro">
-                        Limpar
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-striped" id="participantesTable">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Idade</th>
-                            <th>Celular</th>
-                            <!-- <th>Responsável</th> -->
-                            <!-- <th>Cel. Responsável</th> -->
-                            <th>Célula</th>
-                            <th>Igreja</th>
-                            <th>Pagamento</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="participantesList">
-                        <!-- Os dados serão carregados dinamicamente do Firebase -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Adicionar este elemento após a tabela -->
-        <div class="row mt-3 mb-4">
-            <div class="col-12">
-                <div class="card bg-light">
-                    <div class="card-body py-2">
-                        <strong>Total de participantes:</strong> <span id="contador-participantes">0</span>
-                        <span id="texto-filtro" class="ml-2 text-muted font-italic" style="display: none;">(filtrados de
-                            <span id="total-participantes">0</span>)</span>
+        <!-- KPI Cards Informativos (Apenas Visualização) -->
+        <div class="row no-gutters mx-n1 mb-3">
+            <div class="col-12 col-md-4 px-1 mb-2 mb-md-0">
+                <div class="kpi-banner kpi-total" id="kpiCardAll">
+                    <div class="kpi-top">
+                        <i class="bi bi-people-fill"></i>
+                        <span class="kpi-title">TOTAL INSCRITOS</span>
                     </div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-number" id="kpiTotal">0</span>
+                        <span class="kpi-subtext">participantes</span>
+                    </div>
+                    <i class="bi bi-people kpi-watermark"></i>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 px-1">
+                <div class="kpi-banner kpi-pago" id="kpiCardPago">
+                    <div class="kpi-top">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span class="kpi-title">PAGOS</span>
+                    </div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-number" id="kpiPagos">0</span>
+                        <span class="kpi-subtext">confirmados</span>
+                    </div>
+                    <i class="bi bi-check2-circle kpi-watermark"></i>
+                </div>
+            </div>
+            <div class="col-6 col-md-4 px-1">
+                <div class="kpi-banner kpi-pendente" id="kpiCardPendente">
+                    <div class="kpi-top">
+                        <i class="bi bi-hourglass-split"></i>
+                        <span class="kpi-title">PENDENTES</span>
+                    </div>
+                    <div class="kpi-bottom">
+                        <span class="kpi-number" id="kpiPendentes">0</span>
+                        <span class="kpi-subtext">a receber</span>
+                    </div>
+                    <i class="bi bi-hourglass-bottom kpi-watermark"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Modal de Detalhes do Participante -->
-        <div class="modal fade" id="participanteModal" tabindex="-1" role="dialog"
-            aria-labelledby="participanteModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="participanteModalLabel">Detalhes do Participante</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
+        <!-- Painel de Controle e Filtros Rápidos -->
+        <div class="control-panel">
+            <!-- Linha Superior: Busca e Ações -->
+            <div class="row align-items-center mb-2">
+                <div class="col-12 col-md-7 col-lg-8 mb-2 mb-md-0">
+                    <div class="search-wrapper">
+                        <i class="bi bi-search"></i>
+                        <input type="text" class="form-control search-input" id="inputLiveSearch" 
+                               placeholder="Buscar por nome, telefone ou igreja...">
+                        <button type="button" class="btn-clear-search" id="btnClearSearch" title="Limpar busca" style="display: none;">
+                            <i class="bi bi-x-circle-fill"></i>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Informações Pessoais</h6>
-                                <hr>
-                                <p><strong>Nome:</strong> <span id="modalNome"></span></p>
-                                <p><strong>Data de Nascimento:</strong> <span id="modalDtNasc"></span></p>
-                                <p><strong>Idade:</strong> <span id="modalIdade"></span></p>
-                                <p><strong>Celular:</strong> <span id="modalCelular"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Informações do Responsável</h6>
-                                <hr>
-                                <p><strong>Nome do Responsável:</strong> <span id="modalResponsavel"></span></p>
-                                <p><strong>CPF do Responsável:</strong> <span id="modalCpfResponsavel"></span></p>
-                                <p><strong>Celular do Responsável:</strong> <span id="modalCelularResp"></span></p>
-                                <div id="assinaturaContainer" style="display: none;">
-                                    <p><strong>Assinatura do Responsável:</strong></p>
-                                    <img id="modalAssinatura" src="" alt="Assinatura do Responsável"
-                                        style="max-width: 100%; border: 1px solid #ddd; margin-top: 5px;">
+                </div>
+                <div class="col-12 col-md-5 col-lg-4 d-flex justify-content-end align-items-center" style="gap: 14px;">
+                    <button type="button" class="btn btn-outline-secondary font-weight-bold px-3" style="height: 42px; border-radius: 10px; font-size: 0.82rem; min-width: 100px;" onclick="limparFiltros();" title="Resetar todos os filtros">
+                        <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                    </button>
+                    <button class="btn btn-export justify-content-center px-3" id="btnDispararExcel" style="min-width: 100px;" title="Exportar dados para Excel">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </button>
+                </div>
+            </div>
+
+            <!-- Linha de Botões de Filtragem Rápida (Pills) -->
+            <div class="quick-filters-container">
+                <!-- Filtro: Status de Pagamento -->
+                <div class="filter-group">
+                    <span class="filter-group-label"><i class="bi bi-credit-card"></i> Status:</span>
+                    <div class="filter-pills" id="pillsStatus">
+                        <button type="button" class="filter-pill active" data-filter="status" data-value="">Todos</button>
+                        <button type="button" class="filter-pill pill-pago" data-filter="status" data-value="pago">
+                            <i class="bi bi-check-circle-fill"></i> Pagos
+                        </button>
+                        <button type="button" class="filter-pill pill-pendente" data-filter="status" data-value="pendente">
+                            <i class="bi bi-hourglass-split"></i> Pendentes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filtro: Igreja -->
+                <div class="filter-group">
+                    <span class="filter-group-label"><i class="bi bi-building"></i> Igreja:</span>
+                    <div class="filter-pills" id="pillsIgreja">
+                        <button type="button" class="filter-pill active" data-filter="igreja" data-value="">Todos</button>
+                        <button type="button" class="filter-pill" data-filter="igreja" data-value="IEB Intermares">Intermares</button>
+                        <button type="button" class="filter-pill" data-filter="igreja" data-value="Outras">Outras</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Indicador de Resultados -->
+        <div class="d-flex align-items-center justify-content-between mb-2 px-1">
+            <small class="font-weight-bold text-muted">
+                Exibindo <span id="contadorExibidos" class="text-dark font-weight-bold">0</span> participante(s)
+            </small>
+        </div>
+
+        <!-- ================= GRADE DE CARDS ================= -->
+        <div id="cardsGrid" class="cards-grid">
+            <!-- Cards inseridos dinamicamente via JS -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="bi bi-search"></i>
+            <h6 class="font-weight-bold">Nenhum participante encontrado</h6>
+            <p class="text-muted small mb-2">Tente ajustar os termos de pesquisa ou remover os filtros aplicados.</p>
+            <button class="btn btn-sm btn-outline-primary font-weight-bold px-3 py-1" onclick="limparFiltros();">
+                Limpar Filtros
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade modal-custom" id="participanteModal" tabindex="-1" role="dialog"
+        aria-labelledby="participanteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="participanteModalLabel">
+                        <i class="bi bi-person-badge-fill"></i> Detalhes da Inscrição
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-3 p-md-4">
+                    <div class="row">
+                        <!-- Informações Pessoais -->
+                        <div class="col-md-6 mb-2">
+                            <div class="modal-box">
+                                <div class="modal-box-title">
+                                    <i class="bi bi-person-fill"></i> Informações Pessoais
+                                </div>
+                                <div class="info-item">
+                                    <strong>Nome Completo:</strong>
+                                    <span id="modalNome"></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Nascimento:</strong>
+                                    <span id="modalDtNasc"></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Idade:</strong>
+                                    <span id="modalIdade"></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Celular:</strong>
+                                    <span id="modalCelular"></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6>Informações Igreja</h6>
-                                <hr>
-                                <p><strong>Igreja:</strong> <span id="modalIgreja"></span></p>
-                                <p><strong>Célula:</strong> <span id="modalCelula"></span></p>
-                                <p><strong>Supervisor:</strong> <span id="modalSupervisor"></span></p>
-                                <p><strong>Rede:</strong> <span id="modalRede"></span></p>
+
+                        <!-- Informações da Igreja -->
+                        <div class="col-md-6 mb-2">
+                            <div class="modal-box">
+                                <div class="modal-box-title">
+                                    <i class="bi bi-building"></i> Igreja & Evento
+                                </div>
+                                <div class="info-item">
+                                    <strong>Comunidade:</strong>
+                                    <span id="modalIgreja"></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Ano do Evento:</strong>
+                                    <span id="modalAnoEvento"></span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>Preenchido em:</strong>
+                                    <span id="modalDataPreenchimento"></span>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6>Informações Pagamento</h6>
-                                <hr>
-                                <p><strong>Status:</strong> <span id="modalStatusPagamento"></span></p>
-                                <p><strong>Data de Preenchimento:</strong> <span id="modalDataPreenchimento"></span></p>
-                                <p><strong>Data de Registro:</strong> <span id="modalDtRegistro"></span></p>
-                                <p><strong>Ano do Evento:</strong> <span id="modalAnoEvento"></span></p>
+                        </div>
+
+                        <!-- Informações de Pagamento -->
+                        <div class="col-12 mb-2">
+                            <div class="modal-box">
+                                <div class="modal-box-title">
+                                    <i class="bi bi-credit-card-2-front-fill"></i> Informações do Pagamento
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="info-item">
+                                            <strong>Status Pagamento:</strong>
+                                            <span id="modalStatusPagamento"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="info-item">
+                                            <strong>Forma de Pagamento:</strong>
+                                            <span id="modalFormaPagamento">-</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="info-item">
+                                            <strong>Data do Pagamento:</strong>
+                                            <span id="modalDataPagamento">-</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger mr-auto" id="btnExcluirParticipante">
-                            <i class="material-icons align-middle">delete</i> Excluir Participante
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                    </div>
+                </div>
+                <div class="modal-footer bg-light px-3 py-2">
+                    <button type="button" class="btn btn-sm btn-outline-danger mr-auto font-weight-bold" id="btnExcluirParticipante">
+                        <i class="bi bi-trash3-fill"></i> Excluir Inscrição
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary font-weight-bold px-3" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="../firebase/firebaseConfig.js"></script>
 
     <script>
+        let participantesLista = [];
+        let participantesFiltrados = [];
+        let filtroAtivo = {
+            status: '',
+            igreja: ''
+        };
 
-        // Inicialização do DataTable
-        let dataTable;
-        let totalParticipantes = 0;
-
-        //Modal e gestão do doc
         $(document).ready(function () {
+            // Filtros rápidos via Botões / Pills
+            $(document).on('click', '.filter-pill', function () {
+                const filterType = $(this).data('filter');
+                const filterValue = $(this).data('value') !== undefined ? String($(this).data('value')) : '';
+                
+                // Atualizar estado visual no grupo
+                $(`.filter-pill[data-filter="${filterType}"]`).removeClass('active');
+                $(this).addClass('active');
+
+                // Atualizar filtro ativo
+                filtroAtivo[filterType] = filterValue;
+
+                renderizarParticipantes();
+            });
+
+            // Exportar para Excel via SheetJS
+            $('#btnDispararExcel').on('click', function () {
+                if (!participantesFiltrados || participantesFiltrados.length === 0) {
+                    alert("Nenhum participante disponível para exportar.");
+                    return;
+                }
+                const btn = $(this);
+                const originalHtml = btn.html();
+                btn.html('<i class="bi bi-hourglass-split"></i> Gerando...');
+                btn.prop('disabled', true);
+
+                try {
+                    const dadosExportacao = participantesFiltrados.map(p => ({
+                        'Nome': p.nome || '',
+                        'Data Inscrição': p.dataPreenchimento || '',
+                        'Idade': p.idade || '',
+                        'Data Nasc.': p.dtnasc || '',
+                        'Celular': p.celular || '',
+                        'Igreja': p.igreja === 'Outra' ? (p.outraIgreja || 'Outra') : (p.igreja || 'IEB'),
+                        'Status Pagamento': (p.statusPagamento || 'pendente').toUpperCase(),
+                        'Forma Pagamento': p.formaPagamento || '',
+                        'Responsável': p.contato || '',
+                        'CPF Responsável': p.cpfResponsavel || '',
+                        'Contato Resp.': p.fonecontato || ''
+                    }));
+
+                    const ws = XLSX.utils.json_to_sheet(dadosExportacao);
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, "Participantes");
+                    XLSX.writeFile(wb, `Inscricoes_Conf2026_${new Date().toISOString().slice(0, 10)}.xlsx`);
+                } catch (e) {
+                    console.error("Erro ao exportar:", e);
+                    alert("Erro ao gerar arquivo Excel.");
+                } finally {
+                    setTimeout(() => {
+                        btn.html(originalHtml);
+                        btn.prop('disabled', false);
+                    }, 500);
+                }
+            });
+
+            // Live Search
+            $('#inputLiveSearch').on('input', function () {
+                const val = $(this).val();
+                if (val && val.length > 0) {
+                    $('#btnClearSearch').show();
+                } else {
+                    $('#btnClearSearch').hide();
+                }
+                renderizarParticipantes();
+            });
+
+            // Botão limpar busca (X)
+            $('#btnClearSearch').on('click', function () {
+                $('#inputLiveSearch').val('');
+                $(this).hide();
+                renderizarParticipantes();
+                $('#inputLiveSearch').focus();
+            });
+
             // Carregar participantes do Firebase
             carregarParticipantes();
 
-            // Inicializar DataTable
-            dataTable = $('#participantesTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
-                },
-                responsive: true,
-                dom: 'Bfrti', // Removido 'p' (paginação)
-                paging: false, // Desativa a paginação
-                scrollY: '350px', // Altura fixa para a área de rolagem
-                scrollCollapse: true, // Mantém o colapso da altura
-                fixedHeader: true, // Mantém o cabeçalho fixo durante a rolagem
-                buttons: [
-                    {
-                        extend: 'excel',
-                        text: 'Exportar Excel',
-                        className: 'btn btn-export d-none',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5]
-                        }
-                    },
-                ]
-            });
-
-            // Associar botões personalizados aos botões do DataTable
-            $('.btn-export').eq(0).on('click', function () {
-                const btn = $(this);
-                const originalText = btn.html();
-
-                btn.html('<i class="material-icons align-middle">hourglass_empty</i> Exportando...');
-                btn.prop('disabled', true);
-
-                dataTable.button(0).trigger();
-
-                setTimeout(() => {
-                    btn.html(originalText);
-                    btn.prop('disabled', false);
-                }, 2000);
-            });
-
-            $('.btn-export').eq(1).on('click', function () {
-                dataTable.button(1).trigger();
-            });
-
-            // Filtrar participantes
-            $('#filterForm').on('submit', function (e) {
-                e.preventDefault();
-                aplicarFiltros();
-            });
-
-            // Limpar filtros
-            $('#limparFiltro').on('click', function () {
-                $('#filterForm')[0].reset();
-                aplicarFiltros();
-            });
-
-            // Controlar a visibilidade do campo de forma de pagamento
-            $('#updatePagamento').on('change', function () {
-                if ($(this).val() === 'pago') {
-                    $('#divFormaPagamento').show();
-                    $('#updateFormaPagamento').prop('required', true);
-                } else {
-                    $('#divFormaPagamento').hide();
-                    $('#updateFormaPagamento').prop('required', false);
-                }
-            });
-
-            // Atualizar status de pagamento
-            $('#btnSalvarPagamento').on('click', function () {
-                const participanteId = $(this).data('id');
-                const novoStatus = $('#updatePagamento').val();
-
-                // Verificar se a forma de pagamento foi preenchida quando o status é pago
-                if (novoStatus === 'pago' && !$('#updateFormaPagamento').val()) {
-                    $('#updateFormaPagamento').addClass('is-invalid');
-                    return; // Interrompe a execução se o campo estiver vazio
-                }
-
-                const dadosAtualizacao = {
-                    statusPagamento: novoStatus,
-                    dataPagamento: novoStatus === 'pago' ? new Date().toISOString() : null
-                };
-
-                // Adiciona a forma de pagamento apenas se status for pago
-                if (novoStatus === 'pago') {
-                    dadosAtualizacao.formaPagamento = $('#updateFormaPagamento').val();
-                } else {
-                    dadosAtualizacao.formaPagamento = ''; // Limpa a forma de pagamento se status for pendente
-                }
-
-                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
-                    .update(dadosAtualizacao)
-                    .then(() => {
-                        alert('Status de pagamento atualizado com sucesso!');
-                        $('#participanteModal').modal('hide');
-                        carregarParticipantes();
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atualizar pagamento: ", error);
-                        alert("Erro ao atualizar pagamento. Tente novamente.");
-                    });
-            });
-
-            // Adicione este código ao seu script existente
-            $('#participanteModal').on('hide.bs.modal', function (e) {
-                // Remover o foco de todos os elementos focáveis dentro do modal
-                $(this).find('button, input, select, textarea, a[href]').blur();
-            });
-
-            // Configurar o botão de exclusão
+            // Excluir participante
             $('#btnExcluirParticipante').on('click', function () {
                 const participanteId = $(this).data('id');
-
-                if (!participanteId) {
-                    // Tentar recuperar do outro botão como fallback
-                    const fallbackId = $('#btnSalvarPagamento').data('id');
-
-                    if (fallbackId) {
-                        excluirParticipante(fallbackId);
-                    } else {
-                        alert("Erro: Não foi possível identificar o participante para exclusão.");
-                    }
-                } else {
+                if (participanteId) {
                     excluirParticipante(participanteId);
                 }
             });
         });
 
-        // Função para Carregar participante
+        function limparFiltros() {
+            $('#inputLiveSearch').val('');
+            $('#btnClearSearch').hide();
+            filtroAtivo = { status: '', igreja: '' };
+            
+            // Resetar pills visuais para a primeira opção (data-value="")
+            $('.filter-pill').removeClass('active');
+            $('.filter-pill[data-value=""]').addClass('active');
+
+            renderizarParticipantes();
+        }
+
+        // Carregar dados do Firestore
         function carregarParticipantes() {
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                 .where("anoevento", "==", "2026")
                 .get()
                 .then((querySnapshot) => {
-
-                    // Limpar DataTable
-                    dataTable.clear();
-
-                    // Armazenar o total de participantes
-                    totalParticipantes = querySnapshot.size;
+                    participantesLista = [];
+                    let totalPagos = 0;
+                    let totalPendentes = 0;
 
                     querySnapshot.forEach((doc) => {
-                        const participante = doc.data();
+                        const dados = doc.data();
+                        dados.id = doc.id;
+                        participantesLista.push(dados);
 
-                        // Adicionar linha ao DataTable
-                        dataTable.row.add([
-                            participante.nome,
-                            participante.idade,
-                            participante.celular,
-                            // participante.contato,
-                            // participante.fonecontato,
-                            participante.celula,
-                            participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja,
-                            `<span class="badge ${participante.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${participante.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`,
-                            `<button class="btn btn-info btn-sm" onclick="verDetalhes('${doc.id}')">Ver</button>`
-                        ]);
+                        if (dados.statusPagamento === 'pago') {
+                            totalPagos++;
+                        } else {
+                            totalPendentes++;
+                        }
                     });
 
-                    // Renderizar DataTable
-                    dataTable.draw();
+                    // Atualizar KPIs
+                    $('#kpiTotal').text(participantesLista.length);
+                    $('#kpiPagos').text(totalPagos);
+                    $('#kpiPendentes').text(totalPendentes);
 
-                    // Atualizar contador
-                    atualizarContador();
-
+                    renderizarParticipantes();
                 })
                 .catch((error) => {
                     console.error("Erro ao carregar participantes: ", error);
@@ -511,182 +1055,164 @@
                 });
         }
 
-        // Adicione esta função para atualizar o contador
-        function atualizarContador() {
-            const participantesFiltrados = dataTable.rows({ search: 'applied' }).count();
+        // Renderizar Cards
+        function renderizarParticipantes() {
+            const termoBusca = ($('#inputLiveSearch').val() || '').toLowerCase().trim();
+            const filtroIgreja = filtroAtivo.igreja;
+            const filtroStatus = filtroAtivo.status;
 
-            $('#contador-participantes').text(participantesFiltrados);
-            $('#total-participantes').text(totalParticipantes);
+            // Filtrar array em memória
+            const filtrados = participantesLista.filter(p => {
+                const nome = (p.nome || '').toLowerCase();
+                const celular = (p.celular || '').toLowerCase();
+                const igreja = (p.igreja === 'Outra' ? p.outraIgreja || 'Outra' : p.igreja || '').toLowerCase();
+                const status = p.statusPagamento || 'pendente';
 
-            // Mostrar ou esconder o texto de filtro
-            if (participantesFiltrados < totalParticipantes) {
-                $('#texto-filtro').show();
+                const matchBusca = !termoBusca || nome.includes(termoBusca) || celular.includes(termoBusca) || igreja.includes(termoBusca);
+                const matchStatus = !filtroStatus || status === filtroStatus;
+
+                let matchIgreja = true;
+                if (filtroIgreja === 'IEB Intermares') {
+                    matchIgreja = (p.igreja === 'IEB Intermares');
+                } else if (filtroIgreja === 'Outras' || filtroIgreja === 'Outra') {
+                    matchIgreja = (p.igreja !== 'IEB Intermares');
+                }
+
+                return matchBusca && matchStatus && matchIgreja;
+            });
+
+            // Ordenar alfabeticamente A-Z pelo nome
+            filtrados.sort((a, b) => {
+                const nomeA = (a.nome || '').trim();
+                const nomeB = (b.nome || '').trim();
+                return nomeA.localeCompare(nomeB, 'pt-BR', { sensitivity: 'base' });
+            });
+
+            participantesFiltrados = filtrados;
+            $('#contadorExibidos').text(filtrados.length);
+
+            // RENDERIZAR CARDS
+            const grid = $('#cardsGrid');
+            grid.empty();
+
+            if (filtrados.length === 0) {
+                $('#emptyState').show();
             } else {
-                $('#texto-filtro').hide();
+                $('#emptyState').hide();
+
+                filtrados.forEach(p => {
+                    const isPago = p.statusPagamento === 'pago';
+                    const igrejaExibida = p.igreja === 'Outra' ? (p.outraIgreja || 'Outra') : (p.igreja || 'IEB');
+                    const numLimpo = (p.celular || '').replace(/\D/g, '');
+                    const temCelular = numLimpo.length >= 8;
+
+                    const msgWhatsApp = encodeURIComponent(`Olá ${p.nome || ''}, tudo bem? Sou da organização da Conferência 2026.`);
+                    const whatsAppLink = temCelular ? `https://wa.me/55${numLimpo}?text=${msgWhatsApp}` : '#';
+
+                    const cardHtml = `
+                        <div class="p-card ${isPago ? 'status-pago' : 'status-pendente'}">
+                            <div>
+                                <!-- Top: Nome e Data -->
+                                <div class="p-card-header">
+                                    <div class="p-user-details">
+                                        <h6 class="p-name" title="${p.nome || 'Sem Nome'}">${p.nome || 'Sem Nome'}</h6>
+                                        <span class="p-date"><i class="bi bi-clock"></i> ${p.dataPreenchimento || '-'}</span>
+                                    </div>
+                                </div>
+
+                                <!-- Middle: Chips (Igreja, Idade e Status) -->
+                                <div class="p-chips-row">
+                                    <span class="p-chip" title="${igrejaExibida}"><i class="bi bi-building"></i> ${igrejaExibida}</span>
+                                    <span class="p-chip"><i class="bi bi-cake2"></i> ${p.idade || '-'}</span>
+                                    <span class="p-badge ${isPago ? 'p-badge-pago' : 'p-badge-pendente'}">
+                                        <i class="bi ${isPago ? 'bi-check-circle-fill' : 'bi-hourglass-split'}"></i>
+                                        ${isPago ? 'Pago' : 'Pendente'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Footer: WhatsApp + Detalhes Lado a Lado -->
+                            <div class="p-card-footer">
+                                ${temCelular 
+                                    ? `<a href="${whatsAppLink}" target="_blank" class="p-whatsapp-btn" title="WhatsApp: ${p.celular}">
+                                         <i class="bi bi-whatsapp text-success"></i> WhatsApp
+                                       </a>`
+                                    : `<div class="p-whatsapp-btn disabled-btn" title="Sem telefone cadastrado">
+                                         <i class="bi bi-telephone-x text-muted"></i> Sem Fone
+                                       </div>`
+                                }
+                                <button class="btn-view-details" onclick="verDetalhes('${p.id}')">
+                                    <i class="bi bi-eye-fill"></i> Detalhes
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.append(cardHtml);
+                });
             }
         }
 
+        // Ver Detalhes no Modal
         function verDetalhes(participanteId) {
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
-                .get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const p = doc.data();
+            const p = participantesLista.find(item => item.id === participanteId);
+            if (p) {
+                // Pessoais
+                $('#modalNome').text(p.nome || 'N/A');
+                $('#modalDtNasc').text(p.dtnasc || 'N/A');
+                $('#modalIdade').text(p.idade || 'N/A');
+                $('#modalCelular').text(p.celular || 'N/A');
 
-                        // Informações Pessoais
-                        $('#modalNome').text(p.nome || 'N/A');
-                        $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
-                        $('#modalIdade').text(p.idade || 'N/A');
-                        $('#modalCelular').text(p.celular || 'N/A');
+                // Igreja
+                $('#modalIgreja').text(p.igreja === 'Outra' ? (p.outraIgreja || 'Outra') : (p.igreja || 'N/A'));
+                $('#modalAnoEvento').text(p.anoevento || '2026');
+                $('#modalDataPreenchimento').text(p.dataPreenchimento || 'N/A');
 
-                        // Informações do Responsável
-                        $('#modalResponsavel').text(p.contato || 'N/A');
-                        $('#modalCpfResponsavel').text(p.cpfResponsavel || 'N/A');
-                        $('#modalCelularResp').text(p.fonecontato || 'N/A');
+                // Pagamento
+                const isPago = p.statusPagamento === 'pago';
+                $('#modalStatusPagamento').html(
+                    isPago 
+                        ? `<span class="p-badge p-badge-pago"><i class="bi bi-check-circle-fill"></i> Pago</span>`
+                        : `<span class="p-badge p-badge-pendente"><i class="bi bi-hourglass-split"></i> Pendente</span>`
+                );
+                $('#modalFormaPagamento').text(p.formaPagamento || '-');
+                $('#modalDataPagamento').text(p.dataPagamento ? formatarDataHora(p.dataPagamento) : '-');
 
-                        // Exibir assinatura se existir
-                        if (p.assinaturaResponsavel) {
-                            $('#assinaturaContainer').show();
-                            $('#modalAssinatura').attr('src', p.assinaturaResponsavel);
-                        } else {
-                            $('#assinaturaContainer').hide();
-                        }
+                // Vincular ID de exclusão
+                $('#btnExcluirParticipante').data('id', p.id);
 
-                        // Informações da Igreja
-                        if (p.igreja === 'Outra') {
-                            $('#modalIgreja').text(p.outraIgreja || 'Outra (não especificada)');
-                        } else {
-                            $('#modalIgreja').text(p.igreja || 'N/A');
-                        }
-                        $('#modalCelula').text(p.celula || 'N/A');
-                        $('#modalSupervisor').text(p.supervisor || 'N/A');
-                        $('#modalRede').text(p.rede || 'N/A');
-
-                        // Informações de Pagamento e Registro
-                        $('#modalStatusPagamento').html(`<span class="badge ${p.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${p.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`);
-                        $('#modalDataPreenchimento').text(p.dataPreenchimento || 'N/A');
-                        $('#modalDtRegistro').text(formatarDataHora(p.dtRegistro) || 'N/A');
-                        $('#modalAnoEvento').text(p.anoevento || 'N/A');
-
-                        // Armazenar ID do participante no botão de exclusão
-                        $('#btnExcluirParticipante').data('id', doc.id);
-
-                        // Abrir modal
-                        $('#participanteModal').modal('show');
-                    } else {
-                        console.error("Documento não encontrado para ID:", participanteId);
-                        alert("Participante não encontrado!");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Erro ao buscar detalhes: ", error);
-                    alert("Erro ao buscar detalhes do participante.");
-                });
+                $('#participanteModal').modal('show');
+            } else {
+                alert("Participante não encontrado!");
+            }
         }
 
-        // Função para formatar data e hora
         function formatarDataHora(dataString) {
             if (!dataString) return '';
-
             try {
                 const data = new Date(dataString);
                 return data.toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    day: '2-digit', month: '2-digit', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
                 });
-            } catch (e) {
-                return dataString;
-            }
-        }
-
-        function aplicarFiltros() {
-            const filtroIgreja = $('#filterIgreja').val();
-            const filtroIdade = $('#filterIdade').val();
-            const filtroPagamento = $('#filterPagamento').val();
-
-            dataTable.search('').columns().search('').draw();
-
-            if (filtroIgreja) {
-                dataTable.column(4).search(
-                    filtroIgreja === 'Outra' ? '(Outra)' : filtroIgreja, true, false
-                ).draw();
-            }
-
-            if (filtroIdade) {
-                // Filtro personalizado para idade
-                $.fn.dataTable.ext.search.push(
-                    function (settings, data, dataIndex) {
-                        const idade = parseInt(data[1].replace(' anos', ''));
-
-                        if (filtroIdade === '18+') {
-                            // Para "Acima de 17", verificar se idade > 17
-                            return idade > 17;
-                        } else {
-                            // Para as outras faixas etárias, manter o comportamento atual
-                            const [min, max] = filtroIdade.split('-');
-                            const minIdade = parseInt(min);
-                            const maxIdade = parseInt(max);
-
-                            if ((isNaN(minIdade) && isNaN(maxIdade)) ||
-                                (isNaN(minIdade) && idade <= maxIdade) ||
-                                (minIdade <= idade && isNaN(maxIdade)) ||
-                                (minIdade <= idade && idade <= maxIdade)) {
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
-
-                dataTable.draw();
-            }
-
-            if (filtroPagamento) {
-                dataTable.column(5).search(
-                    filtroPagamento === 'pago' ? 'Pago' : 'Pendente', true, false
-                ).draw();
-            }
-        }
-
-        function formatarData(dataString) {
-            if (!dataString) return '';
-
-            try {
-                const data = new Date(dataString);
-                return data.toLocaleDateString('pt-BR');
             } catch (e) {
                 return dataString;
             }
         }
 
         function excluirParticipante(participanteId) {
-            if (!participanteId) {
-                alert("Erro: Não foi possível identificar o participante para exclusão.");
-                return;
-            }
-
             if (confirm("Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.")) {
-                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                     .delete()
                     .then(() => {
                         alert("Participante excluído com sucesso!");
                         $('#participanteModal').modal('hide');
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 500);
+                        carregarParticipantes();
                     })
                     .catch((error) => {
                         alert("Erro ao excluir participante: " + error.message);
                     });
             }
-
-            carregarParticipantes(); // Recarrega a lista após exclusão
-
         }
-
     </script>
 </body>
 

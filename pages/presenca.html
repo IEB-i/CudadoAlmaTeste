@@ -808,7 +808,7 @@
 
         function carregarParticipantes() {
             // Buscar todos os participantes inscritos para o evento de 2026
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                 .where("anoevento", "==", "2026")
                 .get()
                 .then((querySnapshot) => {
@@ -1029,7 +1029,7 @@
                 updateData.dataCheckin = agora;
             }
 
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                 .update(updateData)
                 .then(() => {
                     // Atualizar o participante na lista local
@@ -1079,7 +1079,7 @@
                 dataUltimaAtualizacao: agora
             };
 
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                 .update(updateData)
                 .then(() => {
                     const index = todosParticipantes.findIndex(p => p.id === participanteId);
@@ -1180,7 +1180,7 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Lista de Presença");
 
-            const nomeArquivo = `Lista_Presenca_ComRoca2026_${formatarDataArquivo(new Date())}.xlsx`;
+            const nomeArquivo = `Lista_Presenca_Conf2026_${formatarDataArquivo(new Date())}.xlsx`;
             XLSX.writeFile(wb, nomeArquivo);
         }
 
@@ -1189,7 +1189,7 @@
             const csv = XLSX.utils.sheet_to_csv(ws);
 
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const nomeArquivo = `Lista_Presenca_ComRoca2026_${formatarDataArquivo(new Date())}.csv`;
+            const nomeArquivo = `Lista_Presenca_Conf2026_${formatarDataArquivo(new Date())}.csv`;
             saveAs(blob, nomeArquivo);
         }
 
@@ -1263,7 +1263,7 @@
             btnSalvar.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Processando...');
 
             // 1. Atualizar participante no Firestore
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                 .update({
                     statusPagamento: 'pago',
                     formaPagamento: formaPagamento,
@@ -1272,7 +1272,7 @@
                 })
                 .then(() => {
                     // 2. Registrar na coleção pagamentos
-                    return db.collection("Eventos").doc("ComRoca2026").collection("pagamentos").add({
+                    return db.collection("Eventos").doc("Conf2026").collection("pagamentos").add({
                         participanteId: participanteId,
                         participanteNome: nomeParticipante,
                         valor: valorPagamento,
@@ -1283,7 +1283,7 @@
                 })
                 .then((docRef) => {
                     // 3. Registrar no caixa do evento
-                    return db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+                    return db.collection("Eventos").doc("Conf2026").collection("caixa").add({
                         descricao: `Inscrição - ${nomeParticipante}`,
                         data: new Date().toISOString().substring(0, 10),
                         valor: valorPagamento,

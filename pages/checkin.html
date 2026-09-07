@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check-in - ComRoça 2026</title>
+    <title>Check-in - Wokshop 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -579,7 +579,7 @@
         // Salvar e atualizar o cache local no localStorage
         function atualizarCacheLocalStorage() {
             try {
-                localStorage.setItem('comroca_participantes_data', JSON.stringify(todosParticipantes));
+                localStorage.setItem('conf_participantes_data', JSON.stringify(todosParticipantes));
                 // Mantém o timestamp original ou usa o atual se for nova sincronização
             } catch (e) {
                 console.error("Erro ao salvar cache no localStorage:", e);
@@ -588,8 +588,8 @@
 
         // Buscar todos os participantes com cache no localStorage de 30 segundos
         function carregarParticipantes() {
-            const CACHE_KEY = 'comroca_participantes_data';
-            const TIMESTAMP_KEY = 'comroca_participantes_timestamp';
+            const CACHE_KEY = 'conf_participantes_data';
+            const TIMESTAMP_KEY = 'conf_participantes_timestamp';
             const CACHE_DURATION_MS = 30000; // 30 segundos
 
             const cachedData = localStorage.getItem(CACHE_KEY);
@@ -619,7 +619,7 @@
             }
 
             try {
-                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                     .where("anoevento", "==", "2026")
                     .get()
                     .then((querySnapshot) => {
@@ -660,7 +660,7 @@
 
             try {
                 html5QrCode = new Html5Qrcode("reader");
-                
+
                 // Mudar o badge para Carregando/Ativa
                 $('#cameraStatusBadge')
                     .removeClass('badge-secondary badge-danger')
@@ -687,14 +687,14 @@
                     }
                 ).then(() => {
                     scannerIniciado = true;
-                    
+
                     $('#cameraStatusBadge')
                         .removeClass('badge-secondary badge-danger')
                         .addClass('badge-success')
                         .html('<i class="bi bi-circle-fill mr-1 text-white" style="font-size: 6px; vertical-align: middle;"></i> Câmera Ativa');
                 }).catch(err => {
                     console.error("Erro ao iniciar câmera html5-qrcode diretamente:", err);
-                    
+
                     // Caso falhe com facingMode environment (por exemplo, em computadores que só têm webcam frontal),
                     // tentamos de forma automática usar qualquer câmera padrão disponível
                     console.log("Tentando iniciar qualquer câmera padrão como fallback...");
@@ -711,7 +711,7 @@
                         (decodedText, decodedResult) => {
                             processarQRCodeScanned(decodedText);
                         },
-                        (errorMessage) => {}
+                        (errorMessage) => { }
                     ).then(() => {
                         scannerIniciado = true;
                         $('#cameraStatusBadge')
@@ -738,7 +738,7 @@
             $('.laser-line').hide();
 
             let mensagemAjuda = "Verifique se a permissão foi negada no seu navegador. Clique no ícone de cadeado ou câmera na barra de endereço (lado esquerdo da URL) e mude a permissão de câmera para 'Permitir'.";
-            
+
             // Verificar protocolo/contexto seguro
             if (location.protocol === 'file:') {
                 mensagemAjuda = "Você abriu o arquivo HTML diretamente (protocolo <strong>file://</strong>). Os navegadores bloqueiam o acesso à câmera por segurança em arquivos locais. <strong>Para testar a câmera, você precisa rodar a página através de um servidor local (ex: usar a extensão 'Live Server' no VS Code ou subir um servidor local) e acessar via http://localhost</strong>.";
@@ -789,7 +789,7 @@
                         processarCheckIn(pLocal);
                     } else {
                         // Firestore
-                        db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                        db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                             .where("anoevento", "==", "2026")
                             .where("nome", "==", nome)
                             .get()
@@ -817,7 +817,7 @@
                         processarCheckIn(pLocal);
                     } else {
                         // Firestore por ID
-                        db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(id).get()
+                        db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(id).get()
                             .then(doc => {
                                 if (doc.exists) {
                                     const part = doc.data();
@@ -898,7 +898,7 @@
                 return;
             }
 
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                 .update({
                     statusPresenca: 'presente',
                     dataCheckin: agora,
@@ -1068,7 +1068,7 @@
 
             const tel = formatarTelefone(p.telefone || p.celular || '');
             const idade = p.idade ? `${p.idade} anos` : '';
-            
+
             let detalheCheckin = "Entrada já registrada anteriormente.";
             if (p.dataCheckin) {
                 try {
@@ -1116,7 +1116,7 @@
             }
 
             try {
-                db.collection("Eventos").doc("ComRoca2026").collection("inscricoes")
+                db.collection("Eventos").doc("Conf2026").collection("inscricoes")
                     .orderBy("dataCheckin", "desc")
                     .limit(10)
                     .onSnapshot((querySnapshot) => {
@@ -1150,7 +1150,7 @@
 
         function renderizarEntradasRecentes(lista) {
             const list = $('#recentLogsList');
-            
+
             if (lista.length === 0) {
                 list.html(`
                     <div class="text-center py-5 text-muted" id="noLogsPlaceholder" style="font-size: 0.9rem;">
@@ -1165,7 +1165,7 @@
 
             lista.forEach(p => {
                 const iniciais = (p.nome || 'P').substring(0, 2).toUpperCase();
-                
+
                 let hora = '...';
                 if (p.dataCheckin) {
                     try {
@@ -1243,7 +1243,7 @@
             btnSalvar.prop('disabled', true).html('<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Registrando...');
 
             // 1. Atualizar Firestore `inscricoes`
-            db.collection("Eventos").doc("ComRoca2026").collection("inscricoes").doc(participanteId)
+            db.collection("Eventos").doc("Conf2026").collection("inscricoes").doc(participanteId)
                 .update({
                     statusPagamento: 'pago',
                     formaPagamento: formaPagamento,
@@ -1252,7 +1252,7 @@
                 })
                 .then(() => {
                     // 2. Coleção `pagamentos`
-                    return db.collection("Eventos").doc("ComRoca2026").collection("pagamentos").add({
+                    return db.collection("Eventos").doc("Conf2026").collection("pagamentos").add({
                         participanteId: participanteId,
                         participanteNome: nomeParticipante,
                         valor: valorPagamento,
@@ -1263,7 +1263,7 @@
                 })
                 .then((docRef) => {
                     // 3. Registrar no caixa do evento `caixa`
-                    return db.collection("Eventos").doc("ComRoca2026").collection("caixa").add({
+                    return db.collection("Eventos").doc("Conf2026").collection("caixa").add({
                         descricao: `Inscrição - ${nomeParticipante}`,
                         data: new Date().toISOString().substring(0, 10),
                         valor: valorPagamento,
