@@ -289,11 +289,9 @@
         <!-- preco -->
         <div class="info-box">
             <p><strong>Valor da inscrição:</strong> R$ 50,00 Individual </p>
-            <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquineta)*</p>
-            <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
-            <p>*Para realização do Pagamento, entrar em contato com <b>Gustavo Perrusi (Guga)</b></p>
-            <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/5583999127728" target="_blank">83
-                    99912-7728</a></p>
+            <p><strong>Forma de Pagamento:</strong> PIX ou Cartão de Crédito</p>
+            <p><em>* Ao clicar em "Realizar Pagamento", você será redirecionado para a página segura do PagSeguro.</em>
+            </p>
         </div>
 
         <!-- Horários do Evento -->
@@ -368,7 +366,7 @@
                 <label for="dataPreenchimento">Data de Preenchimento</label>
                 <input type="text" class="form-control" id="dataPreenchimento" readonly>
             </div>
-            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Cadastrar</button>
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Realizar Pagamento</button>
         </form>
     </div>
 
@@ -654,7 +652,8 @@
                     .then(() => {
                         console.log("Contador atualizado!");
 
-                        // Send email notification
+                        // Send email notification (COMENTADO PARA NÃO DAR ERRO DE 403)
+                        /*
                         const emailData = {
                             to: "[EMAIL_ADDRESS]",
                             subject: "Nova Inscrição Conferência 2026",
@@ -665,8 +664,10 @@
                         emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailData, "YOUR_USER_ID")
                             .then(response => console.log("Email enviado:", response))
                             .catch(error => console.error("Erro ao enviar email:", error));
+                        */
 
-                        window.location.href = 'obrigado.html';
+                        // Redirecionar para o PagSeguro
+                        window.location.href = 'https://pag.ae/82e36q7jo';
                         this.reset();
 
                         // Resetar campos adicionais
