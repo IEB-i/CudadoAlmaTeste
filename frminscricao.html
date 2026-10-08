@@ -639,8 +639,10 @@
 
                 console.log('Dados completos a serem enviados:', formData);
 
+                let novoDocId = '';
                 db.collection("Eventos").doc("Conf2026").collection("inscricoes").add(formData)
                     .then((docRef) => {
+                        novoDocId = docRef.id;
                         console.log("Documento escrito com ID: ", docRef.id);
 
                         // Incrementar contador
@@ -667,7 +669,7 @@
                                 "Content-Type": "application/json"
                             },
                             body: JSON.stringify({
-                                inscricaoId: docRef.id,
+                                inscricaoId: novoDocId,
                                 nome: formData.nome,
                                 celular: formData.celular
                             })
