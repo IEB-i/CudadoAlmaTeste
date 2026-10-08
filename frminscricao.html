@@ -652,33 +652,48 @@
                     .then(() => {
                         console.log("Contador atualizado!");
 
-                        // Send email notification (COMENTADO PARA NÃO DAR ERRO DE 403)
-                        /*
-                        const emailData = {
-                            to: "[EMAIL_ADDRESS]",
-                            subject: "Nova Inscrição Conferência 2026",
-                            text: `Nova inscrição realizada:\nNome: ${formData.nome}\nTelefone: ${formData.celular}\nData: ${formData.dataPreenchimento}`
-                        };
+                        // Alterando botão para loading
+                        const btn = document.getElementById('cadastrarBtn');
+                        btn.innerText = "Gerando pagamento, aguarde...";
+                        btn.disabled = true;
 
-                        // Using EmailJS service
-                        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailData, "YOUR_USER_ID")
-                            .then(response => console.log("Email enviado:", response))
-                            .catch(error => console.error("Erro ao enviar email:", error));
-                        */
+                        // ATENÇÃO: Substitua a URL abaixo pela URL real da sua Cloud Function "criarCheckout"
+                        // Você descobre essa URL ao fazer o deploy (firebase deploy --only functions)
+                        const URL_DA_FUNCAO = 'https://us-central1-iebi-2e84e.cloudfunctions.net/criarCheckout';
 
-                        // Redirecionar para o PagSeguro
-                        window.location.href = 'https://pag.ae/82e36q7jo';
-                        this.reset();
-
-                        // Resetar campos adicionais
-                        document.getElementById('outraIgrejaDiv').style.display = 'none';
-                        document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
-                        document.getElementById('idade').value = '';
+                        return fetch(URL_DA_FUNCAO, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                inscricaoId: docRef.id,
+                                nome: formData.nome,
+                                celular: formData.celular
+                            })
+                        });
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            // Redireciona para o Checkout gerado especificamente para este usuário
+                            window.location.href = data.url; 
+                            
+                            document.getElementById('acampForm').reset();
+                            // Resetar campos adicionais
+                            document.getElementById('outraIgrejaDiv').style.display = 'none';
+                            document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
+                            document.getElementById('idade').value = '';
+                        } else {
+                            throw new Error(data.error || "Erro desconhecido ao gerar link de pagamento.");
+                        }
                     })
                     .catch((error) => {
-                        console.error("Erro ao adicionar documento: ", error);
-                        console.log(error);
-                        alert('Erro ao realizar inscrição. Por favor, tente novamente.');
+                        console.error("Erro ao processar inscrição/pagamento: ", error);
+                        alert('Houve um erro ao gerar o pagamento. Por favor, tente novamente mais tarde.');
+                        const btn = document.getElementById('cadastrarBtn');
+                        btn.innerText = "Realizar Pagamento";
+                        btn.disabled = false;
                     });
             });
         });
