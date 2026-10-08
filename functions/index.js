@@ -1,4 +1,4 @@
-const functions = require("firebase-functions");
+const { onRequest } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const express = require("express");
 const cors = require("cors");
@@ -81,10 +81,12 @@ app.post("/", async (req, res) => {
         return res.status(200).send("OK");
     } catch (error) {
         console.error("Erro ao processar webhook do PagSeguro:", error);
-        // Retornamos 200 para evitar reenvios infinitos em caso de dados inválidos
         return res.status(200).send("Erro processado");
     }
 });
 
-// Exporta a função HTTPS com o nome pagseguroWebhook
-exports.pagseguroWebhook = functions.https.onRequest(app);
+// Exporta a função HTTPS com v2 (2nd Generation)
+exports.pagseguroWebhook = onRequest({
+    cors: true,
+    invoker: "public"
+}, app);
